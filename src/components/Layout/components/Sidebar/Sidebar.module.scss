@@ -1,0 +1,136 @@
+.SidenavContainer {
+  width: 15rem;
+  flex-shrink: 0;
+  z-index: 99;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  overflow: clip hidden;
+  overscroll-behavior: contain;
+  flex-direction: column;
+  flex-shrink: 0;
+  background-color: rgba(255, 255, 255, 1);
+  position: fixed;
+  box-sizing: content-box;
+
+  --content-width: 13rem;
+  --content-height: 2.5rem;
+}
+
+.GroupWapper {
+  display: flex;
+  flex-direction: column;
+  padding-top: 1.25rem;
+  padding-bottom: 0.5rem;
+  flex-shrink: 0;
+  gap: 1rem;
+  width: 100%;
+  align-items: center;
+}
+
+.LogoWrapper {
+  display: flex;
+  padding-inline-start: 0.5rem;
+  width: var(--content-width);
+  justify-content: start;
+  height: 42px;
+  img {
+    width: 118px;
+  }
+}
+
+.SearchWrapper {
+  width: var(--content-width);
+}
+
+.SearchButton {
+  width: 100%;
+  height: var(--content-height);
+  display: flex;
+  align-items: center;
+  background-color: rgb(242, 242, 242);
+  color: rgba(0, 0, 0, 1);
+  border: none;
+  border-radius: calc(var(--content-height) / 2);
+  letter-spacing: 0.15px;
+  cursor: pointer;
+}
+
+.SearchIconWrapper {
+  margin-left: 0.7rem;
+  margin-right: 0.7rem;
+  width: 1.2rem;
+  height: 1.2rem;
+  justify-content: center;
+  align-items: center;
+  display: flex;
+  position: relative;
+}
+
+.SearchLabel {
+  font-weight: normal;
+  font-size: 14px;
+  color: rgba(0, 0, 0, 0.34);
+  margin: 0px 10px 0px 0px !important;
+}
+
+.NavWrapper {
+  display: flex;
+  flex-direction: column;
+  overflow-y: scroll;
+  width: 100%;
+  align-items: center;
+  padding-top: 0.25rem;
+  padding-bottom: 0.5rem;
+  scrollbar-width: none;
+}
+
+.MainNavWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.TooltipWrapper {
+  background-color: white;
+  border-radius: 5px;
+
+  button {
+    width: var(--content-width);
+    height: var(--content-height);
+    display: flex;
+    align-items: center;
+    padding-left: 0.25rem;
+    border: none;
+    background-color: transparent;
+  }
+
+  &:hover {
+    background-color: rgb(242, 242, 242);
+  }
+}
+
+.TooltipContent {
+  display: flex;
+  align-items: center;
+  font-size: 19px;
+}
+
+.TooltipIconWrapper {
+  margin-right: 0.75rem;
+  width: 2rem;
+  height: 2rem;
+  justify-content: center;
+  align-items: center;
+  display: flex;
+  position: relative;
+  color: currentColor;
+}
+
+.TooltipLabel {
+  font-family: var(--tux-fontFamilyParagraph);
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 21px;
+  color: currentColor;
+}

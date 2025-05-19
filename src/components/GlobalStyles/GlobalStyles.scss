@@ -1,12 +1,47 @@
 @import 'normalize.css';
-@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,100..700;1,100..700&display=swap');
+@font-face {
+  font-family: 'TikTokDisplayFont';
+  src: url('../../assets/fonts/TikTokDisplayFont-Bold.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'TikTokFont';
+  src: url('../../assets/fonts/TikTokFont-Regular.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'TikTokFont';
+  src: url('../../assets/fonts/TikTokFont-Semibold.woff2') format('woff2');
+  font-weight: 600;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'TikTokFont';
+  src: url('../../assets/fonts/TikTokFont-Bold.woff2') format('woff2');
+  font-weight: 700;
+  font-style: normal;
+}
 
 :root {
-  --primary: #fe2c55;
+  --color-primary: #fe2c55;
 
-  //Default Layout
-  --default-layout-header-height: 60px;
-  --default-layout-width: 1150px;
+  --tux-fontFamilyHeading: 'TikTokDisplayFont', Arial, Tahoma, sans-serif;
+  --tux-fontFamilyParagraph: 'TikTokFont', Arial, Tahoma, sans-serif;
+  --tux-fontWeightRegular: 400;
+  --tux-fontWeightSemibold: 500;
+  --tux-fontWeightBold: 700;
+  --tux-fontSizeH1: 96px;
+  --tux-fontSizeH2: 72px;
+  --tux-fontSizeH3: 56px;
+  --tux-fontSizeH4: 48px;
+  --tux-fontSizeH5: 32px;
+  --tux-fontSizeH6: 24px;
+  --tux-fontSizeH7: 18px;
+  --tux-fontSizeP1: 24px;
+  --tux-fontSizeP2: 18px;
+  --tux-fontSizeP3: 16px;
+  --tux-fontSizeP4: 14px;
+  --tux-fontSizeP5: 12px;
 }
 
 * {
@@ -16,12 +51,90 @@
 }
 
 html {
-  font-size: 62.5%;
 }
 
 body {
-  font-family: 'IBM Plex Sans', sans-serif;
+  font-family: 'TikTokFont', Arial, Tahoma, sans-serif;
   font-size: 1.6rem;
   line-height: 1.5;
   text-rendering: optimizeSpeed;
+  min-height: 100vh;
+  direction: ltr;
+  -webkit-font-smoothing: antialiased;
+}
+
+.font-heading {
+  font-family: var(--tux-fontFamilyHeading);
+}
+
+.font-paragraph {
+  font-family: var(--tux-fontFamilyParagraph);
+}
+
+.font-regular {
+  font-weight: var(--tux-fontWeightRegular);
+}
+
+.font-semibold {
+  font-weight: var(--tux-fontWeightSemibold);
+}
+
+.font-bold {
+  font-weight: var(--tux-fontWeightBold);
+}
+
+.h1 {
+  font-size: var(--tux-fontSizeH1);
+}
+
+.h2 {
+  font-size: var(--tux-fontSizeH2);
+}
+
+.h3 {
+  font-size: var(--tux-fontSizeH3);
+}
+
+.h4 {
+  font-size: var(--tux-fontSizeH4);
+}
+
+.h5 {
+  font-size: var(--tux-fontSizeH5);
+}
+
+.h6 {
+  font-size: var(--tux-fontSizeH6);
+}
+
+.h7 {
+  font-size: var(--tux-fontSizeH7);
+}
+
+.p1 {
+  font-size: var(--tux-fontSizeP1);
+}
+
+.p2 {
+  font-size: var(--tux-fontSizeP2);
+}
+
+.p3 {
+  font-size: var(--tux-fontSizeP3);
+}
+
+.p4 {
+  font-size: var(--tux-fontSizeP4);
+}
+
+.p5 {
+  font-size: var(--tux-fontSizeP5);
+}
+
+.text-primary {
+  color: var(--tux-primary);
+}
+
+.bg-primary {
+  background-color: var(--tux-primary);
 }

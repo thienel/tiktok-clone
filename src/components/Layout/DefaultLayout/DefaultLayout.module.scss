@@ -1,16 +1,10 @@
 .wrapper {
   display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.container {
-  width: var(--default-layout-width);
-  min-height: 1000px;
-  background-color: #ccc;
-  display: flex;
+  height: 100vh;
+  width: 100vw;
 }
 
 .content {
-  flex: 1;
+  margin-left: 15rem;
+  flex-grow: 1;
 }
