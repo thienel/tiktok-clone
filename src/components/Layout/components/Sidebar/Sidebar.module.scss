@@ -51,7 +51,6 @@
   align-items: center;
   background-color: rgb(242, 242, 242);
   color: rgba(0, 0, 0, 1);
-  border: none;
   border-radius: calc(var(--content-height) / 2);
   letter-spacing: 0.15px;
   cursor: pointer;
@@ -102,7 +101,6 @@
     display: flex;
     align-items: center;
     padding-left: 0.25rem;
-    border: none;
     background-color: transparent;
   }
 

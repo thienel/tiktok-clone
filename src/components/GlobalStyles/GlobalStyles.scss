@@ -42,6 +42,18 @@
   --tux-fontSizeP3: 16px;
   --tux-fontSizeP4: 14px;
   --tux-fontSizeP5: 12px;
+
+  button,
+  input,
+  [tabindex] {
+    outline: none;
+    border: none;
+  }
+
+  a[href] {
+    color: var(--text-color);
+    text-decoration: none;
+  }
 }
 
 * {
