@@ -32,21 +32,23 @@ function Sidebar() {
       </div>
       <div className={cx('NavWrapper')}>
         <div className={cx('MainNavWrapper')}>
-          {tooltipItems.map(({ key, label, size }) => {
+          {tooltipItems.map(({ key, label, size, focused }) => {
             const IconComponent = tooltips[key]
+            const IconComponentSelected = tooltips[focused]
+            const isSelected = selectedTooltip === key
             return (
               <div className={cx('TooltipWrapper')} key={key}>
-                  <button onClick={() => handleSelect(key)}>
-                    <div
-                      className={cx('TooltipContent')}
-                      style={{ color: selectedTooltip === key ? 'var(--color-primary)' : 'black' }}
-                    >
-                      <div className={cx('TooltipIconWrapper')} style={{fontSize: size}}>
-                        <IconComponent/>
-                      </div>
-                      <div className={cx('TooltipLabel')}>{label}</div>
+                <button onClick={() => handleSelect(key)}>
+                  <div
+                    className={cx('TooltipContent')}
+                    style={{ color: isSelected ? 'var(--color-primary)' : 'var(--color-black)' }}
+                  >
+                    <div className={cx('TooltipIconWrapper')} style={{ fontSize: size }}>
+                      {isSelected ? <IconComponentSelected /> : <IconComponent />}
                     </div>
-                  </button>
+                    <div className={cx('TooltipLabel')}>{label}</div>
+                  </div>
+                </button>
               </div>
             )
           })}
