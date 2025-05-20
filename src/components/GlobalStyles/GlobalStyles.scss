@@ -47,7 +47,7 @@
   }
 
   a[href] {
-    color: var(--text-color);
+    // color: red;
     text-decoration: none;
   }
 
@@ -60,11 +60,6 @@
     font-family: var(--font-heading);
   }
 
-  p1,
-  p2,
-  p3,
-  p4,
-  p5,
   button,
   span {
     font-family: var(--font-paragraph);

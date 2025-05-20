@@ -150,6 +150,11 @@
   justify-content: start;
   height: 42px;
   cursor: pointer;
+  color: var(--color-black);
+
+  a {
+    color: currentColor;
+  }
 }
 
 .LogoFull {
@@ -309,6 +314,10 @@
     margin-bottom: 0px;
   }
 
+  h4.isFocused {
+    color: var(--color-black);
+  }
+
   h4:first-child {
     margin-top: 0px;
   }
@@ -320,5 +329,27 @@
     line-height: 1rem;
     display: block;
     margin-top: 5px;
+  }
+}
+
+.LinkWrapper {
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  margin-top: 0.25rem;
+  margin-bottom: 0.25rem;
+
+  a {
+    color: var(--color-gray-50) !important;
+    font-size: 12px;
+    font-weight: 600;
+    margin-bottom: 7px;
+    margin-right: 6px;
+    line-height: 16px;
+    cursor: pointer;
+
+    &:hover {
+      text-decoration: underline !important;
+    }
   }
 }
