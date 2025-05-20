@@ -15,10 +15,11 @@ function Sidebar() {
 
   return (
     <div className={cx('SidenavContainer')}>
-      <div className={cx('GroupWapper')}>
+      <div className={cx('GroupWrapper')}>
         <div className={cx('LogoWrapper')}>
-          <a>
-            <images.logo />
+          <a href="/">
+            <images.logoFull className={cx('LogoFull')} />
+            <images.logo className={cx('Logo')} />
           </a>
         </div>
         <div className={cx('SearchWrapper')}>

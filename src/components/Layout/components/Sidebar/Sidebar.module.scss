@@ -8,33 +8,161 @@
   overflow: clip hidden;
   overscroll-behavior: contain;
   flex-direction: column;
-  flex-shrink: 0;
   background-color: var(--color-white);
   position: fixed;
   box-sizing: content-box;
+
+  --collaps-width-content: 2.5rem;
+  --collaps-width: 4.5rem;
 }
 
-.GroupWapper {
+.TooltipWrapper > button,
+.SearchButton {
+  position: relative;
+  overflow: hidden;
+}
+
+.TooltipWrapper > button::before,
+.SearchButton::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 0;
+  height: 100%;
+  background-color: var(--color-light-gray);
+  z-index: -1;
+  transition: width 0.3s ease-in-out;
+}
+
+@keyframes expandLeftToRight {
+  from {
+    width: var(--collaps-width-content);
+  }
+  to {
+    width: var(--width-sidebar-content);
+  }
+}
+
+@keyframes collapseRightToLeft {
+  from {
+    width: var(--width-sidebar-content);
+  }
+  to {
+    width: var(--collaps-width-content);
+  }
+}
+
+@keyframes slideBackground {
+  from {
+    width: 0;
+  }
+  to {
+    width: 100%;
+  }
+}
+
+@keyframes slideBackgroundCollapse {
+  from {
+    width: 100%;
+  }
+  to {
+    width: 0;
+  }
+}
+
+@media screen and (min-width: 1025px) {
+  .SearchButton {
+    animation: expandLeftToRight 0.3s ease-in-out forwards;
+    left: 0;
+  }
+
+  .TooltipWrapper > button::before,
+  .SearchButton::before {
+    animation: slideBackground 0.3s ease-in-out forwards;
+  }
+}
+
+@media screen and (max-width: 1024px) {
+  .SidenavContainer {
+    width: var(--collaps-width);
+    border-right: 1px solid rgba(0, 0, 0, 0.12);
+  }
+
+  .LogoWrapper {
+    padding-inline-start: 0px !important;
+
+    a {
+      width: var(--collaps-width-content);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0px auto;
+      .LogoFull {
+        display: none;
+      }
+
+      .Logo {
+        display: block;
+      }
+    }
+  }
+
+  .TooltipWrapper > button,
+  .SearchButton {
+    animation: collapseRightToLeft 0.25s ease-in-out forwards;
+  }
+
+  .TooltipWrapper > button::before,
+  .SearchButton::before {
+    animation: slideBackgroundCollapse 0.3s ease-in-out forwards;
+    left: 0;
+  }
+
+  .SearchWrapper,
+  .TooltipWrapper > button {
+    width: var(--collaps-width-content) !important;
+  }
+
+  .SearchLabel,
+  .TooltipLabel,
+  .LoginButtonWrapper,
+  .SubNavWrapper {
+    display: none !important;
+  }
+}
+
+.GroupWrapper {
   display: flex;
   flex-direction: column;
   padding-top: 1.25rem;
   padding-bottom: 0.5rem;
   flex-shrink: 0;
   gap: 1rem;
-  width: 100%;
+  width: var(--width-sidebar-content);
   align-items: center;
 }
 
 .LogoWrapper {
   display: flex;
   padding-inline-start: 0.5rem;
-  width: var(--width-sidebar-content);
+  width: 100%;
   justify-content: start;
   height: 42px;
   cursor: pointer;
-  img {
-    width: 118px;
-  }
+}
+
+.LogoFull {
+  width: 118px;
+  height: 42px;
+  display: block;
+  transition: opacity 0.3s ease;
+}
+
+.Logo {
+  height: 42px;
+  display: none;
+  transition: opacity 0.3s ease;
 }
 
 .SearchWrapper {
