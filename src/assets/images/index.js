@@ -1,6 +1,9 @@
+import { ReactComponent as Logo } from './logo.svg'
+import { ReactComponent as SearchIcon } from './searchIcon.svg'
+
 const images = {
-  logo: require('./logo.svg').default,
-  searchIcon: require('./searchIcon.svg').default,
+  logo: Logo,
+  searchIcon: SearchIcon,
 }
 
 export default images
