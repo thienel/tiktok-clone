@@ -23,25 +23,21 @@
 }
 
 :root {
-  --color-primary: #fe2c55;
+  --color-primary: rgb(254, 44, 85);
+  --color-primary-hover: rgba(234, 40, 78, 1);
+  --color-white: rgba(255, 255, 255, 1);
+  --color-black: rgba(0, 0, 0, 1);
+  --color-black-34: rgba(0, 0, 0, 0.34);
+  --color-gray-50: rgba(22, 24, 35, 0.5);
+  --color-gray-12: rgba(22, 24, 35, 0.12);
+  --color-light-gray: rgb(242, 242, 242);
 
-  --tux-fontFamilyHeading: 'TikTokDisplayFont', Arial, Tahoma, sans-serif;
-  --tux-fontFamilyParagraph: 'TikTokFont', Arial, Tahoma, sans-serif;
-  --tux-fontWeightRegular: 400;
-  --tux-fontWeightSemibold: 500;
-  --tux-fontWeightBold: 700;
-  --tux-fontSizeH1: 96px;
-  --tux-fontSizeH2: 72px;
-  --tux-fontSizeH3: 56px;
-  --tux-fontSizeH4: 48px;
-  --tux-fontSizeH5: 32px;
-  --tux-fontSizeH6: 24px;
-  --tux-fontSizeH7: 18px;
-  --tux-fontSizeP1: 24px;
-  --tux-fontSizeP2: 18px;
-  --tux-fontSizeP3: 16px;
-  --tux-fontSizeP4: 14px;
-  --tux-fontSizeP5: 12px;
+  --font-heading: 'TikTokDisplayFont', Arial, Tahoma, sans-serif;
+  --font-paragraph: 'TikTokFont', Arial, Tahoma, sans-serif;
+
+  --width-sidebar: 15rem;
+  --width-sidebar-content: 13rem;
+  --height-sidebar-content: 2.5rem;
 
   button,
   input,
@@ -53,6 +49,25 @@
   a[href] {
     color: var(--text-color);
     text-decoration: none;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: var(--font-heading);
+  }
+
+  p1,
+  p2,
+  p3,
+  p4,
+  p5,
+  button,
+  span {
+    font-family: var(--font-paragraph);
   }
 }
 
@@ -66,87 +81,11 @@ html {
 }
 
 body {
-  font-family: 'TikTokFont', Arial, Tahoma, sans-serif;
+  font-family: var(--font-paragraph);
   font-size: 1.6rem;
   line-height: 1.5;
   text-rendering: optimizeSpeed;
   min-height: 100vh;
   direction: ltr;
   -webkit-font-smoothing: antialiased;
-}
-
-.font-heading {
-  font-family: var(--tux-fontFamilyHeading);
-}
-
-.font-paragraph {
-  font-family: var(--tux-fontFamilyParagraph);
-}
-
-.font-regular {
-  font-weight: var(--tux-fontWeightRegular);
-}
-
-.font-semibold {
-  font-weight: var(--tux-fontWeightSemibold);
-}
-
-.font-bold {
-  font-weight: var(--tux-fontWeightBold);
-}
-
-.h1 {
-  font-size: var(--tux-fontSizeH1);
-}
-
-.h2 {
-  font-size: var(--tux-fontSizeH2);
-}
-
-.h3 {
-  font-size: var(--tux-fontSizeH3);
-}
-
-.h4 {
-  font-size: var(--tux-fontSizeH4);
-}
-
-.h5 {
-  font-size: var(--tux-fontSizeH5);
-}
-
-.h6 {
-  font-size: var(--tux-fontSizeH6);
-}
-
-.h7 {
-  font-size: var(--tux-fontSizeH7);
-}
-
-.p1 {
-  font-size: var(--tux-fontSizeP1);
-}
-
-.p2 {
-  font-size: var(--tux-fontSizeP2);
-}
-
-.p3 {
-  font-size: var(--tux-fontSizeP3);
-}
-
-.p4 {
-  font-size: var(--tux-fontSizeP4);
-}
-
-.p5 {
-  font-size: var(--tux-fontSizeP5);
-}
-
-.text-primary {
-  color: var(--tux-primary);
-}
-
-.bg-primary {
-  background-color: var(--tux-primary);
 }

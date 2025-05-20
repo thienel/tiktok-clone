@@ -1,5 +1,5 @@
 .SidenavContainer {
-  width: 15rem;
+  width: var(--width-sidebar);
   flex-shrink: 0;
   z-index: 99;
   height: 100vh;
@@ -9,12 +9,9 @@
   overscroll-behavior: contain;
   flex-direction: column;
   flex-shrink: 0;
-  background-color: rgba(255, 255, 255, 1);
+  background-color: var(--color-white);
   position: fixed;
   box-sizing: content-box;
-
-  --content-width: 13rem;
-  --content-height: 2.5rem;
 }
 
 .GroupWapper {
@@ -31,7 +28,7 @@
 .LogoWrapper {
   display: flex;
   padding-inline-start: 0.5rem;
-  width: var(--content-width);
+  width: var(--width-sidebar-content);
   justify-content: start;
   height: 42px;
   cursor: pointer;
@@ -41,17 +38,17 @@
 }
 
 .SearchWrapper {
-  width: var(--content-width);
+  width: var(--width-sidebar-content);
 }
 
 .SearchButton {
   width: 100%;
-  height: var(--content-height);
+  height: var(--height-sidebar-content);
   display: flex;
   align-items: center;
-  background-color: rgb(242, 242, 242);
-  color: rgba(0, 0, 0, 1);
-  border-radius: calc(var(--content-height) / 2);
+  background-color: var(--color-light-gray);
+  color: var(--color-black);
+  border-radius: calc(var(--height-sidebar-content) / 2);
   letter-spacing: 0.15px;
   cursor: pointer;
 }
@@ -70,7 +67,7 @@
 .SearchLabel {
   font-weight: normal;
   font-size: 14px;
-  color: rgba(0, 0, 0, 0.34);
+  color: var(--color-black-34);
   margin: 0px 10px 0px 0px !important;
 }
 
@@ -92,12 +89,12 @@
 }
 
 .TooltipWrapper {
-  background-color: white;
+  background-color: var(--color-white);
   border-radius: 5px;
 
   button {
-    width: var(--content-width);
-    height: var(--content-height);
+    width: var(--width-sidebar-content);
+    height: var(--height-sidebar-content);
     display: flex;
     align-items: center;
     padding-left: 0.25rem;
@@ -105,7 +102,7 @@
   }
 
   &:hover {
-    background-color: rgb(242, 242, 242);
+    background-color: var(--color-light-gray);
   }
 }
 
@@ -127,9 +124,72 @@
 }
 
 .TooltipLabel {
-  font-family: var(--tux-fontFamilyParagraph);
   font-weight: 600;
   font-size: 16px;
   line-height: 21px;
   color: currentColor;
+}
+
+.LoginButtonWrapper {
+  margin-top: 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: var(--width-sidebar-content);
+  padding: 1px 0.25rem;
+
+  button {
+    width: 100%;
+    height: var(--height-sidebar-content);
+    border-radius: 5px;
+    margin-bottom: 1.5rem;
+    background-color: var(--color-primary);
+    color: var(--color-white);
+    font-weight: 600;
+
+    &:hover {
+      background-color: var(--color-primary-hover);
+    }
+
+    div {
+      font-size: 16px;
+    }
+  }
+}
+
+.SubNavWrapper {
+  width: var(--width-sidebar-content);
+  padding: 0px 0.25rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.FooterWrapper {
+  width: 100%;
+  border-top: 1px solid var(--color-gray-12);
+  padding-top: 1rem;
+
+  h4 {
+    font-size: 15px;
+    line-height: 22px;
+    cursor: pointer;
+    font-weight: 700;
+    color: var(--color-gray-50);
+    margin-top: 5px;
+    margin-bottom: 0px;
+  }
+
+  h4:first-child {
+    margin-top: 0px;
+  }
+
+  span {
+    color: var(--color-gray-50);
+    font-weight: 600;
+    font-size: 12px;
+    line-height: 1rem;
+    display: block;
+    margin-top: 5px;
+  }
 }

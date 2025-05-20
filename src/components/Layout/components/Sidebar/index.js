@@ -18,13 +18,13 @@ function Sidebar() {
       <div className={cx('GroupWapper')}>
         <div className={cx('LogoWrapper')}>
           <a>
-            <img src={images.logo} alt="TikTok" />
+            <images.logo />
           </a>
         </div>
         <div className={cx('SearchWrapper')}>
           <button className={cx('SearchButton')} type="button">
             <div className={cx('SearchIconWrapper')}>
-              <img src={images.searchIcon} alt="" />
+              <images.searchIcon height="19px" />
             </div>
             <div className={cx('SearchLabel')}>Search</div>
           </button>
@@ -53,8 +53,19 @@ function Sidebar() {
             )
           })}
         </div>
-        <div className={cx('SubMainNavContentContainer')}>{/**sub nav content */}</div>
-        <div className={cx('SubMainNavFooterContainer')}>{/**sub nav footer */}</div>
+        <div className={cx('LoginButtonWrapper')}>
+          <button>
+            <div>Log in</div>
+          </button>
+        </div>
+        <div className={cx('SubNavWrapper')}>
+          <div className={cx('FooterWrapper')}>
+            <h4>Company</h4>
+            <h4>Program</h4>
+            <h4>Terms & Policies</h4>
+            <span>&copy; 2025 TikTok</span>
+          </div>
+        </div>
       </div>
     </div>
   )
