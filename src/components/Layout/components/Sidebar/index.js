@@ -24,7 +24,7 @@ function Sidebar() {
         <div className={cx('SearchWrapper')}>
           <button className={cx('SearchButton')} type="button">
             <div className={cx('SearchIconWrapper')}>
-              <images.searchIcon height="19px" />
+              <images.searchIcon />
             </div>
             <div className={cx('SearchLabel')}>Search</div>
           </button>
@@ -36,19 +36,17 @@ function Sidebar() {
             const IconComponent = tooltips[key]
             return (
               <div className={cx('TooltipWrapper')} key={key}>
-                <a>
                   <button onClick={() => handleSelect(key)}>
                     <div
                       className={cx('TooltipContent')}
                       style={{ color: selectedTooltip === key ? 'var(--color-primary)' : 'black' }}
                     >
-                      <div className={cx('TooltipIconWrapper')}>
-                        <IconComponent height={size} />
+                      <div className={cx('TooltipIconWrapper')} style={{fontSize: size}}>
+                        <IconComponent/>
                       </div>
                       <div className={cx('TooltipLabel')}>{label}</div>
                     </div>
                   </button>
-                </a>
               </div>
             )
           })}
