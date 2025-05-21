@@ -1,0 +1,68 @@
+@media screen and (max-width: 1024px) {
+  .SubNavWrapper {
+    display: none !important;
+  }
+}
+
+.SubNavWrapper {
+  width: 100%;
+  padding: 0px 0.25rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.FooterWrapper {
+  width: 100%;
+  border-top: 1px solid var(--color-gray-12);
+  padding-top: 1rem;
+
+  h4 {
+    font-size: 15px;
+    line-height: 22px;
+    cursor: pointer;
+    font-weight: 700;
+    color: var(--color-gray-50);
+    margin-top: 5px;
+    margin-bottom: 0px;
+  }
+
+  h4.isFocused {
+    color: var(--color-black);
+  }
+
+  h4:first-child {
+    margin-top: 0px;
+  }
+
+  span {
+    color: var(--color-gray-50);
+    font-weight: 600;
+    font-size: 12px;
+    line-height: 1rem;
+    display: block;
+    margin-top: 5px;
+  }
+}
+
+.LinkWrapper {
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  margin-top: 0.25rem;
+  margin-bottom: 0.25rem;
+
+  a {
+    color: var(--color-gray-50) !important;
+    font-size: 12px;
+    font-weight: 600;
+    margin-bottom: 7px;
+    margin-right: 6px;
+    line-height: 16px;
+    cursor: pointer;
+
+    &:hover {
+      text-decoration: underline !important;
+    }
+  }
+}

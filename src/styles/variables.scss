@@ -1,23 +1,23 @@
 @import 'normalize.css';
 @font-face {
   font-family: 'TikTokDisplayFont';
-  src: url('../../assets/fonts/TikTokDisplayFont-Bold.woff2') format('woff2');
+  src: url('../assets/fonts/TikTokDisplayFont-Bold.woff2') format('woff2');
 }
 @font-face {
   font-family: 'TikTokFont';
-  src: url('../../assets/fonts/TikTokFont-Regular.woff2') format('woff2');
+  src: url('../assets/fonts/TikTokFont-Regular.woff2') format('woff2');
   font-weight: 400;
   font-style: normal;
 }
 @font-face {
   font-family: 'TikTokFont';
-  src: url('../../assets/fonts/TikTokFont-Semibold.woff2') format('woff2');
+  src: url('../assets/fonts/TikTokFont-Semibold.woff2') format('woff2');
   font-weight: 600;
   font-style: normal;
 }
 @font-face {
   font-family: 'TikTokFont';
-  src: url('../../assets/fonts/TikTokFont-Bold.woff2') format('woff2');
+  src: url('../assets/fonts/TikTokFont-Bold.woff2') format('woff2');
   font-weight: 700;
   font-style: normal;
 }
@@ -42,46 +42,4 @@
 
   --width-sidebar-collapse: 4.5rem;
   --width-sidebar-content-collapse: 2.5rem;
-
-  button,
-  input,
-  [tabindex] {
-    outline: none;
-    border: none;
-  }
-
-  a[href] {
-    // color: red;
-    text-decoration: none;
-  }
-
-  h1,
-  h2,
-  h3,
-  h4,
-  h5,
-  h6 {
-    font-family: var(--font-heading);
-  }
-
-  button,
-  span {
-    font-family: var(--font-paragraph);
-  }
-}
-
-* {
-  padding: 0;
-  margin: 0;
-  box-sizing: border-box;
-}
-
-body {
-  font-family: var(--font-paragraph);
-  font-size: 1.6rem;
-  line-height: 1.5;
-  text-rendering: optimizeSpeed;
-  min-height: 100vh;
-  direction: ltr;
-  -webkit-font-smoothing: antialiased;
 }

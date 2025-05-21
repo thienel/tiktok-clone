@@ -1,4 +1,6 @@
-import './GlobalStyles.scss'
+import './variables.scss'
+import './animation.scss'
+import './reset.scss'
 
 function GlobalStyles({ children }) {
   return children

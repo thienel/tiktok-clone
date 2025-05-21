@@ -18,13 +18,17 @@ function Button({
   round,
   placeholder,
   className,
-  ...props
+  ...ComponentProps
 }) {
+  const props = { ...ComponentProps }
+
   var Component = 'button'
   if (to) {
     Component = Link
+    props.to = to
   } else if (href) {
     Component = 'a'
+    props.href = href
   }
 
   const classes = {
@@ -50,7 +54,7 @@ function Button({
 
   return (
     <Component className={cx('wrapper', classes)} {...props}>
-      <span className={cx('label')}>{children}</span>
+      {children}
     </Component>
   )
 }

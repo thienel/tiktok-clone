@@ -1,0 +1,33 @@
+@media screen and (min-width: 1025px) {
+  .fadeAnimation {
+    animation: fadeIn 0.3s ease-in-out forwards;
+  }
+}
+
+@media screen and (max-width: 1024px) {
+  .fadeAnimation {
+    animation: fadeOut 0.3s ease-in-out forwards;
+  }
+}
+
+.MainNavWrapper {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.TooltipContent {
+  display: flex;
+  align-items: center;
+}
+
+.TooltipIconWrapper {
+  margin-left: 0.25rem;
+  margin-right: 0.75rem;
+  width: 2rem;
+  height: 2rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
