@@ -11,81 +11,58 @@
   background-color: var(--color-white);
   position: fixed;
   box-sizing: content-box;
-
-  --collaps-width-content: 2.5rem;
-  --collaps-width: 4.5rem;
 }
 
-.TooltipWrapper > button,
-.SearchButton {
-  position: relative;
-  overflow: hidden;
-}
-
-.TooltipWrapper > button::before,
-.SearchButton::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 0;
-  height: 100%;
-  background-color: var(--color-light-gray);
-  z-index: -1;
-  transition: width 0.3s ease-in-out;
-}
-
-@keyframes expandLeftToRight {
+@keyframes expandLTR {
   from {
-    width: var(--collaps-width-content);
+    width: var(--width-sidebar-content-collapse);
   }
   to {
     width: var(--width-sidebar-content);
   }
 }
 
-@keyframes collapseRightToLeft {
+@keyframes collapseRTL {
   from {
     width: var(--width-sidebar-content);
   }
   to {
-    width: var(--collaps-width-content);
+    width: var(--width-sidebar-content-collapse);
   }
 }
 
-@keyframes slideBackground {
+@keyframes fadeIn {
   from {
-    width: 0;
+    opacity: 0;
   }
   to {
-    width: 100%;
+    opacity: 1;
   }
 }
 
-@keyframes slideBackgroundCollapse {
+@keyframes fadeOut {
   from {
-    width: 100%;
+    opacity: 1;
   }
   to {
-    width: 0;
+    opacity: 0;
   }
 }
 
 @media screen and (min-width: 1025px) {
-  .SearchButton {
-    animation: expandLeftToRight 0.3s ease-in-out forwards;
+  .collapseAnimation {
+    animation: expandLTR 0.3s ease-in-out forwards;
     left: 0;
   }
 
-  .TooltipWrapper > button::before,
-  .SearchButton::before {
-    animation: slideBackground 0.3s ease-in-out forwards;
+  .fadeAnimation {
+    animation: fadeIn 0.3s ease-in-out forwards;
   }
 }
 
 @media screen and (max-width: 1024px) {
   .SidenavContainer {
-    width: var(--collaps-width);
+    width: var(--width-sidebar-collapse);
     border-right: 1px solid rgba(0, 0, 0, 0.12);
   }
 
@@ -93,7 +70,7 @@
     padding-inline-start: 0px !important;
 
     a {
-      width: var(--collaps-width-content);
+      width: 100%;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -108,24 +85,23 @@
     }
   }
 
-  .TooltipWrapper > button,
-  .SearchButton {
-    animation: collapseRightToLeft 0.25s ease-in-out forwards;
+  .collapseAnimation {
+    animation: collapseRTL 0.3s ease-in-out forwards;
   }
 
-  .TooltipWrapper > button::before,
-  .SearchButton::before {
-    animation: slideBackgroundCollapse 0.3s ease-in-out forwards;
-    left: 0;
+  .fadeAnimation {
+    animation: fadeOut 0.3s ease-in-out forwards;
   }
 
-  .SearchWrapper,
-  .TooltipWrapper > button {
-    width: var(--collaps-width-content) !important;
+  .SearchContent span {
+    animation: fadeOut 0.1s ease-in-out forwards;
   }
 
-  .SearchLabel,
-  .TooltipLabel,
+  .GroupWrapper,
+  .NavWrapper {
+    width: var(--width-sidebar-content-collapse) !important;
+  }
+
   .LoginButtonWrapper,
   .SubNavWrapper {
     display: none !important;
@@ -161,55 +137,41 @@
   width: 118px;
   height: 42px;
   display: block;
-  transition: opacity 0.3s ease;
 }
 
 .Logo {
   height: 42px;
   display: none;
-  transition: opacity 0.3s ease;
 }
 
 .SearchWrapper {
-  width: var(--width-sidebar-content);
-}
-
-.SearchButton {
   width: 100%;
-  height: var(--height-sidebar-content);
   display: flex;
   align-items: center;
-  background-color: var(--color-light-gray);
-  color: var(--color-black);
-  border-radius: calc(var(--height-sidebar-content) / 2);
-  letter-spacing: 0.15px;
-  cursor: pointer;
+  justify-content: flex-start;
+}
+
+.SearchContent {
+  display: flex;
+  align-items: center;
 }
 
 .SearchIconWrapper {
-  margin-left: 0.7rem;
-  margin-right: 0.7rem;
+  margin: 0px 0.6rem;
   width: 1.2rem;
   height: 1.2rem;
+  display: flex;
   justify-content: center;
   align-items: center;
-  display: flex;
-  position: relative;
+  color: var(--color-black);
   font-size: 32px;
-}
-
-.SearchLabel {
-  font-weight: normal;
-  font-size: 14px;
-  color: var(--color-black-34);
-  margin: 0px 10px 0px 0px !important;
 }
 
 .NavWrapper {
   display: flex;
   flex-direction: column;
   overflow-y: scroll;
-  width: 100%;
+  width: var(--width-sidebar-content);
   align-items: center;
   padding-top: 0.25rem;
   padding-bottom: 0.5rem;
@@ -217,82 +179,36 @@
 }
 
 .MainNavWrapper {
+  width: 100%;
   display: flex;
   flex-direction: column;
   gap: 0.3rem;
 }
 
-.TooltipWrapper {
-  background-color: var(--color-white);
-  border-radius: 5px;
-
-  button {
-    width: var(--width-sidebar-content);
-    height: var(--height-sidebar-content);
-    display: flex;
-    align-items: center;
-    padding-left: 0.25rem;
-    background-color: transparent;
-  }
-
-  &:hover {
-    background-color: var(--color-light-gray);
-  }
-}
-
 .TooltipContent {
   display: flex;
   align-items: center;
-  font-size: 19px;
 }
 
 .TooltipIconWrapper {
+  margin-left: 0.25rem;
   margin-right: 0.75rem;
   width: 2rem;
   height: 2rem;
+  display: flex;
   justify-content: center;
   align-items: center;
-  display: flex;
-  position: relative;
-  color: currentColor;
-}
-
-.TooltipLabel {
-  font-weight: 600;
-  font-size: 16px;
-  line-height: 21px;
-  color: currentColor;
 }
 
 .LoginButtonWrapper {
   margin-top: 1rem;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: var(--width-sidebar-content);
+  width: 100%;
   padding: 1px 0.25rem;
-
-  button {
-    width: 100%;
-    height: var(--height-sidebar-content);
-    border-radius: 5px;
-    margin-bottom: 1.5rem;
-    background-color: var(--color-primary);
-    color: var(--color-white);
-    font-weight: 600;
-
-    &:hover {
-      background-color: var(--color-primary-hover);
-    }
-
-    div {
-      font-size: 16px;
-    }
-  }
+  margin-bottom: 1.5rem;
 }
 
 .SubNavWrapper {
-  width: var(--width-sidebar-content);
+  width: 100%;
   padding: 0px 0.25rem;
   display: flex;
   flex-direction: column;

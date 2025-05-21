@@ -3,6 +3,7 @@ import classNames from 'classnames/bind'
 import styles from './Sidebar.module.scss'
 import images from '~/assets/images/'
 import { tooltipItems, tooltips } from '~/assets/images/tooltip'
+import Button from '~/components/Button'
 
 const cx = classNames.bind(styles)
 
@@ -11,6 +12,7 @@ function Sidebar() {
   const [selectedFooter, setSelectedFooter] = useState('')
 
   const handleSelect = (key) => {
+    console.log(key)
     setSelectedTooltip(key)
   }
 
@@ -32,41 +34,36 @@ function Sidebar() {
           </a>
         </div>
         <div className={cx('SearchWrapper')}>
-          <button className={cx('SearchButton')} type="button">
-            <div className={cx('SearchIconWrapper')}>
-              <images.searchIcon />
+          <Button round placeholder left className={cx('collapseAnimation')}>
+            <div className={cx('SearchContent')}>
+              <div className={cx('SearchIconWrapper')}>
+                <images.searchIcon />
+              </div>
+              <span>Search</span>
             </div>
-            <div className={cx('SearchLabel')}>Search</div>
-          </button>
+          </Button>
         </div>
       </div>
       <div className={cx('NavWrapper')}>
         <div className={cx('MainNavWrapper')}>
           {tooltipItems.map(({ key, label, size, focused }) => {
-            const IconComponent = tooltips[key]
-            const IconComponentSelected = tooltips[focused]
+            const Icon = tooltips[key]
+            const IconSelected = tooltips[focused]
             const isSelected = selectedTooltip === key
             return (
-              <div className={cx('TooltipWrapper')} key={key}>
-                <button onClick={() => handleSelect(key)}>
-                  <div
-                    className={cx('TooltipContent')}
-                    style={{ color: isSelected ? 'var(--color-primary)' : 'var(--color-black)' }}
-                  >
-                    <div className={cx('TooltipIconWrapper')} style={{ fontSize: size }}>
-                      {isSelected ? <IconComponentSelected /> : <IconComponent />}
-                    </div>
-                    <div className={cx('TooltipLabel')}>{label}</div>
+              <Button key={key} to="/" onClick={() => handleSelect(key)} selected={isSelected} left>
+                <div className={cx('TooltipContent')}>
+                  <div className={cx('TooltipIconWrapper')} style={{ fontSize: size }}>
+                    {isSelected ? <IconSelected /> : <Icon />}
                   </div>
-                </button>
-              </div>
+                  <span className={cx('fadeAnimation')}>{label}</span>
+                </div>
+              </Button>
             )
           })}
         </div>
         <div className={cx('LoginButtonWrapper')}>
-          <button>
-            <div>Log in</div>
-          </button>
+          <Button primary>Log in</Button>
         </div>
         <div className={cx('SubNavWrapper')}>
           <div className={cx('FooterWrapper')}>
