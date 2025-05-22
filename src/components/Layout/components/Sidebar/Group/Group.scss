@@ -10,11 +10,8 @@
     padding-inline-start: 0px !important;
 
     a {
-      width: 100%;
-      display: flex;
-      align-items: center;
       justify-content: center;
-      margin: 0px auto;
+
       .LogoFull {
         display: none;
       }
@@ -51,11 +48,13 @@
   gap: 1rem;
   width: var(--width-sidebar-content);
   align-items: center;
+
+  --height-logo: 29px;
 }
 
 .LogoWrapper {
   display: flex;
-  padding-inline-start: 0.5rem;
+  padding-left: 7px;
   width: 100%;
   justify-content: start;
   height: 42px;
@@ -63,18 +62,21 @@
   color: var(--color-black);
 
   a {
+    width: 100%;
+    display: flex;
+    align-items: center;
     color: currentColor;
+    margin: 0px auto;
   }
 }
 
 .LogoFull {
-  width: 118px;
-  height: 42px;
+  height: var(--height-logo);
   display: block;
 }
 
 .Logo {
-  height: 42px;
+  height: var(--height-logo);
   display: none;
 }
 

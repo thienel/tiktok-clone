@@ -1,3 +1,18 @@
+@media screen and (max-width: 1024px) {
+  .SidenavContainer {
+    width: var(--width-sidebar-collapse) !important;
+    border-right: 1px solid rgba(0, 0, 0, 0.12);
+  }
+
+  .NavWrapper {
+    width: var(--width-sidebar-content-collapse) !important;
+  }
+
+  .LoginButtonWrapper {
+    display: none !important;
+  }
+}
+
 .SidenavContainer {
   width: var(--width-sidebar);
   flex-shrink: 0;
@@ -11,21 +26,6 @@
   background-color: var(--color-white);
   position: fixed;
   box-sizing: content-box;
-}
-
-@media screen and (max-width: 1024px) {
-  .SidenavContainer {
-    width: var(--width-sidebar-collapse);
-    border-right: 1px solid rgba(0, 0, 0, 0.12);
-  }
-
-  .NavWrapper {
-    width: var(--width-sidebar-content-collapse) !important;
-  }
-
-  .LoginButtonWrapper {
-    display: none !important;
-  }
 }
 
 .NavWrapper {
