@@ -14,17 +14,19 @@ const cx = classNames.bind(styles)
 function Sidebar() {
   const [selectedTooltip, setSelectedTooltip] = useState('foryou')
   const handleSelect = (key) => {
-    console.log(key)
     setSelectedTooltip(key)
   }
 
   const windowWidth = useWindowWidth()
   const isCollapsed = windowWidth <= 1024 || selectedTooltip === 'more'
   const isExpanded = windowWidth >= 1025 && selectedTooltip !== 'more'
+  const handleExpand = () => {
+    handleSelect('foryou')
+  }
 
   return (
     <>
-      <Drawer more={selectedTooltip === 'more'} />
+      <Drawer more={selectedTooltip === 'more'} onExpand={handleExpand} />
       <div className={cx('SidenavContainer', { collapse: isCollapsed, expand: isExpanded })}>
         <FixedGroup collapse={isCollapsed} expand={isExpanded} />
         <div className={cx('NavWrapper')}>
