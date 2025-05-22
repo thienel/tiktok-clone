@@ -1,7 +1,6 @@
 .GroupWrapper.expand {
   .collapseAnimation {
     animation: sidebarExpandLTR 0.5s ease forwards;
-    left: 0;
   }
 }
 
@@ -9,8 +8,7 @@
   width: var(--width-sidebar-content-collapse) !important;
 
   .collapseAnimation {
-    animation: sidebarCollapseRTL 0.5s ease forwards;
-    left: 0;
+    animation: sidebarCollapseRTL 0.5s ease-out;
   }
 
   .SearchContent span {
@@ -42,6 +40,7 @@
   flex-shrink: 0;
   gap: 1rem;
   width: var(--width-sidebar-content);
+  margin-left: var(--padding-sidebar);
   align-items: center;
 
   --height-logo: 29px;

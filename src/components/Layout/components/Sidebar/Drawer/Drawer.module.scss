@@ -5,10 +5,10 @@
   width: 20rem;
   height: 100vh;
   z-index: 99;
-  background-color: var(--color-white);
   border-right: 1px solid var(--border-light);
   border-left: 1px solid var(--border-light);
   opacity: 0;
+  background-color: var(--color-white);
 
   transform: translateX(-100%);
   transition: transform 0.5s ease, opacity 0.5s;

@@ -21,11 +21,13 @@
   overflow: clip hidden;
   overscroll-behavior: contain;
   flex-direction: column;
-  background-color: var(--color-white);
+  align-items: flex-start;
   position: fixed;
   left: 0;
   top: 0;
   box-sizing: content-box;
+  background-color: var(--color-white);
+  transition: width 0.5s ease;
 }
 
 .NavWrapper {
@@ -33,6 +35,7 @@
   flex-direction: column;
   overflow-y: scroll;
   width: var(--width-sidebar-content);
+  margin-left: var(--padding-sidebar) !important;
   align-items: center;
   padding-top: 0.25rem;
   padding-bottom: 0.5rem;
