@@ -8,11 +8,12 @@
   width: var(--width-sidebar-content-collapse) !important;
 
   .collapseAnimation {
-    animation: sidebarCollapseRTL 0.5s ease-out;
+    animation: sidebarCollapseRTL 0.4s ease;
   }
 
   .SearchContent span {
     animation: fadeOut 0.1s ease forwards;
+    display: none;
   }
 
   .LogoWrapper {
@@ -39,9 +40,9 @@
   padding-bottom: 0.5rem;
   flex-shrink: 0;
   gap: 1rem;
-  width: var(--width-sidebar-content);
   margin-left: var(--padding-sidebar);
-  align-items: center;
+  margin-right: var(--padding-sidebar);
+  align-items: flex-start;
 
   --height-logo: 29px;
 }
@@ -75,7 +76,6 @@
 }
 
 .SearchWrapper {
-  width: 100%;
   display: flex;
   align-items: center;
   justify-content: flex-start;
