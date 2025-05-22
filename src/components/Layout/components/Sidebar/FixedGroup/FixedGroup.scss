@@ -1,11 +1,22 @@
-@media screen and (min-width: 1025px) {
+.GroupWrapper.expand {
   .collapseAnimation {
-    animation: sidebarExpandLTR 0.3s ease-in-out forwards;
+    animation: sidebarExpandLTR 0.5s ease forwards;
     left: 0;
   }
 }
 
-@media screen and (max-width: 1024px) {
+.GroupWrapper.collapse {
+  width: var(--width-sidebar-content-collapse) !important;
+
+  .collapseAnimation {
+    animation: sidebarCollapseRTL 0.5s ease forwards;
+    left: 0;
+  }
+
+  .SearchContent span {
+    animation: fadeOut 0.1s ease forwards;
+  }
+
   .LogoWrapper {
     padding-inline-start: 0px !important;
 
@@ -20,22 +31,6 @@
         display: block;
       }
     }
-  }
-
-  .collapseAnimation {
-    animation: sidebarCollapseRTL 0.3s ease-in-out forwards;
-  }
-
-  .SearchContent span {
-    animation: fadeOut 0.1s ease-in-out forwards;
-  }
-
-  .GroupWrapper {
-    width: var(--width-sidebar-content-collapse) !important;
-  }
-
-  .LoginButtonWrapper {
-    display: none !important;
   }
 }
 

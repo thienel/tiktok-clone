@@ -1,11 +1,15 @@
 import { ReactComponent as Logo } from './logo.svg'
 import { ReactComponent as LogoFull } from './logoFull.svg'
 import { ReactComponent as SearchIcon } from './searchIcon.svg'
+import { ReactComponent as FlipLTR } from './flipLTR.svg'
+import { ReactComponent as Close } from './close.svg'
 
 const images = {
   logo: Logo,
   logoFull: LogoFull,
+  close: Close,
   searchIcon: SearchIcon,
+  flipLTR: FlipLTR,
 }
 
 export default images

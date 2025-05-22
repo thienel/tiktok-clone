@@ -1,0 +1,52 @@
+.Wrapper {
+  position: fixed;
+  top: 0;
+  left: var(--width-sidebar-collapse);
+  width: 20rem;
+  height: 100vh;
+  z-index: 99;
+  background-color: var(--color-white);
+  border-right: 1px solid var(--border-light);
+  border-left: 1px solid var(--border-light);
+  opacity: 0;
+
+  transform: translateX(-100%);
+  transition: transform 0.5s ease, opacity 0.5s;
+}
+
+.Wrapper.Open {
+  transform: translateX(0);
+  opacity: 1;
+}
+
+.MoreHeader {
+  height: 4.5rem;
+  padding-left: 1rem;
+  display: flex;
+  align-items: center;
+  h2 {
+    font-size: 1.25rem;
+  }
+}
+
+.MoreContent {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+  overflow-y: scroll;
+  padding: 0.5rem;
+  scrollbar-width: none;
+
+  Button {
+    padding: 0px 0.4rem;
+    font-size: 15px;
+    line-height: 19px;
+  }
+}
+
+.Close {
+  position: absolute;
+  right: 1rem;
+  top: 1.5rem;
+}

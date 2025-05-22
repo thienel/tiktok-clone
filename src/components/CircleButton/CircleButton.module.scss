@@ -1,0 +1,14 @@
+.wrapper {
+  height: 1.75rem;
+  width: 1.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--color-neutral-3);
+  color: var(--color-black);
+  border-radius: 999px;
+
+  &:hover {
+    background-color: var(--color-neutral-2);
+  }
+}

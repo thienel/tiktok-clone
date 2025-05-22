@@ -13,10 +13,6 @@
   font-weight: 600;
   cursor: pointer;
 
-  + .wrapper {
-    margin-right: 0.75rem;
-  }
-
   &:hover {
     background-color: var(--color-gray-light);
   }
@@ -40,6 +36,10 @@
 
 .right {
   justify-content: right;
+}
+
+.between {
+  justify-content: space-between;
 }
 
 .round {

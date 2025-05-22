@@ -1,8 +1,6 @@
-@media screen and (max-width: 1024px) {
-  .SidenavContainer {
-    width: var(--width-sidebar-collapse) !important;
-    border-right: 1px solid rgba(0, 0, 0, 0.12);
-  }
+.SidenavContainer.collapse {
+  width: var(--width-sidebar-collapse) !important;
+  border-right: 1px solid var(--border-light);
 
   .NavWrapper {
     width: var(--width-sidebar-content-collapse) !important;
@@ -15,16 +13,18 @@
 
 .SidenavContainer {
   width: var(--width-sidebar);
-  flex-shrink: 0;
   z-index: 99;
   height: 100vh;
   display: flex;
+  flex-shrink: 0;
   align-items: center;
   overflow: clip hidden;
   overscroll-behavior: contain;
   flex-direction: column;
   background-color: var(--color-white);
   position: fixed;
+  left: 0;
+  top: 0;
   box-sizing: content-box;
 }
 
