@@ -40,5 +40,8 @@ body {
   min-height: 100vh;
   direction: ltr;
   -webkit-font-smoothing: antialiased;
-  background-color: var(--color-white);
+  background-color: var(--color-bg);
+  color: var(--color-opposite);
+
+  transition: color 0.3s ease-in;
 }
