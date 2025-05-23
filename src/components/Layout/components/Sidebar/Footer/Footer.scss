@@ -20,13 +20,13 @@
     line-height: 22px;
     cursor: pointer;
     font-weight: 700;
-    color: var(--color-gray-50);
+    color: var(--color-footer);
     margin-top: 5px;
     margin-bottom: 0px;
   }
 
   h4.isFocused {
-    color: var(--color-black);
+    color: var(--color-opposite);
   }
 
   h4:first-child {
@@ -34,7 +34,7 @@
   }
 
   span {
-    color: var(--color-gray-50);
+    color: var(--color-footer);
     font-weight: 600;
     font-size: 12px;
     line-height: 1rem;
@@ -51,7 +51,7 @@
   margin-bottom: 0.25rem;
 
   a {
-    color: var(--color-gray-50) !important;
+    color: var(--color-footer) !important;
     font-size: 12px;
     font-weight: 600;
     margin-bottom: 7px;

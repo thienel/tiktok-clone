@@ -25,18 +25,28 @@
 :root {
   --color-primary: rgb(254, 44, 85);
   --color-primary-hover: rgba(234, 40, 78, 1);
-  --color-white: rgba(255, 255, 255, 1);
-  --color-black: rgba(0, 0, 0, 1);
+  --color-white: rgb(255, 255, 255);
+  --color-bg: rgba(255, 255, 255, 1);
+  --color-bg-grey: rgb(242, 242, 242);
+  --color-opposite: rgba(0, 0, 0, 1);
   --color-placeholder: rgba(0, 0, 0, 0.34);
-  --color-gray-50: rgba(22, 24, 35, 0.5);
-  --color-gray-light: rgb(242, 242, 242);
-  --color-gray-dark: rgb(31, 31, 31);
-
+  --color-footer: rgba(22, 24, 35, 0.5);
   --color-neutral-1: rgba(0, 0, 0, 0.17);
   --color-neutral-2: rgba(0, 0, 0, 0.12);
   --color-neutral-3: rgba(0, 0, 0, 0.05);
+  --color-border: rgba(0, 0, 0, 0.12);
 
-  --border-light: rgba(0, 0, 0, 0.12);
+  [data-theme='dark'] {
+    --color-bg: rgba(0, 0, 0, 1);
+    --color-bg-grey: rgb(31, 31, 31);
+    --color-opposite: rgba(255, 255, 255, 1);
+    --color-placeholder: rgba(255, 255, 255, 0.4);
+    --color-footer: rgba(255, 255, 255, 0.5);
+    --color-neutral-1: rgba(255, 255, 255, 0.17);
+    --color-neutral-2: rgba(255, 255, 255, 0.12);
+    --color-neutral-3: rgba(255, 255, 255, 0.05);
+    --color-border: rgba(255, 255, 255, 0.12);
+  }
 
   --font-heading: 'TikTokDisplayFont', Arial, Tahoma, sans-serif;
   --font-paragraph: 'TikTokFont', Arial, Tahoma, sans-serif;

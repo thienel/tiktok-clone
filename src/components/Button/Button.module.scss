@@ -14,13 +14,13 @@
   cursor: pointer;
 
   &:hover {
-    background-color: var(--color-gray-light);
+    background-color: var(--color-bg-grey);
   }
 }
 
 .primary {
   background-color: var(--color-primary);
-  color: var(--color-white);
+  color: var(--color-bg);
 
   &:hover {
     background-color: var(--color-primary-hover);
@@ -47,7 +47,7 @@
 }
 
 .placeholder {
-  background-color: var(--color-gray-light);
+  background-color: var(--color-bg-grey);
   font-size: 14px;
   font-weight: normal;
   color: var(--color-placeholder) !important;
