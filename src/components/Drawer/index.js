@@ -9,7 +9,7 @@ import { useTheme } from '~/hooks'
 const cx = classNames.bind(styles)
 
 function Drawer({ more, message, activity, onExpand }) {
-  const { handleSetTheme } = useTheme()
+  const { themeSetting, handleSetTheme } = useTheme()
 
   const handlerMap = {
     [themeID.DEVICE]: () => {
@@ -50,6 +50,7 @@ function Drawer({ more, message, activity, onExpand }) {
             <Button key={index} round between onClick={() => handleSelectMore(item)} to={item.to}>
               {item.title}
               {item.subItems && <images.flipLTR />}
+              {item.id && item.id === themeSetting && <images.checked />}
             </Button>
           ))}
         </div>
