@@ -1,0 +1,26 @@
+import classNames from 'classnames/bind'
+
+import styles from './Sidebar.module.scss'
+import Button from '~/components/Button'
+import MainNav from './MainNav'
+import FixedGroup from './FixedGroup'
+import Footer from './Footer'
+
+const cx = classNames.bind(styles)
+
+function Sidebar({ selectedTooltip, onSelectTooltip, isCollapsed }) {
+  return (
+    <div className={cx('SidenavContainer', { isCollapsed: isCollapsed })}>
+      <FixedGroup isCollapsed={isCollapsed} />
+      <div className={cx('NavWrapper')}>
+        <MainNav onSelect={onSelectTooltip} selected={selectedTooltip} collapse={isCollapsed} />
+        <div className={cx('LoginButtonWrapper')}>
+          <Button primary>Log in</Button>
+        </div>
+        <Footer collapse={isCollapsed} />
+      </div>
+    </div>
+  )
+}
+
+export default Sidebar

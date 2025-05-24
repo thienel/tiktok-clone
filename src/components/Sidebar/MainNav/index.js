@@ -5,7 +5,7 @@ import Button from '~/components/Button'
 
 const cx = classNames.bind(styles)
 
-function MainNav({ onSelect, selected, collapse, expand }) {
+function MainNav({ onSelect, selected, collapse }) {
   return (
     <div className={cx('MainNavWrapper')}>
       {tooltipItems.map(({ key, label, size, focused, url }) => {
@@ -18,7 +18,7 @@ function MainNav({ onSelect, selected, collapse, expand }) {
               <div className={cx('TooltipIconWrapper')} style={{ fontSize: size }}>
                 {isSelected ? <IconSelected /> : <Icon />}
               </div>
-              <span className={cx('animation', { collapse, expand })}>{label}</span>
+              <span className={cx('animation', { collapse })}>{label}</span>
             </div>
           </Button>
         )

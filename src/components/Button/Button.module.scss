@@ -6,7 +6,7 @@
   justify-content: center;
   border: 1px solid transparent !important;
   background-color: transparent;
-  color: var(--color-black);
+  color: inherit !important;
   border-radius: 5px;
   letter-spacing: 0.15px;
   font-size: 16px;
@@ -27,8 +27,7 @@
   }
 }
 .selected {
-  color: var(--color-primary);
-  background-color: transparent;
+  color: var(--color-primary) !important;
 }
 .left {
   justify-content: left;

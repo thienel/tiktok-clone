@@ -13,18 +13,18 @@ function Drawer({ more, message, activity, onExpand }) {
 
   const handlerMap = {
     [themeID.DEVICE]: () => {
-      /* set device theme */
+      handleSetTheme('device')
     },
     [themeID.DARK]: () => handleSetTheme('dark'),
     [themeID.LIGHT]: () => handleSetTheme('light'),
   }
 
-  const [moreMenuStack, setMoreMenuStack] = useState([moreMenus])
-  const currentMoreMenu = moreMenuStack.length - 1
+  const [menuStack, setMenuStack] = useState([moreMenus])
+  const currentMoreMenu = menuStack.length - 1
 
   const handleSelectMore = (item) => {
     if (item.subItems) {
-      setMoreMenuStack((prev) => [...prev, item.subItems])
+      setMenuStack((prev) => [...prev, item.subItems])
     } else {
       item.onClick?.()
       handlerMap[item.id]?.()
@@ -32,8 +32,8 @@ function Drawer({ more, message, activity, onExpand }) {
   }
 
   const handleBackButton = () => {
-    if (moreMenuStack.length > 1) {
-      setMoreMenuStack((prev) => prev.slice(0, -1))
+    if (menuStack.length > 1) {
+      setMenuStack((prev) => prev.slice(0, -1))
     } else {
       onExpand()
     }
@@ -46,7 +46,7 @@ function Drawer({ more, message, activity, onExpand }) {
           <h2>More</h2>
         </div>
         <div className={cx('MoreContent')}>
-          {moreMenuStack[currentMoreMenu].map((item, index) => (
+          {menuStack[currentMoreMenu].map((item, index) => (
             <Button key={index} round between onClick={() => handleSelectMore(item)} to={item.to}>
               {item.title}
               {item.subItems && <images.flipLTR />}

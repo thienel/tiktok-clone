@@ -6,9 +6,9 @@ import Button from '~/components/Button'
 
 const cx = classNames.bind(styles)
 
-function FixedGroup({ collapse, expand }) {
+function FixedGroup({ isCollapsed }) {
   return (
-    <div className={cx('GroupWrapper', { collapse, expand })}>
+    <div className={cx('GroupWrapper', { isCollapsed: isCollapsed, isExpaned: !isCollapsed })}>
       <div className={cx('LogoWrapper')}>
         <Link to="/">
           <images.logoFull className={cx('LogoFull')} />
@@ -16,7 +16,7 @@ function FixedGroup({ collapse, expand }) {
         </Link>
       </div>
       <div className={cx('SearchWrapper')}>
-        <Button round placeholder left className={cx('collapseAnimation')}>
+        <Button round placeholder left className={cx('animation')}>
           <div className={cx('SearchContent')}>
             <div className={cx('SearchIconWrapper')}>
               <images.searchIcon />

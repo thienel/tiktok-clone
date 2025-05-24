@@ -1,14 +1,14 @@
 import { Fragment } from 'react'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import { publicRoutes } from '~/routes'
-import { DefaultLayout } from '~/components/Layout'
+import { MainLayout } from '~/layouts'
 
 function App() {
   return (
     <Router>
       <Routes>
         {publicRoutes.map((route, index) => {
-          var Layout = DefaultLayout
+          var Layout = MainLayout
           if (route.layout) {
             Layout = route.layout
           } else if (route.layout === null) {

@@ -13,6 +13,13 @@ export const ThemeProvider = ({ children }) => {
   }, [theme])
 
   const handleSetTheme = (mode) => {
+    if (mode === 'device' && typeof window !== 'undefined') {
+      if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        setTheme('dark')
+      } else {
+        setTheme('light')
+      }
+    }
     if (mode !== theme) {
       if (mode === 'dark' || mode === 'light') setTheme(mode)
     }
