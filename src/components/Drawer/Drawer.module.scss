@@ -1,10 +1,10 @@
 .Wrapper {
-  position: fixed;
+  position: absolute;
   top: 0;
+  z-index: 99;
   left: var(--width-sidebar-collapse);
   width: 20rem;
   height: 100vh;
-  z-index: 99;
   border-right: 1px solid var(--color-border);
   border-left: 1px solid var(--color-border);
   opacity: 0;

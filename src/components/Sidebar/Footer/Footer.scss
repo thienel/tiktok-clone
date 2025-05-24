@@ -1,9 +1,9 @@
-.SubNavWrapper.collapse {
-  display: none !important;
+.SubNavWrapper.isCollapsed {
+  display: none;
 }
 
 .SubNavWrapper {
-  width: 100%;
+  width: var(--width-sidebar-content);
   padding: 0px 0.25rem;
   display: flex;
   flex-direction: column;
@@ -29,7 +29,7 @@
     color: var(--color-opposite);
   }
 
-  h4:first-child {
+  div:first-child h4 {
     margin-top: 0px;
   }
 
@@ -44,7 +44,6 @@
 }
 
 .LinkWrapper {
-  width: 100%;
   display: flex;
   flex-wrap: wrap;
   margin-top: 0.25rem;
@@ -53,7 +52,7 @@
   a {
     color: var(--color-footer) !important;
     font-size: 12px;
-    font-weight: 600;
+    font-weight: 400;
     margin-bottom: 7px;
     margin-right: 6px;
     line-height: 16px;

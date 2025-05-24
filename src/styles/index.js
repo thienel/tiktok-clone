@@ -1,5 +1,4 @@
 import './variables.scss'
-import './animation.scss'
 import './reset.scss'
 
 function GlobalStyles({ children }) {

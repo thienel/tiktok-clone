@@ -10,14 +10,14 @@ const cx = classNames.bind(styles)
 
 function Sidebar({ selectedTooltip, onSelectTooltip, isCollapsed }) {
   return (
-    <div className={cx('SidenavContainer', { isCollapsed: isCollapsed })}>
+    <div className={cx('SideNavContainer', { isCollapsed })}>
       <FixedGroup isCollapsed={isCollapsed} />
       <div className={cx('NavWrapper')}>
-        <MainNav onSelect={onSelectTooltip} selected={selectedTooltip} collapse={isCollapsed} />
+        <MainNav onSelect={onSelectTooltip} selectedTooltip={selectedTooltip} isCollapsed={isCollapsed} />
         <div className={cx('LoginButtonWrapper')}>
           <Button primary>Log in</Button>
         </div>
-        <Footer collapse={isCollapsed} />
+        <Footer isCollapsed={isCollapsed} />
       </div>
     </div>
   )

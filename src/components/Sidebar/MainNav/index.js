@@ -5,20 +5,27 @@ import Button from '~/components/Button'
 
 const cx = classNames.bind(styles)
 
-function MainNav({ onSelect, selected, collapse }) {
+function MainNav({ onSelect, selectedTooltip, isCollapsed }) {
   return (
-    <div className={cx('MainNavWrapper')}>
+    <div className={cx('MainNavWrapper', { isCollapsed })}>
       {tooltipItems.map(({ key, label, size, focused, url }) => {
         const Icon = tooltips[key]
         const IconSelected = tooltips[focused]
-        const isSelected = selected === key
+        const isSelected = selectedTooltip === key
         return (
-          <Button key={key} to={url} onClick={() => onSelect(key)} selected={isSelected} left>
+          <Button
+            key={key}
+            to={url}
+            onClick={() => onSelect(key)}
+            selected={isSelected}
+            left
+            className={cx('TooltipButton')}
+          >
             <div className={cx('TooltipContent')}>
               <div className={cx('TooltipIconWrapper')} style={{ fontSize: size }}>
                 {isSelected ? <IconSelected /> : <Icon />}
               </div>
-              <span className={cx('animation', { collapse })}>{label}</span>
+              <span>{label}</span>
             </div>
           </Button>
         )

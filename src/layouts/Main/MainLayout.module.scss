@@ -1,10 +1,16 @@
 .MainWrapper {
   display: flex;
-  height: 100vh;
-  width: 100vw;
+  position: relative;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
 }
 
 .MainContent {
-  margin-left: 15rem;
-  flex-grow: 1;
+  position: absolute;
+  left: var(--width-sidebar-content-collapse);
+  right: 0;
+  top: 0;
+  bottom: 0;
 }

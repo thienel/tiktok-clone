@@ -6,7 +6,7 @@ import { footerSections } from '~/constants/footer'
 
 const cx = classNames.bind(styles)
 
-function Footer({ collapse }) {
+function Footer({ isCollapsed }) {
   const [selectedFooter, setSelectedFooter] = useState('')
 
   const handleSelectFooter = (key) => {
@@ -16,8 +16,9 @@ function Footer({ collapse }) {
       setSelectedFooter('')
     }
   }
+
   return (
-    <div className={cx('SubNavWrapper', { collapse })}>
+    <div className={cx('SubNavWrapper', { isCollapsed })}>
       <div className={cx('FooterWrapper')}>
         {footerSections.map(({ key, title, links }) => (
           <div key={key}>

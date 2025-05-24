@@ -1,32 +1,31 @@
-.SidenavContainer.isCollapsed {
-  width: var(--width-sidebar-collapse) !important;
+.SideNavContainer.isCollapsed {
+  width: var(--width-sidebar-collapse);
   border-right: 1px solid var(--color-border);
 
   .NavWrapper {
-    width: var(--width-sidebar-content-collapse) !important;
+    width: var(--width-sidebar-content-collapse);
   }
 
   .LoginButtonWrapper {
-    display: none !important;
+    opacity: 0;
+    display: none;
   }
 }
 
-.SidenavContainer {
+.SideNavContainer {
   width: var(--width-sidebar);
-  z-index: 99;
   height: 100vh;
+  z-index: 99;
   display: flex;
   flex-shrink: 0;
-  align-items: center;
-  overflow: clip hidden;
-  overscroll-behavior: contain;
   flex-direction: column;
   align-items: flex-start;
-  position: fixed;
-  left: 0;
-  top: 0;
+  overflow: hidden;
+  overscroll-behavior: contain;
   box-sizing: content-box;
   background-color: var(--color-bg);
+
+  transition: width 0.5s ease;
 }
 
 .NavWrapper {
@@ -34,17 +33,20 @@
   flex-direction: column;
   overflow-y: scroll;
   width: var(--width-sidebar-content);
-  margin-left: var(--padding-sidebar) !important;
-  align-items: center;
+  margin-left: var(--padding-sidebar);
+  align-items: flex-start;
   padding-top: 0.25rem;
   padding-bottom: 0.5rem;
   scrollbar-width: none;
+
+  transition: width 0.5s ease;
 }
 
 .LoginButtonWrapper {
   margin-top: 1rem;
-  width: 100%;
+  width: var(--width-sidebar-content);
   padding: 1px 0.25rem;
   margin-bottom: 1.5rem;
   color: var(--color-white);
+  white-space: nowrap;
 }

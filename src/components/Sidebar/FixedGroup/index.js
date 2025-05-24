@@ -8,7 +8,7 @@ const cx = classNames.bind(styles)
 
 function FixedGroup({ isCollapsed }) {
   return (
-    <div className={cx('GroupWrapper', { isCollapsed: isCollapsed, isExpaned: !isCollapsed })}>
+    <div className={cx('GroupWrapper', { isCollapsed })}>
       <div className={cx('LogoWrapper')}>
         <Link to="/">
           <images.logoFull className={cx('LogoFull')} />

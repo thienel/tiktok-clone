@@ -1,50 +1,41 @@
-.GroupWrapper.isExpaned {
-  .animation {
-    animation: sidebarExpandLTR 0.5s ease forwards;
-  }
-}
-
-.GroupWrapper.isCollapsed {
-  width: var(--width-sidebar-content-collapsed) !important;
-
-  .animation {
-    animation: sidebarcollapsedRTL 0.4s ease;
-  }
-
-  .SearchContent span {
-    display: none;
-  }
-
-  .LogoWrapper {
-    padding-inline-start: 0px !important;
-
-    a {
-      justify-content: center;
-
-      .LogoFull {
-        display: none;
-      }
-
-      .Logo {
-        display: block;
-      }
-    }
-  }
-}
-
 .GroupWrapper {
   width: var(--width-sidebar-content);
   display: flex;
   flex-direction: column;
   padding-top: 1.25rem;
   padding-bottom: 0.5rem;
-  flex-shrink: 0;
   gap: 1rem;
   margin-left: var(--padding-sidebar);
   margin-right: var(--padding-sidebar);
   align-items: flex-start;
 
   --height-logo: 29px;
+}
+
+.GroupWrapper.isCollapsed {
+  width: var(--width-sidebar-content-collapse);
+
+  .LogoWrapper {
+    padding-inline-start: 0px;
+    a {
+      justify-content: center;
+    }
+  }
+
+  .LogoFull {
+    display: none;
+  }
+  .Logo {
+    display: block;
+  }
+
+  .SearchWrapper {
+    width: var(--width-sidebar-content-collapse);
+  }
+
+  .SearchContent span {
+    display: none;
+  }
 }
 
 .LogoWrapper {
@@ -76,10 +67,12 @@
 }
 
 .SearchWrapper {
-  width: 100%;
+  width: var(--width-sidebar-content);
   display: flex;
   align-items: center;
   justify-content: flex-start;
+
+  transition: width 0.4s ease;
 }
 
 .SearchContent {
