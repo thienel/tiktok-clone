@@ -1,3 +1,4 @@
+import { memo } from 'react'
 import classNames from 'classnames/bind'
 import styles from './Drawer.module.scss'
 import More from './More'
@@ -9,4 +10,4 @@ function Drawer({ type, onExpand }) {
   return <div className={cx('Wrapper', { Open: type })}>{type === 'more' && <More onExpand={onExpand} />}</div>
 }
 
-export default Drawer
+export default memo(Drawer)

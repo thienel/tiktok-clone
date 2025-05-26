@@ -1,11 +1,7 @@
-import Button from '~/components/Button'
+import FixedTop from '~/components/FixedTop'
 
 function Home() {
-  return (
-    <h2>
-      <Button>Home</Button>
-    </h2>
-  )
+  return <FixedTop />
 }
 
 export default Home

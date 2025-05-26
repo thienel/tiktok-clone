@@ -5,6 +5,9 @@ import { ReactComponent as FlipLTR } from './flipLTR.svg'
 import { ReactComponent as FlipRTL } from './flipRTL.svg'
 import { ReactComponent as Close } from './close.svg'
 import { ReactComponent as Checked } from './checked.svg'
+import { ReactComponent as GetCoins } from './getCoins.svg'
+import { ReactComponent as GetApp } from './getApp.svg'
+import { ReactComponent as PcApp } from './pcApp.svg'
 
 const images = {
   logo: Logo,
@@ -14,6 +17,9 @@ const images = {
   flipLTR: FlipLTR,
   flipRTL: FlipRTL,
   checked: Checked,
+  getCoins: GetCoins,
+  getApp: GetApp,
+  pcApp: PcApp,
 }
 
 export default images
