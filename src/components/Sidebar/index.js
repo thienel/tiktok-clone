@@ -11,7 +11,7 @@ const cx = classNames.bind(styles)
 function Sidebar({ selectedTooltip, onSelectTooltip, isCollapsed }) {
   return (
     <div className={cx('SideNavContainer', { isCollapsed })}>
-      <FixedGroup isCollapsed={isCollapsed} />
+      <FixedGroup isCollapsed={isCollapsed} onSelect={onSelectTooltip} />
       <div className={cx('NavWrapper')}>
         <MainNav onSelect={onSelectTooltip} selectedTooltip={selectedTooltip} isCollapsed={isCollapsed} />
         <div className={cx('LoginButtonWrapper')}>

@@ -22,7 +22,7 @@ function MainLayout({ children }) {
   const handleSelectTooltip = useCallback((key) => {
     setSelectedTooltip((current) => {
       if (key === current) {
-        if (toggleTooltips.includes(key)) return prevSelectedTooltip
+        if (toggleTooltips.includes(key)) return prevSelectedTooltip.current
       }
       return key
     })
@@ -37,6 +37,7 @@ function MainLayout({ children }) {
 
   const windowWidth = useWindowWidth()
   const isCollapsed = windowWidth <= 1024 || drawerType
+
   const handleExpand = useCallback(() => {
     handleSelectTooltip('foryou')
   }, [handleSelectTooltip])
