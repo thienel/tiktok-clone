@@ -8,6 +8,8 @@ import { ReactComponent as Checked } from './checked.svg'
 import { ReactComponent as GetCoins } from './getCoins.svg'
 import { ReactComponent as GetApp } from './getApp.svg'
 import { ReactComponent as PcApp } from './pcApp.svg'
+import { ReactComponent as Loading } from './loading.svg'
+import { ReactComponent as Clear } from './clear.svg'
 
 const images = {
   logo: Logo,
@@ -20,6 +22,8 @@ const images = {
   getCoins: GetCoins,
   getApp: GetApp,
   pcApp: PcApp,
+  loading: Loading,
+  clear: Clear,
 }
 
 export default images
