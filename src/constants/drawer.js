@@ -1,3 +1,9 @@
+export const MENU_TYPE = {
+  LINK: 'link',
+  TOGGLE_THEME: 'toggle-theme',
+  LANGUAGE: 'language',
+}
+
 export const themeID = {
   DEVICE: 'device',
   DARK: 'dark',
@@ -5,34 +11,30 @@ export const themeID = {
 }
 
 export const moreMenus = [
-  { title: 'Create TikTok effects', to: '/' },
+  { title: 'Create TikTok effects', to: '/', type: MENU_TYPE.LINK },
   {
     title: 'Creator tools',
     subItems: [
-      { title: 'LIVE shopping', to: '/' },
-      { title: 'LIVE Creator Hub', to: '/' },
+      { title: 'LIVE shopping', to: '/', type: MENU_TYPE.LINK },
+      { title: 'LIVE Creator Hub', to: '/', type: MENU_TYPE.LINK },
     ],
   },
   {
-    title: 'English (US)',
+    title: 'Language',
+    type: MENU_TYPE.LANGUAGE,
     subItems: [
-      { title: 'English (US)', to: '/' },
-      { title: 'Tiếng Việt', to: '/' },
+      { title: 'English (US)', to: '/', lang: 'en' },
+      { title: 'Tiếng Việt', to: '/', lang: 'vi' },
     ],
   },
   {
     title: 'Dark mode',
+    type: MENU_TYPE.TOGGLE_THEME,
     subItems: [
       { title: 'Use device theme', id: themeID.DEVICE },
-      {
-        title: 'Dark mode',
-        id: themeID.DARK,
-      },
-      {
-        title: 'Light mode',
-        id: themeID.LIGHT,
-      },
+      { title: 'Dark mode', id: themeID.DARK },
+      { title: 'Light mode', id: themeID.LIGHT },
     ],
   },
-  { title: 'Feedback and help', to: '/' },
+  { title: 'Feedback and help', to: '/', type: MENU_TYPE.LINK },
 ]
