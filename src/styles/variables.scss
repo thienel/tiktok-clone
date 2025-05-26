@@ -28,7 +28,7 @@
   --color-white: rgb(255, 255, 255);
   --color-bg: rgba(255, 255, 255, 1);
   --color-bg-grey: rgb(242, 242, 242);
-  --color-opposite: rgba(0, 0, 0, 1);
+  --color-opposite: rgb(22, 24, 35);
   --color-placeholder: rgba(0, 0, 0, 0.34);
   --color-footer: rgba(22, 24, 35, 0.5);
   --color-neutral-1: rgba(0, 0, 0, 0.17);
@@ -50,11 +50,11 @@
 [data-theme='dark'] {
   --color-bg: rgba(0, 0, 0, 1);
   --color-bg-grey: rgb(31, 31, 31);
-  --color-opposite: rgba(255, 255, 255, 1);
+  --color-opposite: rgba(255, 255, 255, 0.9);
   --color-placeholder: rgba(255, 255, 255, 0.4);
   --color-footer: rgba(255, 255, 255, 0.5);
-  --color-neutral-1: rgba(255, 255, 255, 0.17);
-  --color-neutral-2: rgba(255, 255, 255, 0.12);
-  --color-neutral-3: rgba(255, 255, 255, 0.05);
+  --color-neutral-1: rgba(255, 255, 255, 0.32);
+  --color-neutral-2: rgba(255, 255, 255, 0.19);
+  --color-neutral-3: rgba(255, 255, 255, 0.13);
   --color-border: rgba(255, 255, 255, 0.12);
 }

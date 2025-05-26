@@ -17,4 +17,5 @@ tooltipImages.keys().forEach((key) => {
   tooltips[fileName] = tooltipImages(key).default
 })
 
-export { tooltipItems, tooltips }
+const toggleTooltips = ['search', 'activity', 'more']
+export { tooltipItems, tooltips, toggleTooltips }
