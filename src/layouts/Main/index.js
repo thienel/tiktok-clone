@@ -1,10 +1,10 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import classNames from 'classnames/bind'
 import styles from './MainLayout.module.scss'
+import { useWindowWidth } from '~/hooks'
+import { toggleTooltips } from '~/constants/tooltip'
 import Sidebar from '~/components/Sidebar'
 import Drawer from '~/components/Drawer'
-import { toggleTooltips } from '~/constants/tooltip'
-import { useWindowWidth } from '~/hooks'
 
 const cx = classNames.bind(styles)
 
@@ -12,6 +12,7 @@ function MainLayout({ children }) {
   console.log('render Main Layout')
   const [selectedTooltip, setSelectedTooltip] = useState('foryou')
   const prevSelectedTooltip = useRef('foryou')
+  const [searchValue, setSearchValue] = useState('')
 
   useEffect(() => {
     if (!toggleTooltips.includes(selectedTooltip)) {
@@ -29,14 +30,13 @@ function MainLayout({ children }) {
   }, [])
 
   const drawerType = useMemo(() => {
-    if (toggleTooltips.includes(selectedTooltip)) {
+    if (toggleTooltips.includes(selectedTooltip) || selectedTooltip === 'messages') {
       return selectedTooltip
     }
     return false
   }, [selectedTooltip])
 
-  const windowWidth = useWindowWidth()
-  const isCollapsed = windowWidth <= 1024 || drawerType
+  const isCollapsed = useWindowWidth() <= 1024 || drawerType
 
   const handleExpand = useCallback(() => {
     handleSelectTooltip('foryou')
@@ -44,8 +44,13 @@ function MainLayout({ children }) {
 
   return (
     <div className={cx('MainWrapper')}>
-      <Drawer onExpand={handleExpand} type={drawerType} />
-      <Sidebar selectedTooltip={selectedTooltip} onSelectTooltip={handleSelectTooltip} isCollapsed={isCollapsed} />
+      <Drawer onExpand={handleExpand} type={drawerType} searchValue={searchValue} setSearchValue={setSearchValue} />
+      <Sidebar
+        selectedTooltip={selectedTooltip}
+        onSelectTooltip={handleSelectTooltip}
+        isCollapsed={isCollapsed}
+        searchValue={searchValue}
+      />
       <div className={cx('MainContent')}>{children}</div>
     </div>
   )

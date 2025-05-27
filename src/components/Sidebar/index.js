@@ -8,10 +8,10 @@ import Footer from './Footer'
 
 const cx = classNames.bind(styles)
 
-function Sidebar({ selectedTooltip, onSelectTooltip, isCollapsed }) {
+function Sidebar({ selectedTooltip, onSelectTooltip, isCollapsed, searchValue }) {
   return (
     <div className={cx('SideNavContainer', { isCollapsed })}>
-      <FixedGroup isCollapsed={isCollapsed} onSelect={onSelectTooltip} />
+      <FixedGroup isCollapsed={isCollapsed} onSelect={onSelectTooltip} searchValue={searchValue} />
       <div className={cx('NavWrapper')}>
         <MainNav onSelect={onSelectTooltip} selectedTooltip={selectedTooltip} isCollapsed={isCollapsed} />
         <div className={cx('LoginButtonWrapper')}>

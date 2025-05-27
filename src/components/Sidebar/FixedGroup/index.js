@@ -6,7 +6,7 @@ import Button from '~/components/Button'
 
 const cx = classNames.bind(styles)
 
-function FixedGroup({ isCollapsed, onSelect }) {
+function FixedGroup({ isCollapsed, onSelect, searchValue }) {
   return (
     <div className={cx('GroupWrapper', { isCollapsed })}>
       <div className={cx('LogoWrapper')}>
@@ -21,7 +21,7 @@ function FixedGroup({ isCollapsed, onSelect }) {
             <div className={cx('SearchIconWrapper')}>
               <images.searchIcon />
             </div>
-            <span>Search</span>
+            <span className={cx({ input: searchValue })}>{searchValue ? searchValue : 'Search'}</span>
           </div>
         </Button>
       </div>

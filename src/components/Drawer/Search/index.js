@@ -6,19 +6,17 @@ import { useEffect, useRef, useState } from 'react'
 
 const cx = classNames.bind(styles)
 
-function Search({ onExpand }) {
+function Search({ onExpand, searchValue, setSearchValue }) {
   const inputRef = useRef()
-
   const [isFocused, setIsFocused] = useState(false)
-  const [inputValue, setInputValue] = useState('')
 
   useEffect(() => {
-    console.log(inputValue)
-  }, [inputValue])
+    console.log(searchValue)
+  }, [searchValue])
 
   const handleClear = () => {
     inputRef.current.focus()
-    setInputValue('')
+    setSearchValue('')
   }
 
   return (
@@ -32,10 +30,10 @@ function Search({ onExpand }) {
             onFocus={() => setIsFocused(true)}
             onBlur={() => setIsFocused(false)}
             ref={inputRef}
-            value={inputValue}
-            onChange={(e) => setInputValue(e.target.value)}
+            value={searchValue}
+            onChange={(e) => setSearchValue(e.target.value)}
           />
-          {inputValue && (
+          {searchValue && (
             <div className={cx('clear')} onClick={handleClear}>
               <images.clear />
             </div>

@@ -39,6 +39,7 @@
     padding-left: 1rem;
     padding-right: 0.25rem;
     height: 100%;
+    color: var(--color-opposite);
 
     &::placeholder {
       font-size: 14px;
@@ -56,9 +57,6 @@
   position: absolute;
   right: 1rem;
   top: 1.5rem;
-}
-
-.clear {
 }
 
 .loading {
