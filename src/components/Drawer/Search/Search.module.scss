@@ -59,6 +59,10 @@
   top: 1.5rem;
 }
 
+.clear {
+  color: var(--color-placeholder);
+}
+
 .loading {
   display: flex;
   justify-content: center;
