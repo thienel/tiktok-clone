@@ -1,0 +1,132 @@
+{
+  "format": 1,
+  "restore": {
+    "/Users/thienel/hhnthienn/dev/TikTokClone/backend/TikTokClone.Infrastructure/TikTokClone.Infrastructure.csproj": {}
+  },
+  "projects": {
+    "/Users/thienel/hhnthienn/dev/TikTokClone/backend/TikTokClone.Domain/TikTokClone.Domain.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "/Users/thienel/hhnthienn/dev/TikTokClone/backend/TikTokClone.Domain/TikTokClone.Domain.csproj",
+        "projectName": "TikTokClone.Domain",
+        "projectPath": "/Users/thienel/hhnthienn/dev/TikTokClone/backend/TikTokClone.Domain/TikTokClone.Domain.csproj",
+        "packagesPath": "/Users/thienel/.nuget/packages/",
+        "outputPath": "/Users/thienel/hhnthienn/dev/TikTokClone/backend/TikTokClone.Domain/obj/",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "/Users/thienel/.nuget/NuGet/NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net9.0"
+        ],
+        "sources": {
+          "/usr/local/share/dotnet/library-packs": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net9.0": {
+            "targetAlias": "net9.0",
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        },
+        "SdkAnalysisLevel": "9.0.300"
+      },
+      "frameworks": {
+        "net9.0": {
+          "targetAlias": "net9.0",
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/9.0.300/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "/Users/thienel/hhnthienn/dev/TikTokClone/backend/TikTokClone.Infrastructure/TikTokClone.Infrastructure.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "/Users/thienel/hhnthienn/dev/TikTokClone/backend/TikTokClone.Infrastructure/TikTokClone.Infrastructure.csproj",
+        "projectName": "TikTokClone.Infrastructure",
+        "projectPath": "/Users/thienel/hhnthienn/dev/TikTokClone/backend/TikTokClone.Infrastructure/TikTokClone.Infrastructure.csproj",
+        "packagesPath": "/Users/thienel/.nuget/packages/",
+        "outputPath": "/Users/thienel/hhnthienn/dev/TikTokClone/backend/TikTokClone.Infrastructure/obj/",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "/Users/thienel/.nuget/NuGet/NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net9.0"
+        ],
+        "sources": {
+          "/usr/local/share/dotnet/library-packs": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net9.0": {
+            "targetAlias": "net9.0",
+            "projectReferences": {
+              "/Users/thienel/hhnthienn/dev/TikTokClone/backend/TikTokClone.Domain/TikTokClone.Domain.csproj": {
+                "projectPath": "/Users/thienel/hhnthienn/dev/TikTokClone/backend/TikTokClone.Domain/TikTokClone.Domain.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        },
+        "SdkAnalysisLevel": "9.0.300"
+      },
+      "frameworks": {
+        "net9.0": {
+          "targetAlias": "net9.0",
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/9.0.300/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    }
+  }
+}
