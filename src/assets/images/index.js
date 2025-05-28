@@ -10,6 +10,7 @@ import { ReactComponent as GetApp } from './getApp.svg'
 import { ReactComponent as PcApp } from './pcApp.svg'
 import { ReactComponent as Loading } from './loading.svg'
 import { ReactComponent as Clear } from './clear.svg'
+import { ReactComponent as Verify } from './verify.svg'
 
 const images = {
   logo: Logo,
@@ -24,6 +25,7 @@ const images = {
   pcApp: PcApp,
   loading: Loading,
   clear: Clear,
+  verify: Verify,
 }
 
 export default images

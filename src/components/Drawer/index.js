@@ -8,6 +8,7 @@ const cx = classNames.bind(styles)
 
 function Drawer({ type, onExpand, searchValue, setSearchValue }) {
   console.log('render drawer')
+
   return (
     <div className={cx('Wrapper', { Open: type })}>
       {type === 'more' && <More onExpand={onExpand} />}
