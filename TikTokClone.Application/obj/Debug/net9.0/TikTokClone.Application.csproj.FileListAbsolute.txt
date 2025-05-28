@@ -1,0 +1,16 @@
+/Users/thienel/hhnthienn/dev/TikTokClone/backend/TikTokClone.Application/bin/Debug/net9.0/TikTokClone.Application.deps.json
+/Users/thienel/hhnthienn/dev/TikTokClone/backend/TikTokClone.Application/bin/Debug/net9.0/TikTokClone.Application.dll
+/Users/thienel/hhnthienn/dev/TikTokClone/backend/TikTokClone.Application/bin/Debug/net9.0/TikTokClone.Application.pdb
+/Users/thienel/hhnthienn/dev/TikTokClone/backend/TikTokClone.Application/bin/Debug/net9.0/TikTokClone.Domain.dll
+/Users/thienel/hhnthienn/dev/TikTokClone/backend/TikTokClone.Application/bin/Debug/net9.0/TikTokClone.Domain.pdb
+/Users/thienel/hhnthienn/dev/TikTokClone/backend/TikTokClone.Application/obj/Debug/net9.0/TikTokClone.Application.csproj.AssemblyReference.cache
+/Users/thienel/hhnthienn/dev/TikTokClone/backend/TikTokClone.Application/obj/Debug/net9.0/TikTokClone.Application.GeneratedMSBuildEditorConfig.editorconfig
+/Users/thienel/hhnthienn/dev/TikTokClone/backend/TikTokClone.Application/obj/Debug/net9.0/TikTokClone.Application.AssemblyInfoInputs.cache
+/Users/thienel/hhnthienn/dev/TikTokClone/backend/TikTokClone.Application/obj/Debug/net9.0/TikTokClone.Application.AssemblyInfo.cs
+/Users/thienel/hhnthienn/dev/TikTokClone/backend/TikTokClone.Application/obj/Debug/net9.0/TikTokClone.Application.csproj.CoreCompileInputs.cache
+/Users/thienel/hhnthienn/dev/TikTokClone/backend/TikTokClone.Application/obj/Debug/net9.0/TikTokClone.Application.sourcelink.json
+/Users/thienel/hhnthienn/dev/TikTokClone/backend/TikTokClone.Application/obj/Debug/net9.0/TikTokCl.40956E0A.Up2Date
+/Users/thienel/hhnthienn/dev/TikTokClone/backend/TikTokClone.Application/obj/Debug/net9.0/TikTokClone.Application.dll
+/Users/thienel/hhnthienn/dev/TikTokClone/backend/TikTokClone.Application/obj/Debug/net9.0/refint/TikTokClone.Application.dll
+/Users/thienel/hhnthienn/dev/TikTokClone/backend/TikTokClone.Application/obj/Debug/net9.0/TikTokClone.Application.pdb
+/Users/thienel/hhnthienn/dev/TikTokClone/backend/TikTokClone.Application/obj/Debug/net9.0/ref/TikTokClone.Application.dll
