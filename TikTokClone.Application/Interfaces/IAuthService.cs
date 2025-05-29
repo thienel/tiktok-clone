@@ -8,5 +8,7 @@ namespace TikTokClone.Application.Interfaces
         Task<AuthResponseDto> RegisterAsync(RegisterRequestDto request);
         Task<AuthResponseDto> RefreshTokenAsync(string refreshToken);
         Task<bool> LogoutAsync(string userId);
+        Task<AuthResponseDto> ConfirmEmailAsync(string userId, string token);
+        Task<bool> SendEmailConfirmationAsync(string email);
     }
 }

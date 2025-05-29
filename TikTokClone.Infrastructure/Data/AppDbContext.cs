@@ -66,6 +66,34 @@ namespace TikTokClone.Infrastructure.Data
                 entity.Property(u => u.IsVerified)
                     .IsRequired();
             });
+
+            builder.Entity<RefreshToken>(entity =>
+            {
+                entity.ToTable("RefreshTokens");
+                entity.HasKey(rf => rf.Id);
+
+                entity.Property(rf => rf.Token)
+                    .IsRequired()
+                    .HasMaxLength(256);
+
+                entity.Property(rf => rf.UserId)
+                    .IsRequired();
+
+                entity.Property(rf => rf.ExpiresAt)
+                    .IsRequired()
+                    .HasColumnType("datetime2");
+
+                entity.Property(rf => rf.CreatedAt)
+                    .IsRequired()
+                    .HasColumnType("datetime2");
+
+                entity.HasOne(rf => rf.User)
+                    .WithMany()
+                    .HasForeignKey(rf => rf.UserId)
+                    .OnDelete(DeleteBehavior.Cascade);
+
+                entity.HasIndex(rf => rf.Token).IsUnique();
+            });
         }
     }
 }
