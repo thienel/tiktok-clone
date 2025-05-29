@@ -1,12 +1,12 @@
 using System.ComponentModel.DataAnnotations;
 using System.Text.RegularExpressions;
 using Microsoft.AspNetCore.Identity;
+using TikTokClone.Domain.Event;
 
 namespace TikTokClone.Domain.Entities
 {
     public class User : IdentityUser
     {
-        // Domain-specific properties
         public string FirstName { get; private set; }
         public string LastName { get; private set; }
         public string? AvatarURL { get; private set; }
@@ -16,11 +16,9 @@ namespace TikTokClone.Domain.Entities
         public DateTime LastUpdatedAt { get; private set; }
         public DateTime? LastLoginAt { get; private set; }
 
-        // Domain events
         private readonly List<IDomainEvent> _domainEvents = new();
         public IReadOnlyCollection<IDomainEvent> DomainEvents => _domainEvents.AsReadOnly();
 
-        // Business rules
         private static readonly Regex _userNameRegex = new(@"^[a-z0-9._]{3,30}$", RegexOptions.Compiled);
         private static readonly Regex _emailRegex = new(@"^[^@\s]+@[^@\s]+\.[^@\s]+$", RegexOptions.Compiled);
 
@@ -28,7 +26,6 @@ namespace TikTokClone.Domain.Entities
         public const int MaxFirstNameLength = 50;
         public const int MaxLastNameLength = 50;
 
-        // Constructor for domain logic
         public User(string email, string firstName, string lastName, string? userName = null)
         {
             ValidateConstructorInputs(email, firstName, lastName);
@@ -43,11 +40,9 @@ namespace TikTokClone.Domain.Entities
             CreatedAt = DateTime.UtcNow;
             LastUpdatedAt = DateTime.UtcNow;
 
-            // Add domain event
             _domainEvents.Add(new UserCreatedEvent(this));
         }
 
-        // Parameterless constructor for EF Core
         private User() { }
 
         public string FullName => $"{FirstName} {LastName}";
@@ -116,7 +111,6 @@ namespace TikTokClone.Domain.Entities
         {
             var newAvatarUrl = string.IsNullOrWhiteSpace(avatarUrl) ? null : avatarUrl.Trim();
 
-            // Validate URL format if provided
             if (newAvatarUrl != null && !Uri.TryCreate(newAvatarUrl, UriKind.Absolute, out _))
                 throw new DomainException("Invalid avatar URL format.");
 
@@ -194,7 +188,6 @@ namespace TikTokClone.Domain.Entities
                    DateTime.UtcNow.Subtract(LastLoginAt.Value).TotalDays > 30;
         }
 
-        // Clear domain events (usually called after publishing)
         public void ClearDomainEvents()
         {
             _domainEvents.Clear();
@@ -234,53 +227,5 @@ namespace TikTokClone.Domain.Entities
                    email.Length <= 256 &&
                    _emailRegex.IsMatch(email);
         }
-    }
-
-    // Domain Events
-    public interface IDomainEvent
-    {
-        DateTime OccurredOn { get; }
-    }
-
-    public record UserCreatedEvent(User User) : IDomainEvent
-    {
-        public DateTime OccurredOn { get; } = DateTime.UtcNow;
-    }
-
-    public record UserNameChangedEvent(User User, string? OldUserName = null, string? NewUserName = null) : IDomainEvent
-    {
-        public DateTime OccurredOn { get; } = DateTime.UtcNow;
-    }
-
-    public record UserEmailConfirmedEvent(User User) : IDomainEvent
-    {
-        public DateTime OccurredOn { get; } = DateTime.UtcNow;
-    }
-
-    public record UserVerifiedEvent(User User) : IDomainEvent
-    {
-        public DateTime OccurredOn { get; } = DateTime.UtcNow;
-    }
-
-    public record UserUnverifiedEvent(User User) : IDomainEvent
-    {
-        public DateTime OccurredOn { get; } = DateTime.UtcNow;
-    }
-
-    public record UserAvatarChangedEvent(User User, string? NewAvatarUrl) : IDomainEvent
-    {
-        public DateTime OccurredOn { get; } = DateTime.UtcNow;
-    }
-
-    public record UserBioChangedEvent(User User, string? NewBio) : IDomainEvent
-    {
-        public DateTime OccurredOn { get; } = DateTime.UtcNow;
-    }
-
-    // Domain Exception
-    public class DomainException : Exception
-    {
-        public DomainException(string message) : base(message) { }
-        public DomainException(string message, Exception innerException) : base(message, innerException) { }
     }
 }
