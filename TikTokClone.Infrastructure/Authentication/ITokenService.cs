@@ -4,8 +4,8 @@ namespace TikTokClone.Infrastructure.Authentication
 {
     public interface ITokenService
     {
-        Task<string> GenerateTokenAsync(User user);
-        Task<string> GenerateRefreshTokenAsync();
+        string GenerateToken(User user);
+        string GenerateRefreshToken();
         bool ValidateToken(string token);
     }
 }
