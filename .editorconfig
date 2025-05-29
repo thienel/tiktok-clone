@@ -10,3 +10,6 @@ dotnet_style_qualification_for_property = false:suggestion
 dotnet_style_qualification_for_field = false:suggestion
 csharp_new_line_before_open_brace = all
 csharp_indent_case_contents = true
+
+# CS8618: Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
+dotnet_diagnostic.CS8618.severity = silent

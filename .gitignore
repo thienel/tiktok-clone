@@ -1,0 +1,68 @@
+# Build results
+[Bb]in/
+[Oo]bj/
+**/out/
+*.user
+*.suo
+*.cache
+*.pdb
+*.mdb
+*.log
+
+# VS Code
+.vscode/
+.history/
+
+# Rider
+.idea/
+
+# ASP.NET
+wwwroot/
+appsettings.*.json
+appsettings.Development.json
+secrets.json
+
+# Entity Framework
+*.dbmdl
+*.bak
+*.sql
+*.mdf
+*.ldf
+Migrations/
+
+# NPM/Yarn (nếu có frontend tích hợp trong API)
+node_modules/
+package-lock.json
+yarn.lock
+
+# .NET Core
+project.lock.json
+project.fragment.lock.json
+artifacts/
+
+# Resharper
+_ReSharper*/
+*.DotSettings.user
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Coverage & testing
+TestResults/
+coverage/
+*.coverage
+*.coveragexml
+
+# Other
+*.swp
+*.tmp
+*.nupkg
+*.vspscc
+*.vssscc
+
+# Local tool settings
+*.db
