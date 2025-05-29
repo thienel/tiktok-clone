@@ -1,7 +1,14 @@
+using System.Text;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.IdentityModel.Tokens;
+using TikTokClone.Application.Interfaces;
+using TikTokClone.Application.Services;
 using TikTokClone.Domain.Entities;
+using TikTokClone.Infrastructure.Authentication;
 using TikTokClone.Infrastructure.Data;
 
 namespace TikTokClone.Infrastructure
@@ -32,7 +39,36 @@ namespace TikTokClone.Infrastructure
                 options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(15);
                 options.Lockout.MaxFailedAccessAttempts = 5;
             })
-                .AddEntityFrameworkStores<AppDbContext>();
+                .AddEntityFrameworkStores<AppDbContext>()
+                .AddSignInManager()
+                .AddDefaultTokenProviders();
+
+            var jwtSettings = configuration.GetSection("Jwt");
+            services.Configure<JwtSettings>(jwtSettings);
+
+            var key = Encoding.UTF8.GetBytes(jwtSettings.Get<JwtSettings>()!.SecretKey);
+            services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+            .AddJwtBearer(options =>
+            {
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(key),
+                    ValidateIssuer = true,
+                    ValidIssuer = jwtSettings.Get<JwtSettings>()!.Issuer,
+                    ValidateAudience = true,
+                    ValidAudience = jwtSettings.Get<JwtSettings>()!.Audience,
+                    ValidateLifetime = true,
+                    ClockSkew = TimeSpan.Zero
+                };
+            });
+
+            services.AddScoped<ITokenService, TokenService>();
+            services.AddScoped<IAuthService, AuthService>();
 
             return services;
         }

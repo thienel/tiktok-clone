@@ -6,10 +6,6 @@ namespace TikTokClone.Infrastructure.Data
 {
     public class AppDbContext : IdentityDbContext<User>
     {
-#pragma warning disable CS0114
-        public DbSet<User> Users { get; set; }
-#pragma warning restore CS0114
-
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
         {
         }

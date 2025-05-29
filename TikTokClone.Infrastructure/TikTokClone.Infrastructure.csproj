@@ -2,6 +2,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\TikTokClone.Domain\TikTokClone.Domain.csproj" />
+    <ProjectReference Include="..\TikTokClone.Application\TikTokClone.Application.csproj" />
   </ItemGroup>
 
   <ItemGroup>
