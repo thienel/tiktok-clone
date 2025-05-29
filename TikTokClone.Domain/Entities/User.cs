@@ -1,4 +1,3 @@
-using System.ComponentModel.DataAnnotations;
 using System.Text.RegularExpressions;
 using Microsoft.AspNetCore.Identity;
 using TikTokClone.Domain.Event;
@@ -7,11 +6,11 @@ namespace TikTokClone.Domain.Entities
 {
     public class User : IdentityUser
     {
-        public string FirstName { get; private set; }
-        public string LastName { get; private set; }
+        public string Name { get; private set; }
         public string? AvatarURL { get; private set; }
         public bool IsVerified { get; private set; }
         public string? Bio { get; private set; }
+        public DateOnly BirthDate { get; init; }
         public DateTime CreatedAt { get; init; }
         public DateTime LastUpdatedAt { get; private set; }
         public DateTime? LastLoginAt { get; private set; }
@@ -19,33 +18,31 @@ namespace TikTokClone.Domain.Entities
         private readonly List<IDomainEvent> _domainEvents = new();
         public IReadOnlyCollection<IDomainEvent> DomainEvents => _domainEvents.AsReadOnly();
 
-        private static readonly Regex _userNameRegex = new(@"^[a-z0-9._]{3,30}$", RegexOptions.Compiled);
+        private static readonly Regex _userNameRegex = new(@"^[a-z0-9._]{2,24}$", RegexOptions.Compiled);
         private static readonly Regex _emailRegex = new(@"^[^@\s]+@[^@\s]+\.[^@\s]+$", RegexOptions.Compiled);
 
-        public const int MaxBioLength = 500;
-        public const int MaxFirstNameLength = 50;
-        public const int MaxLastNameLength = 50;
+        public const int MaxBioLength = 80;
+        public const int MaxNameLength = 50;
+        public const string BioDefaultValue = "No bio yet.";
+        public const int MinimumRequiredAge = 12;
 
-        public User(string email, string firstName, string lastName, string? userName = null)
+        public User(string email, string name, DateOnly birthDate, string userName)
         {
-            ValidateConstructorInputs(email, firstName, lastName);
+            ValidateConstructorInputs(email, name, birthDate, userName);
 
             Id = Guid.NewGuid().ToString();
             Email = email.Trim().ToLower();
-            UserName = userName ?? GenerateDefaultUserName(firstName, lastName);
-            FirstName = firstName.Trim();
-            LastName = lastName.Trim();
+            UserName = userName.Trim().ToLower();
+            Name = name.Trim().ToLower();
+            BirthDate = birthDate;
             EmailConfirmed = false;
             IsVerified = false;
+            Bio = BioDefaultValue;
             CreatedAt = DateTime.UtcNow;
             LastUpdatedAt = DateTime.UtcNow;
-
-            _domainEvents.Add(new UserCreatedEvent(this));
         }
 
         private User() { }
-
-        public string FullName => $"{FirstName} {LastName}";
 
         public bool ChangeUserName(string? userName)
         {
@@ -54,91 +51,58 @@ namespace TikTokClone.Domain.Entities
 
             userName = userName.ToLower().Trim();
 
-            if (!_userNameRegex.IsMatch(userName))
-                throw new DomainException("Username must be 3-30 characters and contain only lowercase letters, numbers, dots, and underscores.");
-
-            if (userName == UserName)
+            if (userName == UserName || !_userNameRegex.IsMatch(userName))
                 return false;
 
-            var oldUserName = UserName;
             UserName = userName;
             ChangeUpdateTime();
 
-            _domainEvents.Add(new UserNameChangedEvent(this, oldUserName, userName));
             return true;
         }
 
-        public bool ChangeName(string? firstName, string? lastName)
+        public bool ChangeName(string? name)
         {
-            bool isUpdated = false;
+            if (string.IsNullOrWhiteSpace(name))
+                return false;
 
-            if (!string.IsNullOrWhiteSpace(firstName))
-            {
-                var trimmedFirstName = firstName.Trim();
-                if (trimmedFirstName.Length > MaxFirstNameLength)
-                    throw new DomainException($"First name cannot exceed {MaxFirstNameLength} characters.");
+            name = name.Trim();
 
-                if (trimmedFirstName != FirstName)
-                {
-                    FirstName = trimmedFirstName;
-                    isUpdated = true;
-                }
-            }
+            if (name.Length > MaxNameLength || name == Name)
+                return false;
 
-            if (!string.IsNullOrWhiteSpace(lastName))
-            {
-                var trimmedLastName = lastName.Trim();
-                if (trimmedLastName.Length > MaxLastNameLength)
-                    throw new DomainException($"Last name cannot exceed {MaxLastNameLength} characters.");
-
-                if (trimmedLastName != LastName)
-                {
-                    LastName = trimmedLastName;
-                    isUpdated = true;
-                }
-            }
-
-            if (isUpdated)
-            {
-                ChangeUpdateTime();
-                _domainEvents.Add(new UserNameChangedEvent(this));
-            }
-
-            return isUpdated;
+            Name = name;
+            ChangeUpdateTime();
+            return true;
         }
 
         public bool ChangeAvatar(string? avatarUrl)
         {
-            var newAvatarUrl = string.IsNullOrWhiteSpace(avatarUrl) ? null : avatarUrl.Trim();
+            avatarUrl = string.IsNullOrWhiteSpace(avatarUrl) ? null : avatarUrl.Trim();
 
-            if (newAvatarUrl != null && !Uri.TryCreate(newAvatarUrl, UriKind.Absolute, out _))
+            if (avatarUrl != null && !Uri.TryCreate(avatarUrl, UriKind.Absolute, out _))
                 throw new DomainException("Invalid avatar URL format.");
 
-            if (newAvatarUrl != AvatarURL)
+            if (avatarUrl != AvatarURL)
             {
-                AvatarURL = newAvatarUrl;
+                AvatarURL = avatarUrl;
                 ChangeUpdateTime();
-                _domainEvents.Add(new UserAvatarChangedEvent(this, newAvatarUrl));
                 return true;
             }
+
             return false;
         }
 
         public bool ChangeBio(string? bio)
         {
-            var newBio = string.IsNullOrWhiteSpace(bio) ? null : bio.Trim();
+            bio = string.IsNullOrWhiteSpace(bio) ? null : bio.Trim();
 
-            if (newBio != null && newBio.Length > MaxBioLength)
-                throw new DomainException($"Bio cannot exceed {MaxBioLength} characters.");
+            if ((bio != null && bio.Length > MaxBioLength) || bio == Bio)
+                return false;
 
-            if (newBio != Bio)
-            {
-                Bio = newBio;
-                ChangeUpdateTime();
-                _domainEvents.Add(new UserBioChangedEvent(this, newBio));
-                return true;
-            }
-            return false;
+            Bio = bio;
+            ChangeUpdateTime();
+
+            return true;
         }
 
         public void ConfirmEmail()
@@ -147,7 +111,6 @@ namespace TikTokClone.Domain.Entities
             {
                 EmailConfirmed = true;
                 ChangeUpdateTime();
-                _domainEvents.Add(new UserEmailConfirmedEvent(this));
             }
         }
 
@@ -157,18 +120,12 @@ namespace TikTokClone.Domain.Entities
             ChangeUpdateTime();
         }
 
-        public bool CanChangePassword()
-        {
-            return EmailConfirmed;
-        }
-
         public void Verify()
         {
             if (!IsVerified)
             {
                 IsVerified = true;
                 ChangeUpdateTime();
-                _domainEvents.Add(new UserVerifiedEvent(this));
             }
         }
 
@@ -178,7 +135,6 @@ namespace TikTokClone.Domain.Entities
             {
                 IsVerified = false;
                 ChangeUpdateTime();
-                _domainEvents.Add(new UserUnverifiedEvent(this));
             }
         }
 
@@ -198,27 +154,23 @@ namespace TikTokClone.Domain.Entities
             LastUpdatedAt = DateTime.UtcNow;
         }
 
-        private void ValidateConstructorInputs(string email, string firstName, string lastName)
+        private void ValidateConstructorInputs(string email, string name, DateOnly birthDate, string userName)
         {
             if (string.IsNullOrWhiteSpace(email))
                 throw new ArgumentException("Email cannot be null or empty", nameof(email));
-            if (string.IsNullOrWhiteSpace(firstName))
-                throw new ArgumentException("FirstName cannot be null or empty", nameof(firstName));
-            if (string.IsNullOrWhiteSpace(lastName))
-                throw new ArgumentException("LastName cannot be null or empty", nameof(lastName));
+            if (string.IsNullOrWhiteSpace(name))
+                throw new ArgumentException("Name cannot be null or empty", nameof(name));
+            if (string.IsNullOrWhiteSpace(userName))
+                throw new ArgumentException("userName cannot be null or empty", nameof(userName));
 
             if (!IsValidEmail(email))
                 throw new DomainException("Invalid email format.");
-            if (firstName.Trim().Length > MaxFirstNameLength)
-                throw new DomainException($"First name cannot exceed {MaxFirstNameLength} characters.");
-            if (lastName.Trim().Length > MaxLastNameLength)
-                throw new DomainException($"Last name cannot exceed {MaxLastNameLength} characters.");
-        }
-
-        private string GenerateDefaultUserName(string firstName, string lastName)
-        {
-            var baseUserName = $"{firstName.ToLower()}.{lastName.ToLower()}";
-            return baseUserName;
+            if (name.Trim().Length > MaxNameLength)
+                throw new DomainException($"First name cannot exceed {MaxNameLength} characters.");
+            if (!_userNameRegex.IsMatch(userName.Trim().ToLower()))
+                throw new DomainException("Username must be 2-24 characters and contain only lowercase letters, numbers, dots, and underscores.");
+            if (!IsValidBirthDate(birthDate))
+                throw new DomainException("Birthdate indicates an age below the required minimum.");
         }
 
         public static bool IsValidEmail(string email)
@@ -226,6 +178,17 @@ namespace TikTokClone.Domain.Entities
             return !string.IsNullOrWhiteSpace(email) &&
                    email.Length <= 256 &&
                    _emailRegex.IsMatch(email);
+        }
+
+        public static bool IsValidBirthDate(DateOnly birthDate)
+        {
+            var today = DateOnly.FromDateTime(DateTime.UtcNow);
+            int age = today.Year - birthDate.Year;
+
+            if (birthDate > today.AddYears(-age))
+                age--;
+
+            return age >= MinimumRequiredAge;
         }
     }
 }

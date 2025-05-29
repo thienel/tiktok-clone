@@ -1,10 +1,6 @@
-
-using System.Text;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.IdentityModel.Tokens;
 using TikTokClone.Domain.Entities;
 using TikTokClone.Infrastructure.Data;
 
@@ -37,32 +33,6 @@ namespace TikTokClone.Infrastructure
                 options.Lockout.MaxFailedAccessAttempts = 5;
             })
                 .AddEntityFrameworkStores<AppDbContext>();
-
-            var jwtSettings = configuration.GetSection("Jwt");
-            var jwtSecretKey = jwtSettings["SecretKey"];
-
-            _ = services.AddAuthentication(options =>
-            {
-                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-            })
-                .AddJwtBearer(options =>
-                {
-#pragma warning disable CS8604
-                    options.TokenValidationParameters = new TokenValidationParameters
-                    {
-                        ValidateIssuer = true,
-                        ValidateAudience = true,
-                        ValidateLifetime = true,
-                        ValidateIssuerSigningKey = true,
-
-                        ValidIssuer = jwtSettings["Issuer"],
-                        ValidAudience = jwtSettings["Audience"],
-                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSecretKey)),
-                        ClockSkew = TimeSpan.Zero
-                    };
-#pragma warning restore CS8604
-                });
 
             return services;
         }

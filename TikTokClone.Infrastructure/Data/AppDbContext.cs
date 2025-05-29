@@ -1,14 +1,14 @@
-
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using TikTokClone.Domain.Entities;
 
 namespace TikTokClone.Infrastructure.Data
 {
     public class AppDbContext : IdentityDbContext<User>
     {
+#pragma warning disable CS0114
         public DbSet<User> Users { get; set; }
+#pragma warning restore CS0114
 
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
         {
@@ -20,30 +20,52 @@ namespace TikTokClone.Infrastructure.Data
 
             builder.Entity<User>(entity =>
             {
-                entity.Property(e => e.FirstName)
+                entity.ToTable("Users");
+
+                entity.HasIndex(u => u.UserName).IsUnique();
+                entity.HasIndex(u => u.Email).IsUnique();
+
+                entity.Ignore(u => u.DomainEvents);
+
+                entity.Property(u => u.Name)
                     .IsRequired()
-                    .HasMaxLength(50);
+                    .HasMaxLength(User.MaxNameLength);
 
-                entity.Property(e => e.LastName)
+                entity.Property(u => u.UserName)
                     .IsRequired()
-                    .HasMaxLength(50);
+                    .HasMaxLength(24);
 
-                entity.Property(e => e.Bio)
-                    .HasMaxLength(500);
+                entity.Property(u => u.Email)
+                    .IsRequired()
+                    .HasMaxLength(256);
 
-                entity.Property(e => e.AvatarURL)
-                .HasMaxLength(2048);
+                entity.Property(u => u.Bio)
+                    .HasMaxLength(User.MaxBioLength)
+                    .IsRequired(false);
 
-                entity.HasIndex(e => e.UserName)
-                .IsUnique();
+                entity.Property(u => u.AvatarURL)
+                    .HasMaxLength(2048)
+                    .IsRequired(false);
 
-                entity.HasIndex(e => e.Email)
-                .IsUnique();
+                entity.Property(u => u.BirthDate)
+                    .IsRequired()
+                    .HasColumnType("date");
 
-                entity.Ignore(e => e.DomainEvents);
+                entity.Property(u => u.CreatedAt)
+                    .IsRequired()
+                    .HasColumnType("datetime2");
+
+                entity.Property(u => u.LastUpdatedAt)
+                    .IsRequired()
+                    .HasColumnType("datetime2");
+
+                entity.Property(u => u.LastLoginAt)
+                    .IsRequired(false)
+                    .HasColumnType("datetime2");
+
+                entity.Property(u => u.IsVerified)
+                    .IsRequired();
             });
-
-            builder.Entity<User>().ToTable("Users");
         }
     }
 }
