@@ -1,6 +1,6 @@
 using TikTokClone.Domain.Entities;
 
-namespace TikTokClone.Infrastructure.Authentication
+namespace TikTokClone.Application.Interfaces.Services
 {
     public interface ITokenService
     {

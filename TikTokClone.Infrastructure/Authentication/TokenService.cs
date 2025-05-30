@@ -2,10 +2,10 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using TikTokClone.Application.Interfaces.Services;
 using TikTokClone.Domain.Entities;
 
 namespace TikTokClone.Infrastructure.Authentication

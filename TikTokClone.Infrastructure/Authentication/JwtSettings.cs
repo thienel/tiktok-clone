@@ -1,11 +1,18 @@
+
+using TikTokClone.Application.Interfaces.Settings;
+
 namespace TikTokClone.Infrastructure.Authentication
 {
-    public class JwtSettings
+    public class JwtSettings : IJwtSettings
     {
-        public string SecretKey { get; set; }
-        public string Issuer { get; set; }
-        public string Audience { get; set; }
+        public string Issuer { get; set; } = string.Empty;
+
+        public string Audience { get; set; } = string.Empty;
+
+        public string SecretKey { get; set; } = string.Empty;
+
         public int ExpirationInMinutes { get; set; }
+
         public int RefreshTokenExpirationInDays { get; set; }
     }
 }

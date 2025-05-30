@@ -1,6 +1,6 @@
 using TikTokClone.Application.DTOs;
 
-namespace TikTokClone.Application.Interfaces
+namespace TikTokClone.Application.Interfaces.Services
 {
     public interface IAuthService
     {

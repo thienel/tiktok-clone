@@ -1,5 +1,5 @@
 
-using TikTokClone.Application.Interfaces;
+using TikTokClone.Application.Interfaces.Services;
 
 namespace TikTokClone.Application.Services
 {

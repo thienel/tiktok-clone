@@ -5,9 +5,14 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
+using TikTokClone.Application.Interfaces.Repositories;
+using TikTokClone.Application.Interfaces.Services;
+using TikTokClone.Application.Interfaces.Settings;
+using TikTokClone.Application.Services;
 using TikTokClone.Domain.Entities;
 using TikTokClone.Infrastructure.Authentication;
 using TikTokClone.Infrastructure.Data;
+using TikTokClone.Infrastructure.Repositories;
 
 namespace TikTokClone.Infrastructure
 {
@@ -41,12 +46,11 @@ namespace TikTokClone.Infrastructure
                 .AddSignInManager()
                 .AddDefaultTokenProviders();
 
-            var jwtSettings = configuration.GetSection("Jwt");
-            services.Configure<JwtSettings>(jwtSettings);
+            var jwtSettings = new JwtSettings();
+            configuration.GetSection("Jwt").Bind(jwtSettings);
+            services.AddSingleton<IJwtSettings>(jwtSettings);
 
-            services.AddSingleton(jwtSettings.Get<JwtSettings>()!);
-
-            var key = Encoding.UTF8.GetBytes(jwtSettings.Get<JwtSettings>()!.SecretKey);
+            var key = Encoding.UTF8.GetBytes(jwtSettings.SecretKey);
             services.AddAuthentication(options =>
             {
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -59,14 +63,18 @@ namespace TikTokClone.Infrastructure
                     ValidateIssuerSigningKey = true,
                     IssuerSigningKey = new SymmetricSecurityKey(key),
                     ValidateIssuer = true,
-                    ValidIssuer = jwtSettings.Get<JwtSettings>()!.Issuer,
+                    ValidIssuer = jwtSettings.Issuer,
                     ValidateAudience = true,
-                    ValidAudience = jwtSettings.Get<JwtSettings>()!.Audience,
+                    ValidAudience = jwtSettings.Audience,
                     ValidateLifetime = true,
                     ClockSkew = TimeSpan.Zero
                 };
             });
 
+            services.AddScoped<ITokenService, TokenService>();
+            services.AddScoped<IAuthService, AuthService>();
+            services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
             return services;
         }
     }

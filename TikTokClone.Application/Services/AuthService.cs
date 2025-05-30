@@ -1,9 +1,9 @@
 using Microsoft.AspNetCore.Identity;
 using TikTokClone.Application.DTOs;
-using TikTokClone.Application.Interfaces;
+using TikTokClone.Application.Interfaces.Repositories;
+using TikTokClone.Application.Interfaces.Services;
+using TikTokClone.Application.Interfaces.Settings;
 using TikTokClone.Domain.Entities;
-using TikTokClone.Infrastructure.Authentication;
-using TikTokClone.Infrastructure.Data;
 
 namespace TikTokClone.Application.Services
 {
@@ -12,21 +12,21 @@ namespace TikTokClone.Application.Services
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signinManager;
         private readonly ITokenService _tokenService;
-        private readonly AppDbContext _context;
-        private readonly JwtSettings _jwtSettings;
+        private readonly IRefreshTokenRepository _refreshTokenRepo;
+        private readonly IJwtSettings _jwtSettings;
 
         public AuthService(
             UserManager<User> userManager,
             SignInManager<User> signinManager,
             ITokenService tokenService,
-            AppDbContext context,
-            JwtSettings jwtSettings
+            IRefreshTokenRepository refreshTokenRepo,
+            IJwtSettings jwtSettings
         )
         {
             _userManager = userManager;
             _signinManager = signinManager;
             _tokenService = tokenService;
-            _context = context;
+            _refreshTokenRepo = refreshTokenRepo;
             _jwtSettings = jwtSettings;
         }
         public async Task<AuthResponseDto> LoginAsync(LoginRequestDto request)
@@ -91,8 +91,8 @@ namespace TikTokClone.Application.Services
                 CreatedAt = DateTime.UtcNow
             };
 
-            _context.RefreshTokens.Add(refreshTokenEntity);
-            await _context.SaveChangesAsync();
+            await _refreshTokenRepo.AddAsync(refreshTokenEntity);
+            await _refreshTokenRepo.SaveChangesAsync();
 
             return new AuthResponseDto
             {

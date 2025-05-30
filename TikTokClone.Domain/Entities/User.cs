@@ -14,6 +14,7 @@ namespace TikTokClone.Domain.Entities
         public DateTime CreatedAt { get; init; }
         public DateTime LastUpdatedAt { get; private set; }
         public DateTime? LastLoginAt { get; private set; }
+        public virtual ICollection<RefreshToken> RefreshTokens { get; set; } = new List<RefreshToken>();
 
         private readonly List<IDomainEvent> _domainEvents = new();
         public IReadOnlyCollection<IDomainEvent> DomainEvents => _domainEvents.AsReadOnly();
