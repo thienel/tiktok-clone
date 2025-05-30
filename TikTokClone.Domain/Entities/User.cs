@@ -117,7 +117,6 @@ namespace TikTokClone.Domain.Entities
         public void RecordLogin()
         {
             LastLoginAt = DateTime.UtcNow;
-            ChangeUpdateTime();
         }
 
         public void Verify()

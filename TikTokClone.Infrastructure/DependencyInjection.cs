@@ -5,8 +5,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
-using TikTokClone.Application.Interfaces;
-using TikTokClone.Application.Services;
 using TikTokClone.Domain.Entities;
 using TikTokClone.Infrastructure.Authentication;
 using TikTokClone.Infrastructure.Data;
@@ -46,6 +44,8 @@ namespace TikTokClone.Infrastructure
             var jwtSettings = configuration.GetSection("Jwt");
             services.Configure<JwtSettings>(jwtSettings);
 
+            services.AddSingleton(jwtSettings.Get<JwtSettings>()!);
+
             var key = Encoding.UTF8.GetBytes(jwtSettings.Get<JwtSettings>()!.SecretKey);
             services.AddAuthentication(options =>
             {
@@ -66,9 +66,6 @@ namespace TikTokClone.Infrastructure
                     ClockSkew = TimeSpan.Zero
                 };
             });
-
-            services.AddScoped<ITokenService, TokenService>();
-            services.AddScoped<IAuthService, AuthService>();
 
             return services;
         }
