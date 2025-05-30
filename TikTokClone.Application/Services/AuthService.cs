@@ -29,6 +29,7 @@ namespace TikTokClone.Application.Services
             _refreshTokenRepo = refreshTokenRepo;
             _jwtSettings = jwtSettings;
         }
+
         public async Task<AuthResponseDto> LoginAsync(LoginRequestDto request)
         {
             var user = await _userManager.FindByEmailAsync(request.UsernameOrEmail) ??
@@ -39,7 +40,7 @@ namespace TikTokClone.Application.Services
                 return new AuthResponseDto
                 {
                     IsSuccess = false,
-                    Message = "Username or password is not correct",
+                    Message = "Username or email is not correct",
                     ErrorCode = "INVALID_CREDENTIALS"
                 };
             }
@@ -54,7 +55,7 @@ namespace TikTokClone.Application.Services
                     return new AuthResponseDto
                     {
                         IsSuccess = false,
-                        Message = "You account is logging failed too much time",
+                        Message = "Your account has been locked due to too many failed login attempts",
                         ErrorCode = "ACCOUNT_LOCKED"
                     };
                 }
@@ -72,7 +73,7 @@ namespace TikTokClone.Application.Services
                 return new AuthResponseDto
                 {
                     IsSuccess = false,
-                    Message = "Email is not confirmed",
+                    Message = "Your email address has not been confirmed",
                     ErrorCode = "EMAIL_NOT_CONFIRMED"
                 };
             }
@@ -85,7 +86,7 @@ namespace TikTokClone.Application.Services
 
             var refreshTokenEntity = new RefreshToken
             {
-                Token = token,
+                Token = refreshToken,
                 UserId = user.Id,
                 ExpiresAt = DateTime.UtcNow.AddDays(_jwtSettings.RefreshTokenExpirationInDays),
                 CreatedAt = DateTime.UtcNow
@@ -97,7 +98,7 @@ namespace TikTokClone.Application.Services
             return new AuthResponseDto
             {
                 IsSuccess = true,
-                Message = "Login successfully",
+                Message = "Logged in successfully",
                 Token = token,
                 RefreshToken = refreshToken,
                 ExpiresAt = DateTime.UtcNow
@@ -105,9 +106,67 @@ namespace TikTokClone.Application.Services
             };
         }
 
-        public Task<AuthResponseDto> RegisterAsync(RegisterRequestDto request)
+        public async Task<AuthResponseDto> RegisterAsync(RegisterRequestDto request)
         {
-            throw new NotImplementedException();
+            var existingUser = await _userManager.FindByEmailAsync(request.Email);
+            if (existingUser != null)
+            {
+                return new AuthResponseDto
+                {
+                    IsSuccess = false,
+                    Message = "This email is already in use",
+                    ErrorCode = "EMAIL_USED"
+                };
+            }
+
+            try
+            {
+                var userName = await GenerateUniqueUsernameAsync();
+                var user = new User(request.Email, userName, request.BirthDate, userName);
+
+                var result = await _userManager.CreateAsync(user, request.Password);
+                if (!result.Succeeded)
+                {
+                    return new AuthResponseDto
+                    {
+                        IsSuccess = false,
+                        Message = string.Join(", ", result.Errors.Select(e => e.Description))
+                    };
+                }
+
+                var emailToken = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+
+                /**
+
+                    Send Email
+
+                **/
+
+                return new AuthResponseDto
+                {
+                    IsSuccess = true,
+                    Message = "Registered successfully"
+                };
+            }
+            catch (Exception)
+            {
+                return new AuthResponseDto
+                {
+                    IsSuccess = false,
+                    Message = "An unexpected error occurred"
+                };
+            }
+        }
+
+        private async Task<string> GenerateUniqueUsernameAsync()
+        {
+            var userName = "user" + Guid.NewGuid().ToString("N").Substring(0, 12);
+            if ((await _userManager.FindByNameAsync(userName)) == null)
+            {
+                return userName;
+            }
+
+            return await GenerateUniqueUsernameAsync();
         }
 
         public Task<AuthResponseDto> RefreshTokenAsync(string refreshToken)
