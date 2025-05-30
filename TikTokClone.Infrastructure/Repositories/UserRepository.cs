@@ -1,33 +1,39 @@
+using Microsoft.EntityFrameworkCore;
 using TikTokClone.Application.Interfaces.Repositories;
 using TikTokClone.Domain.Entities;
+using TikTokClone.Infrastructure.Data;
 
 namespace TikTokClone.Infrastructure.Repositories
 {
     public class UserRepository : BaseRepository<User>, IUserRepository
     {
-        public Task<User?> GetByEmailAsync(string email)
+        public UserRepository(AppDbContext context) : base(context)
         {
-            throw new NotImplementedException();
         }
-        public Task<User?> GetByUserNameAsync(string userName)
+        public async Task<User?> GetByEmailAsync(string email)
         {
-            throw new NotImplementedException();
+            return await _dbSet.FirstOrDefaultAsync(u => u.Email == email);
         }
-        public Task<bool> IsEmailExistsAsync(string email)
+        public async Task<User?> GetByUserNameAsync(string userName)
         {
-            throw new NotImplementedException();
+            return await _dbSet.FirstOrDefaultAsync(u => u.UserName == userName);
         }
-        public Task<bool> IsUserNameExistsAsync(string userName)
+        public async Task<bool> IsEmailExistsAsync(string email)
         {
-            throw new NotImplementedException();
+            return await _dbSet.AnyAsync(u => u.Email == email);
         }
-        public Task<IEnumerable<User>> GetVerifiedUsersAsync()
+        public async Task<bool> IsUserNameExistsAsync(string userName)
         {
-            throw new NotImplementedException();
+            return await _dbSet.AnyAsync(u => u.UserName == userName);
         }
-        public Task<User?> GetWithRefreshTokensAsync(string userId)
+        public async Task<IEnumerable<User>> GetVerifiedUsersAsync()
         {
-            throw new NotImplementedException();
+            return await _dbSet.Where(u => u.IsVerified).ToListAsync();
+        }
+        public async Task<User?> GetWithRefreshTokensAsync(string userId)
+        {
+            return await _dbSet.Include(u => u.RefreshTokens)
+                .FirstOrDefaultAsync(u => u.Id == userId);
         }
     }
 }

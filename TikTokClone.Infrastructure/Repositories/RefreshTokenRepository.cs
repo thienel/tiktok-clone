@@ -1,29 +1,55 @@
+using System.Security.Cryptography;
+using Microsoft.EntityFrameworkCore;
 using TikTokClone.Application.Interfaces.Repositories;
 using TikTokClone.Domain.Entities;
+using TikTokClone.Infrastructure.Data;
 
 namespace TikTokClone.Infrastructure.Repositories
 {
     public class RefreshTokenRepository : BaseRepository<RefreshToken>, IRefreshTokenRepository
     {
-        public Task<RefreshToken?> GetByTokenAsync(string token)
+        public RefreshTokenRepository(AppDbContext context) : base(context)
         {
-            throw new NotImplementedException();
         }
-        public Task<IEnumerable<RefreshToken>> GetByUserIdAsync(string userId)
+
+        public async Task<RefreshToken?> GetByTokenAsync(string token)
         {
-            throw new NotImplementedException();
+            return await _dbSet.Include(rt => rt.User)
+                .FirstOrDefaultAsync(rt => rt.Token == token);
         }
-        public Task<IEnumerable<RefreshToken>> GetExpiredTokensAsync()
+
+        public async Task<IEnumerable<RefreshToken>> GetByUserIdAsync(string userId)
         {
-            throw new NotImplementedException();
+            return await _dbSet.Include(rt => rt.User)
+                .Where(rt => rt.UserId == userId)
+                .OrderByDescending(rt => rt.CreatedAt).ToListAsync();
         }
-        public Task RemoveExpiredTokensAsync()
+
+        public async Task<IEnumerable<RefreshToken>> GetExpiredTokensAsync()
         {
-            throw new NotImplementedException();
+            return await _dbSet
+                .Where(rt => rt.ExpiresAt < DateTime.UtcNow)
+                .ToListAsync();
         }
-        public Task RemoveUserTokensAsync(string userId)
+
+        public async Task RemoveExpiredTokensAsync()
         {
-            throw new NotImplementedException();
+            var expiredTokens = await GetExpiredTokensAsync();
+            if (expiredTokens.Any())
+            {
+                _dbSet.RemoveRange(expiredTokens);
+                await _context.SaveChangesAsync();
+            }
+        }
+
+        public async Task RemoveUserTokensAsync(string userId)
+        {
+            var userTokens = await _dbSet.Where(rt => rt.UserId == userId).ToListAsync();
+            if (userTokens.Any())
+            {
+                _dbSet.RemoveRange(userTokens);
+                await _context.SaveChangesAsync();
+            }
         }
     }
 }

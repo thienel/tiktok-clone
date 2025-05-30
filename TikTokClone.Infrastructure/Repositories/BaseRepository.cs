@@ -1,62 +1,88 @@
 using System.Linq.Expressions;
+using Microsoft.EntityFrameworkCore;
 using TikTokClone.Application.Interfaces.Repositories;
+using TikTokClone.Infrastructure.Data;
 
 namespace TikTokClone.Infrastructure.Repositories
 {
     public class BaseRepository<TEntity> : IBaseRepository<TEntity> where TEntity : class
     {
-        public Task<TEntity?> GetByIdAsync(object id)
+        protected readonly AppDbContext _context;
+        protected DbSet<TEntity> _dbSet;
+
+        public BaseRepository(AppDbContext context)
         {
-            throw new NotImplementedException();
-        }
-        public Task<TEntity?> GetFirstOrDefaultAsync(Expression<Func<TEntity, bool>> predicate)
-        {
-            throw new NotImplementedException();
-        }
-        public Task<IEnumerable<TEntity>> GetAllAsync()
-        {
-            throw new NotImplementedException();
-        }
-        public Task<IEnumerable<TEntity>> GetManyAsync(Expression<Func<TEntity, bool>> predicate)
-        {
-            throw new NotImplementedException();
-        }
-        public Task<bool> ExistsAsync(Expression<Func<TEntity, bool>> predicate)
-        {
-            throw new NotImplementedException();
-        }
-        public Task<int> CountAsync(Expression<Func<TEntity, bool>>? predicate = null)
-        {
-            throw new NotImplementedException();
+            _context = context;
+            _dbSet = _context.Set<TEntity>();
         }
 
-        public Task<TEntity> AddAsync(TEntity entity)
+        public virtual async Task<TEntity?> GetByIdAsync(object id)
         {
-            throw new NotImplementedException();
+            return await _dbSet.FindAsync(id);
         }
-        public Task<IEnumerable<TEntity>> AddRangeAsync(IEnumerable<TEntity> entities)
+
+        public virtual async Task<TEntity?> GetFirstOrDefaultAsync(Expression<Func<TEntity, bool>> predicate)
         {
-            throw new NotImplementedException();
+            return await _dbSet.FirstOrDefaultAsync(predicate);
         }
-        public void Update(TEntity entity)
+
+        public virtual async Task<IEnumerable<TEntity>> GetAllAsync()
         {
-            throw new NotImplementedException();
+            return await _dbSet.ToListAsync();
         }
-        public void UpdateRange(IEnumerable<TEntity> entities)
+
+        public virtual async Task<IEnumerable<TEntity>> GetManyAsync(Expression<Func<TEntity, bool>> predicate)
         {
-            throw new NotImplementedException();
+            return await _dbSet.Where(predicate).ToListAsync();
         }
-        public void Remove(TEntity entity)
+
+        public virtual async Task<bool> ExistsAsync(Expression<Func<TEntity, bool>> predicate)
         {
-            throw new NotImplementedException();
+            return await _dbSet.AnyAsync(predicate);
         }
-        public void RemoveRange(IEnumerable<TEntity> entities)
+
+        public virtual async Task<int> CountAsync(Expression<Func<TEntity, bool>>? predicate = null)
         {
-            throw new NotImplementedException();
+            return predicate == null ?
+                await _dbSet.CountAsync() :
+                await _dbSet.CountAsync(predicate);
         }
-        public Task<int> SaveChangesAsync()
+
+        public virtual async Task<TEntity> AddAsync(TEntity entity)
         {
-            throw new NotImplementedException();
+            await _dbSet.AddAsync(entity);
+            return entity;
+        }
+
+        public virtual async Task<IEnumerable<TEntity>> AddRangeAsync(IEnumerable<TEntity> entities)
+        {
+            await _dbSet.AddRangeAsync(entities);
+            return entities;
+        }
+
+        public virtual void Update(TEntity entity)
+        {
+            _dbSet.Update(entity);
+        }
+
+        public virtual void UpdateRange(IEnumerable<TEntity> entities)
+        {
+            _dbSet.UpdateRange(entities);
+        }
+
+        public virtual void Remove(TEntity entity)
+        {
+            _dbSet.Remove(entity);
+        }
+
+        public virtual void RemoveRange(IEnumerable<TEntity> entities)
+        {
+            _dbSet.RemoveRange(entities);
+        }
+
+        public virtual async Task<int> SaveChangesAsync()
+        {
+            return await _context.SaveChangesAsync();
         }
     }
 }
