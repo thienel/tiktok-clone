@@ -1,39 +1,114 @@
-using TikTokClone.Domain.Entities;
 
 namespace TikTokClone.Domain.Event
 {
-    public record UserCreatedEvent(User User) : IDomainEvent
+
+    public class UserCreatedEvent : DomainEvent
     {
-        public DateTime OccurredOn { get; } = DateTime.UtcNow;
+        public string UserId { get; }
+        public string Email { get; }
+        public string UserName { get; }
+        public string Name { get; }
+        public DateOnly BirthDate { get; }
+
+        public UserCreatedEvent(string userId, string email, string userName, string name, DateOnly birthDate)
+        {
+            UserId = userId;
+            Email = email;
+            UserName = userName;
+            Name = name;
+            BirthDate = birthDate;
+        }
     }
 
-    public record UserNameChangedEvent(User User, string? OldUserName = null, string? NewUserName = null) : IDomainEvent
+    public class UserEmailConfirmedEvent : DomainEvent
     {
-        public DateTime OccurredOn { get; } = DateTime.UtcNow;
+        public string UserId { get; }
+        public string Email { get; }
+
+        public UserEmailConfirmedEvent(string userId, string email)
+        {
+            UserId = userId;
+            Email = email;
+        }
     }
 
-    public record UserEmailConfirmedEvent(User User) : IDomainEvent
+    public class UserProfileUpdatedEvent : DomainEvent
     {
-        public DateTime OccurredOn { get; } = DateTime.UtcNow;
+        public string UserId { get; }
+        public string? PropertyName { get; }
+        public object? OldValue { get; }
+        public object? NewValue { get; }
+
+        public UserProfileUpdatedEvent(string userId, string? propertyName, object? oldValue, object? newValue)
+        {
+            UserId = userId;
+            PropertyName = propertyName;
+            OldValue = oldValue;
+            NewValue = newValue;
+        }
     }
 
-    public record UserVerifiedEvent(User User) : IDomainEvent
+    public class UserVerifiedEvent : DomainEvent
     {
-        public DateTime OccurredOn { get; } = DateTime.UtcNow;
+        public string UserId { get; }
+        public string UserName { get; }
+
+        public UserVerifiedEvent(string userId, string userName)
+        {
+            UserId = userId;
+            UserName = userName;
+        }
     }
 
-    public record UserUnverifiedEvent(User User) : IDomainEvent
+    public class UserUnverifiedEvent : DomainEvent
     {
-        public DateTime OccurredOn { get; } = DateTime.UtcNow;
+        public string UserId { get; }
+        public string UserName { get; }
+
+        public UserUnverifiedEvent(string userId, string userName)
+        {
+            UserId = userId;
+            UserName = userName;
+        }
     }
 
-    public record UserAvatarChangedEvent(User User, string? NewAvatarUrl) : IDomainEvent
+    public class UserLoginRecordedEvent : DomainEvent
     {
-        public DateTime OccurredOn { get; } = DateTime.UtcNow;
+        public string UserId { get; }
+        public DateTime LoginTime { get; }
+
+        public UserLoginRecordedEvent(string userId, DateTime loginTime)
+        {
+            UserId = userId;
+            LoginTime = loginTime;
+        }
     }
 
-    public record UserBioChangedEvent(User User, string? NewBio) : IDomainEvent
+    public class UserUsernameChangedEvent : DomainEvent
     {
-        public DateTime OccurredOn { get; } = DateTime.UtcNow;
+        public string UserId { get; }
+        public string OldUsername { get; }
+        public string NewUsername { get; }
+
+        public UserUsernameChangedEvent(string userId, string oldUsername, string newUsername)
+        {
+            UserId = userId;
+            OldUsername = oldUsername;
+            NewUsername = newUsername;
+        }
+    }
+
+    public class UserAvatarChangedEvent : DomainEvent
+    {
+        public string UserId { get; }
+        public string? OldAvatarUrl { get; }
+        public string? NewAvatarUrl { get; }
+
+        public UserAvatarChangedEvent(string userId, string? oldAvatarUrl, string? newAvatarUrl)
+        {
+            UserId = userId;
+            OldAvatarUrl = oldAvatarUrl;
+            NewAvatarUrl = newAvatarUrl;
+        }
     }
 }

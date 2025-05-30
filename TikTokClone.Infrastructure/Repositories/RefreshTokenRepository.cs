@@ -51,5 +51,12 @@ namespace TikTokClone.Infrastructure.Repositories
                 await _context.SaveChangesAsync();
             }
         }
+
+        public async Task<IEnumerable<RefreshToken>> GetActiveByUserIdAsync(string userId)
+        {
+            return await _dbSet
+                .Where(rt => rt.UserId == userId && rt.RevokedAt == null && rt.ExpiresAt > DateTime.UtcNow)
+                .ToListAsync();
+        }
     }
 }

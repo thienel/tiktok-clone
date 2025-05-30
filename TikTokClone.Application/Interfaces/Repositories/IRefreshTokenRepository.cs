@@ -9,5 +9,6 @@ namespace TikTokClone.Application.Interfaces.Repositories
         Task<IEnumerable<RefreshToken>> GetExpiredTokensAsync();
         Task RemoveExpiredTokensAsync();
         Task RemoveUserTokensAsync(string userId);
+        Task<IEnumerable<RefreshToken>> GetActiveByUserIdAsync(string userId);
     }
 }

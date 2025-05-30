@@ -1,6 +1,7 @@
 using System.Text.RegularExpressions;
 using Microsoft.AspNetCore.Identity;
 using TikTokClone.Domain.Event;
+using TikTokClone.Domain.Exceptions;
 
 namespace TikTokClone.Domain.Entities
 {
@@ -34,13 +35,15 @@ namespace TikTokClone.Domain.Entities
             Id = Guid.NewGuid().ToString();
             Email = email.Trim().ToLower();
             UserName = userName.Trim().ToLower();
-            Name = name.Trim().ToLower();
+            Name = name.Trim();
             BirthDate = birthDate;
             EmailConfirmed = false;
             IsVerified = false;
             Bio = BioDefaultValue;
             CreatedAt = DateTime.UtcNow;
             LastUpdatedAt = DateTime.UtcNow;
+
+            _domainEvents.Add(new UserCreatedEvent(Id, Email, UserName, Name, BirthDate));
         }
 
         private User() { }
@@ -55,8 +58,11 @@ namespace TikTokClone.Domain.Entities
             if (userName == UserName || !_userNameRegex.IsMatch(userName))
                 return false;
 
+            var oldUsername = UserName;
             UserName = userName;
             ChangeUpdateTime();
+
+            _domainEvents.Add(new UserUsernameChangedEvent(Id, oldUsername!, UserName));
 
             return true;
         }
@@ -68,11 +74,18 @@ namespace TikTokClone.Domain.Entities
 
             name = name.Trim();
 
-            if (name.Length > MaxNameLength || name == Name)
+            if (name.Length > MaxNameLength)
+                throw new InvalidNameLengthException(MaxNameLength);
+
+            if (name == Name)
                 return false;
 
+            var oldName = Name;
             Name = name;
             ChangeUpdateTime();
+
+            _domainEvents.Add(new UserProfileUpdatedEvent(Id, nameof(Name), oldName, Name));
+
             return true;
         }
 
@@ -81,12 +94,16 @@ namespace TikTokClone.Domain.Entities
             avatarUrl = string.IsNullOrWhiteSpace(avatarUrl) ? null : avatarUrl.Trim();
 
             if (avatarUrl != null && !Uri.TryCreate(avatarUrl, UriKind.Absolute, out _))
-                throw new DomainException("Invalid avatar URL format.");
+                throw new InvalidAvatarUrlException();
 
             if (avatarUrl != AvatarURL)
             {
+                var oldAvatarUrl = AvatarURL;
                 AvatarURL = avatarUrl;
                 ChangeUpdateTime();
+
+                _domainEvents.Add(new UserAvatarChangedEvent(Id, oldAvatarUrl, AvatarURL));
+
                 return true;
             }
 
@@ -97,11 +114,17 @@ namespace TikTokClone.Domain.Entities
         {
             bio = string.IsNullOrWhiteSpace(bio) ? null : bio.Trim();
 
-            if ((bio != null && bio.Length > MaxBioLength) || bio == Bio)
+            if (bio != null && bio.Length > MaxBioLength)
+                throw new InvalidBioLengthException(MaxBioLength);
+
+            if (bio == Bio)
                 return false;
 
+            var oldBio = Bio;
             Bio = bio;
             ChangeUpdateTime();
+
+            _domainEvents.Add(new UserProfileUpdatedEvent(Id, nameof(Bio), oldBio, Bio));
 
             return true;
         }
@@ -112,12 +135,16 @@ namespace TikTokClone.Domain.Entities
             {
                 EmailConfirmed = true;
                 ChangeUpdateTime();
+
+                _domainEvents.Add(new UserEmailConfirmedEvent(Id, Email!));
             }
         }
 
         public void RecordLogin()
         {
             LastLoginAt = DateTime.UtcNow;
+
+            _domainEvents.Add(new UserLoginRecordedEvent(Id, LastLoginAt.Value));
         }
 
         public void Verify()
@@ -126,6 +153,8 @@ namespace TikTokClone.Domain.Entities
             {
                 IsVerified = true;
                 ChangeUpdateTime();
+
+                _domainEvents.Add(new UserVerifiedEvent(Id, UserName!));
             }
         }
 
@@ -135,6 +164,8 @@ namespace TikTokClone.Domain.Entities
             {
                 IsVerified = false;
                 ChangeUpdateTime();
+
+                _domainEvents.Add(new UserUnverifiedEvent(Id, UserName!));
             }
         }
 
@@ -157,20 +188,20 @@ namespace TikTokClone.Domain.Entities
         private void ValidateConstructorInputs(string email, string name, DateOnly birthDate, string userName)
         {
             if (string.IsNullOrWhiteSpace(email))
-                throw new ArgumentException("Email cannot be null or empty", nameof(email));
+                throw new UserArgumentNullException(nameof(email));
             if (string.IsNullOrWhiteSpace(name))
-                throw new ArgumentException("Name cannot be null or empty", nameof(name));
+                throw new UserArgumentNullException(nameof(name));
             if (string.IsNullOrWhiteSpace(userName))
-                throw new ArgumentException("userName cannot be null or empty", nameof(userName));
+                throw new UserArgumentNullException(nameof(userName));
 
             if (!IsValidEmail(email))
-                throw new DomainException("Invalid email format.");
+                throw new InvalidEmailFormatException();
             if (name.Trim().Length > MaxNameLength)
-                throw new DomainException($"First name cannot exceed {MaxNameLength} characters.");
+                throw new InvalidNameLengthException(MaxNameLength);
             if (!_userNameRegex.IsMatch(userName.Trim().ToLower()))
-                throw new DomainException("Username must be 2-24 characters and contain only lowercase letters, numbers, dots, and underscores.");
+                throw new InvalidUsernameFormatException();
             if (!IsValidBirthDate(birthDate))
-                throw new DomainException("Birthdate indicates an age below the required minimum.");
+                throw new InvalidBirthDateException(MinimumRequiredAge);
         }
 
         public static bool IsValidEmail(string email)
