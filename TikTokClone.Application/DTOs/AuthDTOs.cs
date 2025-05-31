@@ -1,3 +1,5 @@
+using TikTokClone.Domain.Entities;
+
 namespace TikTokClone.Application.DTOs
 {
     public class LoginRequestDto
@@ -33,5 +35,10 @@ namespace TikTokClone.Application.DTOs
     public class RefreshTokenRequestDto
     {
         public string RefreshToken { get; set; } = string.Empty;
+    }
+
+    public class SendVerificationCode
+    {
+        public string Email { get; set; } = string.Empty;
     }
 }

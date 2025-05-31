@@ -300,16 +300,30 @@ namespace TikTokClone.Application.Services
                 };
             }
         }
-        public async Task<bool> LogoutAsync(string userId)
+        public async Task<AuthResponseDto> LogoutAsync(string userId)
         {
             try
             {
                 if (string.IsNullOrWhiteSpace(userId))
-                    return false;
+                {
+                    return new AuthResponseDto
+                    {
+                        IsSuccess = false,
+                        Message = "User id is not valid",
+                        ErrorCode = ErrorCodes.VALIDATION_ERROR
+                    };
+                }
 
                 var user = await _userManager.FindByIdAsync(userId);
                 if (user == null)
-                    return false;
+                {
+                    return new AuthResponseDto
+                    {
+                        IsSuccess = false,
+                        Message = "User not found",
+                        ErrorCode = ErrorCodes.USER_NOT_FOUND
+                    };
+                }
 
                 var activeTokens = await _refreshTokenRepo.GetActiveByUserIdAsync(userId);
                 foreach (var token in activeTokens)
@@ -319,11 +333,20 @@ namespace TikTokClone.Application.Services
                 }
 
                 await _refreshTokenRepo.SaveChangesAsync();
-                return true;
+                return new AuthResponseDto
+                {
+                    IsSuccess = true,
+                    Message = "Logged out successfully",
+                };
             }
             catch
             {
-                return false;
+                return new AuthResponseDto
+                {
+                    IsSuccess = false,
+                    Message = "An internal server error occurred",
+                    ErrorCode = ErrorCodes.UNEXPECTED_ERROR
+                };
             }
         }
 
@@ -343,12 +366,12 @@ namespace TikTokClone.Application.Services
             }
         }
 
-        public Task<bool> SendEmailVerificationCodeAsync(string email)
+        public Task<AuthResponseDto> SendEmailVerificationCodeAsync(string email)
         {
             throw new NotImplementedException();
         }
 
-        public Task<bool> ResendEmailVerificationCodeAsync(string email)
+        public Task<AuthResponseDto> ResendEmailVerificationCodeAsync(string email)
         {
             throw new NotImplementedException();
         }

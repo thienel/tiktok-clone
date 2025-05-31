@@ -7,9 +7,12 @@ namespace TikTokClone.Application.Constants
         public const string EMAIL_NOT_CONFIRMED = "EMAIL_NOT_CONFIRMED";
         public const string EMAIL_USED = "EMAIL_USED";
         public const string INVALID_REFRESH_TOKEN = "INVALID_REFRESH_TOKEN";
+        public const string INVALID_TOKEN = "INVALID_TOKEN";
         public const string TOKEN_EXPIRED = "TOKEN_EXPIRED";
         public const string REGISTRATION_FAILED = "REGISTRATION_FAILED";
         public const string EMAIL_CONFIRMATION_FAILED = "EMAIL_CONFIRMATION_FAILED";
+        public const string EMAIL_SEND_FAILED = "EMAIL_SEND_FAILED";
+        public const string WAIT_BEFORE_RESEND = "WAIT_BEFORE_RESEND";
         public const string LOGOUT_FAILED = "LOGOUT_FAILED";
         public const string PASSWORD_RESET_FAILED = "PASSWORD_RESET_FAILED";
         public const string VERIFICATION_CODE_NOT_FOUND = "VERIFICATION_CODE_NOT_FOUND";
