@@ -8,6 +8,7 @@ namespace TikTokClone.Infrastructure.Data
     {
         public override DbSet<User> Users { get; set; }
         public DbSet<RefreshToken> RefreshTokens { get; set; }
+        public DbSet<EmailVerification> EmailVerifications { get; set; }
 
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
         {

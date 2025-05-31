@@ -129,17 +129,6 @@ namespace TikTokClone.Domain.Entities
             return true;
         }
 
-        public void ConfirmEmail()
-        {
-            if (!EmailConfirmed)
-            {
-                EmailConfirmed = true;
-                ChangeUpdateTime();
-
-                _domainEvents.Add(new UserEmailConfirmedEvent(Id, Email!));
-            }
-        }
-
         public void RecordLogin()
         {
             LastLoginAt = DateTime.UtcNow;
@@ -216,6 +205,17 @@ namespace TikTokClone.Domain.Entities
                 age--;
 
             return age >= MinimumRequiredAge;
+        }
+
+        public bool ConfirmEmail()
+        {
+            if (EmailConfirmed) return false;
+
+            EmailConfirmed = true;
+            ChangeUpdateTime();
+
+            _domainEvents.Add(new UserEmailConfirmedEvent(Id, Email!));
+            return true;
         }
     }
 }

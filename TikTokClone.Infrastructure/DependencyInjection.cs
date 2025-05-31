@@ -75,6 +75,7 @@ namespace TikTokClone.Infrastructure
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
+            services.AddScoped<IEmailService, EmailService>();
             return services;
         }
     }

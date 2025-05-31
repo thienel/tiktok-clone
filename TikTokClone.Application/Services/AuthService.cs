@@ -17,13 +17,15 @@ namespace TikTokClone.Application.Services
         private readonly ITokenService _tokenService;
         private readonly IRefreshTokenRepository _refreshTokenRepo;
         private readonly IJwtSettings _jwtSettings;
+        private readonly IEmailService _emailService;
 
         public AuthService(
             UserManager<User> userManager,
             SignInManager<User> signinManager,
             ITokenService tokenService,
             IRefreshTokenRepository refreshTokenRepo,
-            IJwtSettings jwtSettings
+            IJwtSettings jwtSettings,
+            IEmailService emailServive
         )
         {
             _userManager = userManager;
@@ -31,6 +33,7 @@ namespace TikTokClone.Application.Services
             _tokenService = tokenService;
             _refreshTokenRepo = refreshTokenRepo;
             _jwtSettings = jwtSettings;
+            _emailService = emailServive;
         }
 
         public async Task<AuthResponseDto> LoginAsync(LoginRequestDto request)
@@ -293,101 +296,30 @@ namespace TikTokClone.Application.Services
             }
         }
 
-        public async Task<AuthResponseDto> ConfirmEmailAsync(string userId, string token)
-        {
-            try
-            {
-                if (string.IsNullOrWhiteSpace(userId) || string.IsNullOrWhiteSpace(token))
-                {
-                    return new AuthResponseDto
-                    {
-                        IsSuccess = false,
-                        Message = "User ID and token are required",
-                        ErrorCode = ErrorCodes.VALIDATION_ERROR
-                    };
-                }
-
-                var user = await _userManager.FindByIdAsync(userId);
-                if (user == null)
-                {
-                    return new AuthResponseDto
-                    {
-                        IsSuccess = false,
-                        Message = "User not found",
-                        ErrorCode = ErrorCodes.USER_NOT_FOUND
-                    };
-                }
-
-                var result = await _userManager.ConfirmEmailAsync(user, token);
-                if (!result.Succeeded)
-                {
-                    return new AuthResponseDto
-                    {
-                        IsSuccess = false,
-                        Message = "Failed to confirm email",
-                        ErrorCode = ErrorCodes.EMAIL_CONFIRMATION_FAILED
-                    };
-                }
-
-                user.ConfirmEmail();
-                await _userManager.UpdateAsync(user);
-
-                return new AuthResponseDto
-                {
-                    IsSuccess = true,
-                    Message = "Email confirmed successfully"
-                };
-            }
-            catch (Exception ex)
-            {
-                var (errorCode, message) = ExceptionHandler.HandleGenericException(ex);
-                return new AuthResponseDto
-                {
-                    IsSuccess = false,
-                    Message = message,
-                    ErrorCode = errorCode
-                };
-            }
-        }
-
-        public async Task<bool> SendEmailConfirmationAsync(string email)
-        {
-            try
-            {
-                if (string.IsNullOrWhiteSpace(email))
-                    return false;
-
-                var user = await _userManager.FindByEmailAsync(email);
-                if (user == null || user.EmailConfirmed)
-                    return false;
-
-                var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-
-                // TODO: Send email with confirmation link
-                // await _emailService.SendEmailConfirmationAsync(user.Email, user.Id, token);
-
-                return true;
-            }
-            catch
-            {
-                return false;
-            }
-        }
-
         private async Task<string> GenerateUniqueUsernameAsync()
         {
             var rd = new Random();
             while (true)
             {
                 var userName = "user";
-                userName += rd.Next(0, 999999).ToString("D6");
-                userName += rd.Next(0, 999999).ToString("D6");
+                userName += rd.Next(0, 1_000_000).ToString("D6");
+                userName += rd.Next(0, 1_000_000).ToString("D6");
 
                 var existingUser = await _userManager.FindByNameAsync(userName);
 
                 if (existingUser == null)
                     return userName;
             }
+        }
+
+        public Task<bool> SendEmailVerificationCodeAsync(string email)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<bool> ResendEmailVerificationCodeAsync(string email)
+        {
+            throw new NotImplementedException();
         }
     }
 }
