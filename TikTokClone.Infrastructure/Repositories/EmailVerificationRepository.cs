@@ -10,9 +10,9 @@ namespace TikTokClone.Infrastructure.Repositories
         {
 
         }
-        public Task<EmailVerification> FindByEmailAsync(string email)
+        public async Task<EmailVerification?> FindByEmailAsync(string email)
         {
-            throw new NotImplementedException();
+            return await _dbSet.FindAsync(email);
         }
     }
 }

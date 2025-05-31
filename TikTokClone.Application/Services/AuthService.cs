@@ -18,6 +18,7 @@ namespace TikTokClone.Application.Services
         private readonly IRefreshTokenRepository _refreshTokenRepo;
         private readonly IJwtSettings _jwtSettings;
         private readonly IEmailService _emailService;
+        private readonly IEmailVerificationRepository _emailVerificationRepo;
 
         public AuthService(
             UserManager<User> userManager,
@@ -25,7 +26,8 @@ namespace TikTokClone.Application.Services
             ITokenService tokenService,
             IRefreshTokenRepository refreshTokenRepo,
             IJwtSettings jwtSettings,
-            IEmailService emailServive
+            IEmailService emailServive,
+            IEmailVerificationRepository emailVerificationRepo
         )
         {
             _userManager = userManager;
@@ -34,6 +36,7 @@ namespace TikTokClone.Application.Services
             _refreshTokenRepo = refreshTokenRepo;
             _jwtSettings = jwtSettings;
             _emailService = emailServive;
+            _emailVerificationRepo = emailVerificationRepo;
         }
 
         public async Task<AuthResponseDto> LoginAsync(LoginRequestDto request)
@@ -150,8 +153,40 @@ namespace TikTokClone.Application.Services
                     };
                 }
 
+                var emailVerification = await _emailVerificationRepo.FindByEmailAsync(request.Email);
+                if (emailVerification == null)
+                {
+                    return new AuthResponseDto
+                    {
+                        IsSuccess = false,
+                        Message = "Verification code is not found",
+                        ErrorCode = ErrorCodes.VERIFICATION_CODE_NOT_FOUND
+                    };
+                }
+
+                if (!emailVerification.IsVertificationCodeActive())
+                {
+                    return new AuthResponseDto
+                    {
+                        IsSuccess = false,
+                        Message = "Verification code is expired",
+                        ErrorCode = ErrorCodes.VERIFICATION_CODE_EXPIRED
+                    };
+                }
+
+                if (emailVerification.Code != request.VerificationCode.Trim())
+                {
+                    return new AuthResponseDto
+                    {
+                        IsSuccess = false,
+                        Message = "Verification code is not match",
+                        ErrorCode = ErrorCodes.INVALID_VERIFICATION_CODE
+                    };
+                }
+
                 var userName = await GenerateUniqueUsernameAsync();
                 var user = new User(request.Email, request.BirthDate, userName);
+                user.ConfirmEmail();
 
                 var result = await _userManager.CreateAsync(user, request.Password);
                 if (!result.Succeeded)
@@ -163,10 +198,6 @@ namespace TikTokClone.Application.Services
                         ErrorCode = ErrorCodes.REGISTRATION_FAILED
                     };
                 }
-
-                var emailToken = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-
-                // TODO: Send Email confirmation
 
                 return new AuthResponseDto
                 {

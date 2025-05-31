@@ -13,6 +13,7 @@ using TikTokClone.Domain.Entities;
 using TikTokClone.Infrastructure.Authentication;
 using TikTokClone.Infrastructure.Data;
 using TikTokClone.Infrastructure.Repositories;
+using TikTokClone.Infrastructure.Services;
 
 namespace TikTokClone.Infrastructure
 {

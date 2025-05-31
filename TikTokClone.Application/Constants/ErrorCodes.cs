@@ -2,7 +2,6 @@ namespace TikTokClone.Application.Constants
 {
     public static class ErrorCodes
     {
-        // Authentication & Authorization
         public const string INVALID_CREDENTIALS = "INVALID_CREDENTIALS";
         public const string ACCOUNT_LOCKED = "ACCOUNT_LOCKED";
         public const string EMAIL_NOT_CONFIRMED = "EMAIL_NOT_CONFIRMED";
@@ -13,8 +12,11 @@ namespace TikTokClone.Application.Constants
         public const string EMAIL_CONFIRMATION_FAILED = "EMAIL_CONFIRMATION_FAILED";
         public const string LOGOUT_FAILED = "LOGOUT_FAILED";
         public const string PASSWORD_RESET_FAILED = "PASSWORD_RESET_FAILED";
+        public const string VERIFICATION_CODE_NOT_FOUND = "VERIFICATION_CODE_NOT_FOUND";
+        public const string INVALID_VERIFICATION_CODE = "INVALID_VERIFICATION_CODE";
+        public const string VERIFICATION_CODE_EXPIRED = "VERIFICATION_CODE_EXPIRED";
 
-        // User Domain Errors (mapped from Domain layer)
+
         public const string INVALID_EMAIL_FORMAT = "INVALID_EMAIL_FORMAT";
         public const string INVALID_USERNAME_FORMAT = "INVALID_USERNAME_FORMAT";
         public const string INVALID_NAME_LENGTH = "INVALID_NAME_LENGTH";
@@ -25,7 +27,7 @@ namespace TikTokClone.Application.Constants
         public const string USER_NOT_FOUND = "USER_NOT_FOUND";
         public const string USER_UPDATE_FAILED = "USER_UPDATE_FAILED";
 
-        // System Errors
+
         public const string UNEXPECTED_ERROR = "UNEXPECTED_ERROR";
         public const string DATABASE_ERROR = "DATABASE_ERROR";
         public const string EXTERNAL_SERVICE_ERROR = "EXTERNAL_SERVICE_ERROR";

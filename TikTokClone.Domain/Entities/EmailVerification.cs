@@ -8,13 +8,13 @@ namespace TikTokClone.Domain.Entities
         public string Code { get; private set; }
         public DateTime Expiry { get; private set; }
         public DateTime LastTimeGenerateCode { get; private set; }
-        public const int ExpiryTime = 15;
+        public const int ExpiryTimeInHours = 48;
 
         public EmailVerification(string email)
         {
             Email = email;
             Code = GenerateRandomSixDigitCode();
-            Expiry = DateTime.UtcNow.AddMinutes(ExpiryTime);
+            Expiry = DateTime.UtcNow.AddHours(48);
             SetGenerateCodeTime();
         }
 
@@ -28,7 +28,7 @@ namespace TikTokClone.Domain.Entities
             if (DateTime.UtcNow.Subtract(LastTimeGenerateCode) <= TimeSpan.FromSeconds(60)) return false;
 
             Code = GenerateRandomSixDigitCode();
-            Expiry = DateTime.UtcNow.AddMinutes(ExpiryTime);
+            Expiry = DateTime.UtcNow.AddMinutes(ExpiryTimeInHours);
             SetGenerateCodeTime();
             return true;
         }
