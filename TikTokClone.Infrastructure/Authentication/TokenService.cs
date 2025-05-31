@@ -2,23 +2,20 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using TikTokClone.Application.Interfaces.Services;
+using TikTokClone.Application.Interfaces.Settings;
 using TikTokClone.Domain.Entities;
 
 namespace TikTokClone.Infrastructure.Authentication
 {
     public class TokenService : ITokenService
     {
-        private readonly JwtSettings _jwtSettings;
-        private readonly UserManager<User> _userManager;
+        private readonly IJwtSettings _jwtSettings;
 
-        public TokenService(IOptions<JwtSettings> jwtSettings, UserManager<User> userManager)
+        public TokenService(IJwtSettings jwtSettings)
         {
-            _jwtSettings = jwtSettings.Value;
-            _userManager = userManager;
+            _jwtSettings = jwtSettings;
         }
         public string GenerateRefreshToken()
         {

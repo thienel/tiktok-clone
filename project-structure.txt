@@ -1,0 +1,73 @@
+.
+├── TikTokClone.API
+│   ├── Controllers
+│   │   └── AuthController.cs
+│   ├── Program.cs
+│   ├── Properties
+│   │   └── launchSettings.json
+│   ├── TikTokClone.API.csproj
+│   ├── TikTokClone.API.csproj.user
+│   ├── TikTokClone.API.http
+│   ├── appsettings.Development.json
+│   └── appsettings.json
+├── TikTokClone.Application
+│   ├── Constants
+│   │   └── ErrorCodes.cs
+│   ├── DTOs
+│   │   └── AuthDTOs.cs
+│   ├── Exceptions
+│   │   └── ExceptionHandler.cs
+│   ├── Interfaces
+│   │   ├── Repositories
+│   │   │   ├── IBaseRepository.cs
+│   │   │   ├── IRefreshTokenRepository.cs
+│   │   │   └── IUserRepository.cs
+│   │   ├── Services
+│   │   │   ├── IAuthService.cs
+│   │   │   ├── ITokenService.cs
+│   │   │   └── IUserService.cs
+│   │   └── Settings
+│   │       └── IJwtSettings.cs
+│   ├── Mappers
+│   │   └── ErrorCodeMapper.cs
+│   ├── Services
+│   │   ├── AuthService.cs
+│   │   └── UserService.cs
+│   └── TikTokClone.Application.csproj
+├── TikTokClone.Domain
+│   ├── Entities
+│   │   ├── RefreshToken.cs
+│   │   └── User.cs
+│   ├── Event
+│   │   ├── DomainEvent.cs
+│   │   ├── IDomainEvent.cs
+│   │   └── UserEvent.cs
+│   ├── Exceptions
+│   │   ├── DomainException.cs
+│   │   └── UserException.cs
+│   └── TikTokClone.Domain.csproj
+├── TikTokClone.Infrastructure
+│   ├── Authentication
+│   │   ├── JwtSettings.cs
+│   │   └── TokenService.cs
+│   ├── Data
+│   │   ├── AppDbContext.cs
+│   │   └── Configurations
+│   │       ├── RefreshTokenConfiguration.cs
+│   │       └── UserConfiguration.cs
+│   ├── DependencyInjection.cs
+│   ├── Migrations
+│   │   ├── 20250529181942_InitDb.Designer.cs
+│   │   ├── 20250529181942_InitDb.cs
+│   │   ├── 20250530170118_ChangeFieldAndRelationshipRefreshToken.Designer.cs
+│   │   ├── 20250530170118_ChangeFieldAndRelationshipRefreshToken.cs
+│   │   └── AppDbContextModelSnapshot.cs
+│   ├── Repositories
+│   │   ├── BaseRepository.cs
+│   │   ├── RefreshTokenRepository.cs
+│   │   └── UserRepository.cs
+│   └── TikTokClone.Infrastructure.csproj
+├── TikTokClone.sln
+└── project-structure.txt
+
+24 directories, 47 files
