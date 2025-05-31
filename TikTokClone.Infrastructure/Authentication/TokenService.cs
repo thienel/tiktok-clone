@@ -17,14 +17,6 @@ namespace TikTokClone.Infrastructure.Authentication
         {
             _jwtSettings = jwtSettings;
         }
-        public string GenerateRefreshToken()
-        {
-            var randomNumber = new byte[64];
-            using var rng = RandomNumberGenerator.Create();
-            rng.GetBytes(randomNumber);
-
-            return Convert.ToBase64String(randomNumber);
-        }
 
         public string GenerateToken(User user)
         {
@@ -53,6 +45,15 @@ namespace TikTokClone.Infrastructure.Authentication
             );
 
             return new JwtSecurityTokenHandler().WriteToken(token);
+        }
+
+        public string GenerateRefreshToken()
+        {
+            var randomNumber = new byte[64];
+            using var rng = RandomNumberGenerator.Create();
+            rng.GetBytes(randomNumber);
+
+            return Convert.ToBase64String(randomNumber);
         }
 
         public bool ValidateToken(string token)

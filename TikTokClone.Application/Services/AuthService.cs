@@ -65,21 +65,21 @@ namespace TikTokClone.Application.Services
                         };
                     }
 
+                    if (!user.EmailConfirmed)
+                    {
+                        return new AuthResponseDto
+                        {
+                            IsSuccess = false,
+                            Message = "Your email address has not been confirmed",
+                            ErrorCode = ErrorCodes.EMAIL_NOT_CONFIRMED
+                        };
+                    }
+
                     return new AuthResponseDto
                     {
                         IsSuccess = false,
                         Message = "Username or password is not correct",
                         ErrorCode = ErrorCodes.INVALID_CREDENTIALS
-                    };
-                }
-
-                if (!user.EmailConfirmed)
-                {
-                    return new AuthResponseDto
-                    {
-                        IsSuccess = false,
-                        Message = "Your email address has not been confirmed",
-                        ErrorCode = ErrorCodes.EMAIL_NOT_CONFIRMED
                     };
                 }
 
@@ -148,7 +148,7 @@ namespace TikTokClone.Application.Services
                 }
 
                 var userName = await GenerateUniqueUsernameAsync();
-                var user = new User(request.Email, userName, request.BirthDate, userName);
+                var user = new User(request.Email, request.BirthDate, userName);
 
                 var result = await _userManager.CreateAsync(user, request.Password);
                 if (!result.Succeeded)
@@ -229,15 +229,12 @@ namespace TikTokClone.Application.Services
                     };
                 }
 
-                // Generate new tokens first
                 var newToken = _tokenService.GenerateToken(user);
                 var newRefreshToken = _tokenService.GenerateRefreshToken();
 
-                // Revoke old refresh token
                 tokenEntity.Revoke(newRefreshToken);
                 _refreshTokenRepo.Update(tokenEntity);
 
-                // Create new refresh token
                 var newRefreshTokenEntity = new RefreshToken
                 {
                     Token = newRefreshToken,
@@ -280,7 +277,6 @@ namespace TikTokClone.Application.Services
                 if (user == null)
                     return false;
 
-                // Get only active tokens to revoke
                 var activeTokens = await _refreshTokenRepo.GetActiveByUserIdAsync(userId);
                 foreach (var token in activeTokens)
                 {
@@ -333,7 +329,6 @@ namespace TikTokClone.Application.Services
                     };
                 }
 
-                // Call domain method to trigger domain events
                 user.ConfirmEmail();
                 await _userManager.UpdateAsync(user);
 
@@ -381,13 +376,18 @@ namespace TikTokClone.Application.Services
 
         private async Task<string> GenerateUniqueUsernameAsync()
         {
-            var userName = "user" + Guid.NewGuid().ToString("N")[..12];
-            var existingUser = await _userManager.FindByNameAsync(userName);
+            var rd = new Random();
+            while (true)
+            {
+                var userName = "user";
+                userName += rd.Next(0, 999999).ToString("D6");
+                userName += rd.Next(0, 999999).ToString("D6");
 
-            if (existingUser == null)
-                return userName;
+                var existingUser = await _userManager.FindByNameAsync(userName);
 
-            return await GenerateUniqueUsernameAsync();
+                if (existingUser == null)
+                    return userName;
+            }
         }
     }
 }

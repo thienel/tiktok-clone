@@ -28,14 +28,14 @@ namespace TikTokClone.Domain.Entities
         public const string BioDefaultValue = "No bio yet.";
         public const int MinimumRequiredAge = 12;
 
-        public User(string email, string name, DateOnly birthDate, string userName)
+        public User(string email, DateOnly birthDate, string userName)
         {
-            ValidateConstructorInputs(email, name, birthDate, userName);
+            ValidateConstructorInputs(email, birthDate, userName);
 
             Id = Guid.NewGuid().ToString();
             Email = email.Trim().ToLower();
             UserName = userName.Trim().ToLower();
-            Name = name.Trim();
+            Name = userName;
             BirthDate = birthDate;
             EmailConfirmed = false;
             IsVerified = false;
@@ -185,19 +185,15 @@ namespace TikTokClone.Domain.Entities
             LastUpdatedAt = DateTime.UtcNow;
         }
 
-        private void ValidateConstructorInputs(string email, string name, DateOnly birthDate, string userName)
+        private void ValidateConstructorInputs(string email, DateOnly birthDate, string userName)
         {
             if (string.IsNullOrWhiteSpace(email))
                 throw new UserArgumentNullException(nameof(email));
-            if (string.IsNullOrWhiteSpace(name))
-                throw new UserArgumentNullException(nameof(name));
             if (string.IsNullOrWhiteSpace(userName))
                 throw new UserArgumentNullException(nameof(userName));
 
             if (!IsValidEmail(email))
                 throw new InvalidEmailFormatException();
-            if (name.Trim().Length > MaxNameLength)
-                throw new InvalidNameLengthException(MaxNameLength);
             if (!_userNameRegex.IsMatch(userName.Trim().ToLower()))
                 throw new InvalidUsernameFormatException();
             if (!IsValidBirthDate(birthDate))

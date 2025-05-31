@@ -77,7 +77,7 @@ namespace TikTokClone.API.Controllers
             try
             {
                 _logger.LogInformation("Login attempt for: {UsernameOrEmail}", request?.UsernameOrEmail);
-                _logger.LogWarning("password: {Password}", request?.Password);
+
                 if (!ModelState.IsValid)
                 {
                     _logger.LogWarning("Invalid model state for login");
