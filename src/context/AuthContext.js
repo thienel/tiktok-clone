@@ -1,7 +1,7 @@
 import { createContext, useState, useEffect } from 'react'
 import axios from 'axios'
 
-const AuthContext = createContext()
+export const AuthContext = createContext()
 
 const baseURL = process.env.REACT_APP_API_BASE_URL
 
@@ -39,7 +39,7 @@ export const AuthProvider = ({ children }) => {
           if (refreshToken) {
             const response = await axios.post('refresh', { refreshToken })
 
-            const { newToken, newRefreshToken } = response.data
+            const { newToken, newRefreshToken } = response
 
             localStorage.setItem('token', newToken)
             localStorage.setItem('refreshToken', newRefreshToken)
@@ -55,6 +55,26 @@ export const AuthProvider = ({ children }) => {
       }
     },
   )
+
+  useEffect(() => {
+    checkAuth()
+  }, [])
+
+  const checkAuth = async () => {
+    try {
+      setLoading(true)
+      const token = localStorage.getItem('token')
+      if (token) {
+        const response = await api.get('me')
+        setUser(response.User)
+      }
+    } catch {
+      localStorage.removeItem('token')
+      localStorage.removeItem('refreshToken')
+    } finally {
+      setLoading(false)
+    }
+  }
 
   const login = async (usernameOrEmail, password) => {
     try {
@@ -75,10 +95,10 @@ export const AuthProvider = ({ children }) => {
 
       return { success: true, user }
     } catch (error) {
-      const errorCode = error.response?.data?.errorCode || 'REACT_ERROR'
+      const errorCode = error.response?.errorCode || 'REACT_ERROR'
 
       setError(errorCode)
-      return { success: false, message: error.response?.data?.message, errorCode }
+      return { success: false, message: error.response?.message, errorCode }
     } finally {
       setLoading(false)
     }
@@ -86,10 +106,33 @@ export const AuthProvider = ({ children }) => {
 
   const logout = () => {}
 
+  const register = () => {}
+
+  const sendEmailVerification = async (email) => {
+    try {
+      setLoading(true)
+      setError('')
+
+      const response = await api.post('send-verification-code', email)
+
+      return { success: response.isSuccess }
+    } catch {
+      return { success: false }
+    } finally {
+      setLoading(false)
+    }
+  }
+
   const value = {
     user,
     loading,
     error,
+    login,
+    logout,
+    register,
+    sendEmailVerification,
+    isAuthenticated: !!user,
+    api,
   }
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>

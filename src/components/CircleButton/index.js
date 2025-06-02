@@ -5,7 +5,7 @@ import images from '~/assets/images'
 
 const cx = classNames.bind(styles)
 
-function CircleButton({ to, href, close, flipLTR, flipRTL, small, className, ...ComponentProps }) {
+function CircleButton({ to, href, close, flipLTR, flipRTL, small, large, className, ...ComponentProps }) {
   const props = { ...ComponentProps }
 
   var Component = 'button'
@@ -21,6 +21,7 @@ function CircleButton({ to, href, close, flipLTR, flipRTL, small, className, ...
     [className]: className,
     close,
     small,
+    large,
     flipLTR,
     flipRTL,
   }

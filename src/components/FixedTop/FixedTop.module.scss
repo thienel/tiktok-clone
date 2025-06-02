@@ -39,6 +39,7 @@
   display: flex;
   gap: 0.25rem;
   color: var(--color-opposite);
+  cursor: pointer;
 
   &:hover {
     background-color: var(--color-neutral-4);
@@ -63,6 +64,7 @@
   align-items: center;
   letter-spacing: 0.15px;
   font-size: 15px;
+  cursor: pointer;
 
   &:hover {
     background-color: var(--color-primary-hover);

@@ -5,7 +5,7 @@ import images from '~/assets/images'
 
 const cx = classNames.bind(styles)
 
-function FixedTop() {
+function FixedTop({ onLogin }) {
   return (
     <div className={cx('wrapper')}>
       <div className={cx('actionBar')}>
@@ -28,9 +28,9 @@ function FixedTop() {
           </div>
         </Link>
         <div className={cx('divider')} />
-        <Link to="/">
+        <div onClick={onLogin}>
           <div className={cx('login')}>Log in</div>
-        </Link>
+        </div>
       </div>
     </div>
   )
