@@ -1,7 +1,5 @@
-import FixedTop from '~/components/FixedTop'
-
 function Home() {
-  return <FixedTop />
+  return <h2 style={{ textAlign: 'center' }}>Home page</h2>
 }
 
 export default Home
