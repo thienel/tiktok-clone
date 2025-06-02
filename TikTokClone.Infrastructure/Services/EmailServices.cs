@@ -59,11 +59,6 @@ namespace TikTokClone.Infrastructure.Services
             throw new NotImplementedException();
         }
 
-        public Task<bool> SendWelcomeEmailAsync(string email, string name)
-        {
-            throw new NotImplementedException();
-        }
-
         public string GenerateVerificationEmailBody(string code)
         {
             return $@"

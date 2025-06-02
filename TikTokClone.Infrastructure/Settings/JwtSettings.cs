@@ -1,7 +1,7 @@
 
 using TikTokClone.Application.Interfaces.Settings;
 
-namespace TikTokClone.Infrastructure.Authentication
+namespace TikTokClone.Infrastructure.Settings
 {
     public class JwtSettings : IJwtSettings
     {

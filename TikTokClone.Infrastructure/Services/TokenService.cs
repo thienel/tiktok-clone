@@ -7,7 +7,7 @@ using TikTokClone.Application.Interfaces.Services;
 using TikTokClone.Application.Interfaces.Settings;
 using TikTokClone.Domain.Entities;
 
-namespace TikTokClone.Infrastructure.Authentication
+namespace TikTokClone.Infrastructure.Services
 {
     public class TokenService : ITokenService
     {

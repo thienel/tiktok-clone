@@ -10,10 +10,10 @@ using TikTokClone.Application.Interfaces.Services;
 using TikTokClone.Application.Interfaces.Settings;
 using TikTokClone.Application.Services;
 using TikTokClone.Domain.Entities;
-using TikTokClone.Infrastructure.Authentication;
 using TikTokClone.Infrastructure.Data;
 using TikTokClone.Infrastructure.Repositories;
 using TikTokClone.Infrastructure.Services;
+using TikTokClone.Infrastructure.Settings;
 
 namespace TikTokClone.Infrastructure
 {
@@ -75,6 +75,7 @@ namespace TikTokClone.Infrastructure
             services.AddScoped<ITokenService, TokenService>();
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<IEmailVerificationRepository, EmailVerificationRepository>();
             services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
             services.AddScoped<IEmailService, EmailService>();
             return services;

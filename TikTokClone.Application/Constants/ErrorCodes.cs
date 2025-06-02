@@ -12,6 +12,7 @@ namespace TikTokClone.Application.Constants
         public const string REGISTRATION_FAILED = "REGISTRATION_FAILED";
         public const string EMAIL_CONFIRMATION_FAILED = "EMAIL_CONFIRMATION_FAILED";
         public const string EMAIL_SEND_FAILED = "EMAIL_SEND_FAILED";
+        public const string EMAIL_ALREADY_CONFIRMED = "EMAIL_ALREADY_CONFIRMED";
         public const string WAIT_BEFORE_RESEND = "WAIT_BEFORE_RESEND";
         public const string LOGOUT_FAILED = "LOGOUT_FAILED";
         public const string PASSWORD_RESET_FAILED = "PASSWORD_RESET_FAILED";

@@ -366,14 +366,84 @@ namespace TikTokClone.Application.Services
             }
         }
 
-        public Task<AuthResponseDto> SendEmailVerificationCodeAsync(string email)
+        public async Task<AuthResponseDto> SendEmailVerificationCodeAsync(string email)
         {
-            throw new NotImplementedException();
-        }
+            try
+            {
+                var existingUser = await _userManager.FindByEmailAsync(email);
+                if (existingUser != null && existingUser.EmailConfirmed)
+                {
+                    return new AuthResponseDto
+                    {
+                        IsSuccess = false,
+                        Message = "User's email already confirmed",
+                        ErrorCode = ErrorCodes.EMAIL_ALREADY_CONFIRMED
+                    };
+                }
 
-        public Task<AuthResponseDto> ResendEmailVerificationCodeAsync(string email)
-        {
-            throw new NotImplementedException();
+                var existingEmailVerification = await _emailVerificationRepo.FindByEmailAsync(email);
+                if (existingEmailVerification != null)
+                {
+                    if (!existingEmailVerification.GenerateNewCode())
+                    {
+                        return new AuthResponseDto
+                        {
+                            IsSuccess = false,
+                            Message = "Please wait before resend email verification",
+                            ErrorCode = ErrorCodes.WAIT_BEFORE_RESEND
+                        };
+                    }
+
+                    _emailVerificationRepo.Update(existingEmailVerification);
+                    await _emailVerificationRepo.SaveChangesAsync();
+
+                    if (!await _emailService.SendEmailVerificationCodeAsync(email, existingEmailVerification.Code))
+                    {
+                        return new AuthResponseDto
+                        {
+                            IsSuccess = false,
+                            Message = "Fail to send email verification",
+                            ErrorCode = ErrorCodes.EMAIL_SEND_FAILED
+                        };
+                    }
+
+                    return new AuthResponseDto
+                    {
+                        IsSuccess = true,
+                        Message = "Send email verification successfully"
+                    };
+                }
+
+                var emailVerification = new EmailVerification(email);
+                await _emailVerificationRepo.AddAsync(emailVerification);
+                await _emailVerificationRepo.SaveChangesAsync();
+
+                if (!await _emailService.SendEmailVerificationCodeAsync(email, emailVerification.Code))
+                {
+                    return new AuthResponseDto
+                    {
+                        IsSuccess = false,
+                        Message = "Fail to send email verification",
+                        ErrorCode = ErrorCodes.EMAIL_SEND_FAILED
+                    };
+                }
+
+                return new AuthResponseDto
+                {
+                    IsSuccess = true,
+                    Message = "Send email verification successfully"
+                };
+
+            }
+            catch
+            {
+                return new AuthResponseDto
+                {
+                    IsSuccess = false,
+                    Message = "An internal server error occurred",
+                    ErrorCode = ErrorCodes.UNEXPECTED_ERROR
+                };
+            }
         }
     }
 }

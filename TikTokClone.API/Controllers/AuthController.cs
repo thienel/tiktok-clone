@@ -232,7 +232,7 @@ namespace TikTokClone.API.Controllers
                     });
                 }
 
-                var result = await _authService.ResendEmailVerificationCodeAsync(request.Email);
+                var result = await _authService.SendEmailVerificationCodeAsync(request.Email);
 
                 if (!result.IsSuccess)
                 {
@@ -245,7 +245,7 @@ namespace TikTokClone.API.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error during resend confirmation for email: {Email}", request?.Email);
+                _logger.LogError(ex, "Error during send confirmation for email: {Email}", request?.Email);
                 return StatusCode(StatusCodes.Status500InternalServerError,
                     new AuthResponseDto
                     {
