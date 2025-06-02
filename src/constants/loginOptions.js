@@ -1,13 +1,11 @@
 const loginOptionImages = require.context('!!@svgr/webpack!../assets/images/loginOptions', false, /\.svg$/)
 
 const loginItems = [
-  { key: 'qr', url: '/' },
-  { key: 'username' },
-  { key: 'facebook', url: '/' },
-  { key: 'google', url: '/' },
-  { key: 'line', url: '/' },
-  { key: 'kakaotalk', url: '/' },
-  { key: 'apple', url: '/' },
+  { key: 'facebook', url: '/', title: 'Continue with Facebook' },
+  { key: 'google', url: '/', title: 'Continue with Google' },
+  { key: 'line', url: '/', title: 'Continue with LINE' },
+  { key: 'kakaotalk', url: '/', title: 'Continue with KaKaoTalk' },
+  { key: 'apple', url: '/', title: 'Continue with Apple' },
 ]
 
 const loginIconMapper = {}
