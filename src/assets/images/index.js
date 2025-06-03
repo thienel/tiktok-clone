@@ -11,6 +11,7 @@ import { ReactComponent as PcApp } from './pcApp.svg'
 import { ReactComponent as Loading } from './loading.svg'
 import { ReactComponent as Clear } from './clear.svg'
 import { ReactComponent as Verify } from './verify.svg'
+import { ReactComponent as Selector } from './selector.svg'
 
 const images = {
   logo: Logo,
@@ -26,6 +27,7 @@ const images = {
   loading: Loading,
   clear: Clear,
   verify: Verify,
+  selector: Selector,
 }
 
 export default images

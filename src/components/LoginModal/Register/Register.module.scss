@@ -1,0 +1,82 @@
+.wrapper {
+  display: none;
+}
+
+.wrapper.open {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.title {
+  width: 100%;
+  text-align: center;
+  font-size: 32px;
+  margin-bottom: 16px;
+}
+
+.title-birthday {
+  font-size: 16px;
+  line-height: 22px;
+  margin-bottom: 4px;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  font-weight: 600;
+}
+
+.age-selector {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 4px;
+}
+
+.selector {
+  display: flex;
+  width: 115px;
+  height: 44px;
+  padding: 0px 12px;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 16px;
+  background-color: var(--color-popup-hover);
+  cursor: pointer;
+  border-radius: 4px;
+  color: var(--color-placeholder);
+}
+
+.iconwrapper {
+  color: var(--color-opposite);
+  font-size: 16px;
+}
+
+.age-validation {
+  font-size: 14px;
+  line-height: 20px;
+  margin-bottom: 16px;
+  text-align: left;
+  width: 100%;
+  color: var(--color-footer);
+}
+
+.title-method {
+  font-size: 15px;
+  margin-bottom: 5px;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: 600;
+
+  span {
+    color: var(--color-link);
+    font-size: 12px;
+    cursor: pointer;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
