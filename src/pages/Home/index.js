@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import FixedTop from '~/components/FixedTop'
-import Login from '~/components/Login'
+import LoginModal from '~/components/LoginModal'
 
 function Home() {
   const [login, setLogin] = useState(false)
@@ -12,7 +12,7 @@ function Home() {
           setLogin(true)
         }}
       />
-      <Login onClose={() => setLogin(false)} isOpen={login} />
+      <LoginModal onClose={() => setLogin(false)} isOpen={login} />
     </div>
   )
 }

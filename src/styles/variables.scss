@@ -40,6 +40,8 @@
   --color-opacity-50: rgba(0, 0, 0, 0.5);
   --color-bg-popup-1: rgba(255, 255, 255, 1);
   --color-bg-popup-2: rgba(255, 255, 255, 1);
+  --color-popup-hover: rgb(242, 242, 242);
+  --color-popup-border-hover: rgb(208, 209, 211);
 
   --font-heading: 'TikTokDisplayFont', Arial, Tahoma, sans-serif;
   --font-paragraph: 'TikTokFont', Arial, Tahoma, sans-serif;
@@ -64,4 +66,8 @@
   --color-neutral-4: rgba(255, 255, 255, 0.13);
   --color-border: rgba(255, 255, 255, 0.12);
   --color-overlay: rgba(44, 44, 44, 0.8);
+  --color-bg-popup-1: rgb(18, 18, 18);
+  --color-bg-popup-2: rgba(255, 255, 255, 0.08);
+  --color-popup-hover: var(--color-bg-popup-1);
+  --color-popup-border-hover: rgb(208, 209, 211);
 }

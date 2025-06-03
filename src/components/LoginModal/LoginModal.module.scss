@@ -9,9 +9,11 @@
   align-items: center;
   justify-content: center;
   z-index: 999;
-  transition: opacity 500ms cubic-bezier(0.075, 0.82, 0.165, 1);
+  transition: opacity 0.5s cubic-bezier(0.075, 0.82, 0.165, 1);
   opacity: 0;
   pointer-events: none;
+  overflow-y: scroll;
+  scrollbar-width: none;
 }
 
 .container.open {
@@ -27,7 +29,6 @@
   margin: auto;
   height: 642px;
   width: 483px;
-  overflow: hidden;
   position: relative;
 }
 
@@ -39,7 +40,6 @@
 
 .modal-wrapper {
   width: 100%;
-  overflow-y: scroll;
   scrollbar-width: 0px;
 }
 
@@ -82,7 +82,8 @@
   background-color: var(--color-bg-popup-2);
 
   &:hover {
-    background-color: var(--color-bg-popup-2);
+    background-color: var(--color-popup-hover);
+    border-color: var(--color-popup-border-hover);
   }
 }
 
@@ -111,6 +112,7 @@
   background-color: var(--color-bg-popup-2);
   padding: 16px 30px;
   margin-bottom: unset;
+  border-top: 3px solid var(--color-bg-popup-1);
 
   p {
     font-size: 12px;
@@ -136,15 +138,23 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 64px;
+  height: 54px;
   position: absolute;
   bottom: 0px;
   width: 100%;
-
+  user-select: none;
   border-top: 1px solid var(--color-border);
+  background-color: var(--color-bg-popup-2);
+  border-bottom-right-radius: 8px;
+  border-bottom-left-radius: 8px;
 
   span {
     color: var(--color-primary);
+    cursor: pointer;
+
+    &:hover {
+      text-decoration: underline;
+    }
   }
 }
 
