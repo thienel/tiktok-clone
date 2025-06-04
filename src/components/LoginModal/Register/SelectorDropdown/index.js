@@ -1,6 +1,7 @@
 import classNames from 'classnames/bind'
 import styles from './SelectorDropdown.module.scss'
 import { useMemo } from 'react'
+import images from '~/assets/images'
 
 const cx = classNames.bind(styles)
 
@@ -19,7 +20,12 @@ const MONTHS = [
   { name: 'December', value: '12' },
 ]
 
-function SelectorDropdown({ ref, onSelect, type, month, year }) {
+function SelectorDropdown({ ref, setValue, type, month, day, year, dropdownField, setDropdownField }) {
+  const handleSetValue = (value) => {
+    setValue(value)
+    setDropdownField(null)
+  }
+
   const DAYS = useMemo(() => {
     if (!month && !year) {
       return Array.from({ length: 31 }, (_, i) => ({
@@ -54,19 +60,34 @@ function SelectorDropdown({ ref, onSelect, type, month, year }) {
 
   const list = type === 'day' ? DAYS : type === 'year' ? YEARS : MONTHS
   return (
-    <div ref={ref} className={cx('listbox')}>
-      {list.map((item) => (
-        <div
-          key={item.value}
-          className={cx('listitem')}
-          onClick={(e) => {
-            e.stopPropagation()
-            onSelect(item.name)
-          }}
-        >
-          {item.name}
+    <div
+      className={cx('selector', { show: dropdownField === type, selected: !![type] })}
+      onClick={() => {
+        dropdownField === month ? setDropdownField(null) : setDropdownField(type)
+      }}
+    >
+      {type === 'month' && (month || 'Month')}
+      {type === 'day' && (day || 'Day')}
+      {type === 'year' && (year || 'Year')}
+      <div className={cx('iconwrapper')}>
+        <images.selector />
+      </div>
+      {dropdownField === type && (
+        <div ref={ref} className={cx('listbox')}>
+          {list.map((item) => (
+            <div
+              key={item.value}
+              className={cx('listitem')}
+              onClick={(e) => {
+                e.stopPropagation()
+                handleSetValue(item.name)
+              }}
+            >
+              {item.name}
+            </div>
+          ))}
         </div>
-      ))}
+      )}
     </div>
   )
 }

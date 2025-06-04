@@ -1,3 +1,36 @@
+.selector {
+  display: flex;
+  width: 115px;
+  height: 44px;
+  padding: 0px 12px;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 16px;
+  background-color: var(--color-popup-hover);
+  cursor: pointer;
+  border-radius: 4px;
+  color: var(--color-placeholder);
+  user-select: none;
+  position: relative;
+}
+
+.selector.selected {
+  color: var(--color-opposite);
+}
+
+.iconwrapper {
+  color: var(--color-opposite);
+  font-size: 16px;
+  transition: 0.3s;
+}
+
+.show {
+  .iconwrapper {
+    transform: rotateZ(180deg);
+    transition: 0.3s;
+  }
+}
+
 .listbox {
   width: 120px;
   position: absolute;

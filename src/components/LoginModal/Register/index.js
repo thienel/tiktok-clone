@@ -1,7 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 import classNames from 'classnames/bind'
 import styles from './Register.module.scss'
-import images from '~/assets/images'
 import { useAuth } from '~/hooks'
 import SelectorDropdown from './SelectorDropdown'
 
@@ -49,21 +48,6 @@ function Register({ open }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dropdownField])
 
-  const handleSelectMonth = (monthName) => {
-    setMonth(monthName)
-    setDropdownField(null)
-  }
-
-  const handleSelectDay = (dayValue) => {
-    setDay(dayValue)
-    setDropdownField(null)
-  }
-
-  const handleSelectYear = (yearValue) => {
-    setYear(yearValue)
-    setDropdownField(null)
-  }
-
   const handleSendVerification = async () => {
     if (!sendEmailButtonActive) return
 
@@ -80,46 +64,32 @@ function Register({ open }) {
       <h2 className={cx('title')}>Sign up</h2>
       <div className={cx('title-birthday')}>When's your birthday?</div>
       <div className={cx('age-selector')}>
-        <div
-          className={cx('selector', { show: dropdownField === 'month', selected: !!month })}
-          onClick={() => {
-            dropdownField === month ? setDropdownField(null) : setDropdownField('month')
-          }}
-        >
-          {month || 'Month'}
-          <div className={cx('iconwrapper')}>
-            <images.selector />
-          </div>
-          {dropdownField === 'month' && <SelectorDropdown type={'month'} ref={monthRef} onSelect={handleSelectMonth} />}
-        </div>
-
-        <div
-          className={cx('selector', { show: dropdownField === 'day', selected: !!day })}
-          onClick={() => {
-            dropdownField === 'day' ? setDropdownField(null) : setDropdownField('day')
-          }}
-        >
-          {day || 'Day'}
-          <div className={cx('iconwrapper')}>
-            <images.selector />
-          </div>
-          {dropdownField === 'day' && (
-            <SelectorDropdown type={'day'} ref={dayRef} onSelect={handleSelectDay} day={day} year={year} />
-          )}
-        </div>
-
-        <div
-          className={cx('selector', { show: dropdownField === 'year', selected: !!year })}
-          onClick={() => {
-            dropdownField === 'year' ? setDropdownField(null) : setDropdownField('year')
-          }}
-        >
-          {year || 'Year'}
-          <div className={cx('iconwrapper')}>
-            <images.selector />
-          </div>
-          {dropdownField === 'year' && <SelectorDropdown type={'year'} ref={yearRef} onSelect={handleSelectYear} />}
-        </div>
+        <SelectorDropdown
+          type={'month'}
+          ref={monthRef}
+          setValue={setMonth}
+          month={month}
+          dropdownField={dropdownField}
+          setDropdownField={setDropdownField}
+        />
+        <SelectorDropdown
+          type={'day'}
+          ref={dayRef}
+          setValue={setDay}
+          month={month}
+          day={day}
+          year={year}
+          dropdownField={dropdownField}
+          setDropdownField={setDropdownField}
+        />
+        <SelectorDropdown
+          type={'year'}
+          ref={yearRef}
+          setValue={setYear}
+          year={year}
+          dropdownField={dropdownField}
+          setDropdownField={setDropdownField}
+        />
       </div>
       <span className={cx('age-validation')}>Your birthday won't be shown publicly.</span>
 
