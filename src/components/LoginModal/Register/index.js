@@ -5,6 +5,8 @@ import { useAuth } from '~/hooks'
 import SelectorDropdown from './SelectorDropdown'
 import images from '~/assets/images'
 import { MONTHS } from '~/constants'
+import PasswordInput from './PasswordInput'
+import { isValidDate, getAge } from '~/utils/dateAndTime'
 
 const cx = classNames.bind(styles)
 
@@ -78,29 +80,6 @@ function Register({ open }) {
     return true
   }
 
-  function isValidDate(year, month, day) {
-    const date = new Date(year, month - 1, day)
-    return (
-      date.getFullYear() === parseInt(year) &&
-      date.getMonth() === parseInt(month) - 1 &&
-      date.getDate() === parseInt(day)
-    )
-  }
-
-  function getAge(year, month, day) {
-    const today = new Date()
-    const birthDate = new Date(year, month - 1, day)
-
-    let age = today.getFullYear() - birthDate.getFullYear()
-    const m = today.getMonth() - birthDate.getMonth()
-
-    if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
-      age--
-    }
-
-    return age
-  }
-
   useEffect(() => {
     setValidBirthday('')
   }, [day, month, year])
@@ -148,15 +127,9 @@ function Register({ open }) {
       <div className={cx('inputwrapper')}>
         <input value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Email address" type="email" />
       </div>
-      <div className={cx('inputwrapper')}>
-        <input
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          placeholder="Password"
-          type="password"
-          minLength="6"
-        />
-      </div>
+
+      <PasswordInput password={password} setPassword={setPassword} className={cx('inputwrapper')} />
+
       <div className={cx('inputwrapper')}>
         <input
           value={verificationCode}
@@ -174,8 +147,7 @@ function Register({ open }) {
           </div>
         </button>
       </div>
-
-      {error && <div className={cx('error-message')}>{error}</div>}
+      <button className={cx('submitbutton')}>Next</button>
     </div>
   )
 }

@@ -138,3 +138,22 @@
     transform: rotate(1turn);
   }
 }
+
+.submitbutton {
+  user-select: none;
+  height: 44px;
+  border-radius: 4px;
+  width: 100%;
+  font-size: 16px;
+  font-weight: 700;
+  margin-top: 12px;
+  background-color: var(--color-primary);
+  color: var(--color-white);
+  cursor: pointer;
+}
+
+.submitbutton.active {
+  background-color: var(--color-bg-grey);
+  color: var(--color-footer);
+  pointer-events: none;
+}

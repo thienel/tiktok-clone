@@ -12,6 +12,9 @@ import { ReactComponent as Loading } from './loading.svg'
 import { ReactComponent as Clear } from './clear.svg'
 import { ReactComponent as Verify } from './verify.svg'
 import { ReactComponent as Selector } from './selector.svg'
+import { ReactComponent as PasswordView } from './passwordView.svg'
+import { ReactComponent as PasswordHide } from './passwordHide.svg'
+import { ReactComponent as Valid } from './valid.svg'
 
 const images = {
   logo: Logo,
@@ -28,6 +31,9 @@ const images = {
   clear: Clear,
   verify: Verify,
   selector: Selector,
+  passwordView: PasswordView,
+  passwordHide: PasswordHide,
+  valid: Valid,
 }
 
 export default images
