@@ -7,6 +7,7 @@ import images from '~/assets/images'
 import { MONTHS } from '~/constants'
 import PasswordInput from './PasswordInput'
 import { isValidDate, getAge } from '~/utils/dateAndTime'
+import EmailInput from './EmailInput'
 
 const cx = classNames.bind(styles)
 
@@ -20,6 +21,13 @@ function Register({ open }) {
   const [verificationCode, setVerificationCode] = useState('')
   const { sendEmailVerification, loading, error } = useAuth()
   const [validBirthday, setValidBirthday] = useState('')
+  const [allFieldValid, setAllFieldValid] = useState({
+    birthday: true,
+    email: true,
+    password: true,
+    verificationCode: true,
+  })
+  const [canNext, setCanNext] = useState(false)
 
   const monthRef = useRef()
   const dayRef = useRef()
@@ -84,6 +92,12 @@ function Register({ open }) {
     setValidBirthday('')
   }, [day, month, year])
 
+  useEffect(() => {
+    setCanNext(
+      allFieldValid.birthday && allFieldValid.email && allFieldValid.password && allFieldValid.verificationCode,
+    )
+  }, [allFieldValid])
+
   return (
     <div className={cx('wrapper', { open })}>
       <h2 className={cx('title')}>Sign up</h2>
@@ -124,11 +138,22 @@ function Register({ open }) {
       </span>
 
       <div className={cx('title-method')}>Email</div>
-      <div className={cx('inputwrapper')}>
-        <input value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Email address" type="email" />
-      </div>
-
-      <PasswordInput password={password} setPassword={setPassword} className={cx('inputwrapper')} />
+      <EmailInput
+        email={email}
+        setEmail={setEmail}
+        className={cx('inputwrapper')}
+        warningIconStyle={cx('warningIcon')}
+        warningStyle={cx('warningInput')}
+        warningDesStyle={cx('warningSpan')}
+      />
+      <PasswordInput
+        password={password}
+        setPassword={setPassword}
+        className={cx('inputwrapper')}
+        warningIconStyle={cx('warningIcon')}
+        warningStyle={cx('warningInput')}
+        warningDesStyle={cx('warningSpan')}
+      />
 
       <div className={cx('inputwrapper')}>
         <input
@@ -147,7 +172,7 @@ function Register({ open }) {
           </div>
         </button>
       </div>
-      <button className={cx('submitbutton')}>Next</button>
+      <button className={cx('submitbutton', { disabled: !canNext })}>Next</button>
     </div>
   )
 }

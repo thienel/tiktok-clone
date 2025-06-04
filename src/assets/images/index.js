@@ -15,6 +15,7 @@ import { ReactComponent as Selector } from './selector.svg'
 import { ReactComponent as PasswordView } from './passwordView.svg'
 import { ReactComponent as PasswordHide } from './passwordHide.svg'
 import { ReactComponent as Valid } from './valid.svg'
+import { ReactComponent as Invalid } from './invalid.svg'
 
 const images = {
   logo: Logo,
@@ -34,6 +35,7 @@ const images = {
   passwordView: PasswordView,
   passwordHide: PasswordHide,
   valid: Valid,
+  invalid: Invalid,
 }
 
 export default images
