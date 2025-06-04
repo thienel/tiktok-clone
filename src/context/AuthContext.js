@@ -2,6 +2,7 @@ import { createContext, useState, useEffect } from 'react'
 import axios from 'axios'
 
 export const AuthContext = createContext()
+export default AuthContext
 
 const baseURL = process.env.REACT_APP_API_BASE_URL
 
@@ -30,7 +31,7 @@ export const AuthProvider = ({ children }) => {
     async (error) => {
       const originalRequest = error.config
 
-      if (originalRequest.response?.status === 400 && !originalRequest._retry) {
+      if (error.response?.status === 400 && !originalRequest._retry) {
         originalRequest._retry = true
 
         try {
@@ -39,7 +40,7 @@ export const AuthProvider = ({ children }) => {
           if (refreshToken) {
             const response = await axios.post('refresh', { refreshToken })
 
-            const { newToken, newRefreshToken } = response
+            const { newToken, newRefreshToken } = response.data
 
             localStorage.setItem('token', newToken)
             localStorage.setItem('refreshToken', newRefreshToken)
@@ -54,6 +55,7 @@ export const AuthProvider = ({ children }) => {
         }
       }
     },
+    (error) => Promise.reject(error),
   )
 
   useEffect(() => {
@@ -66,7 +68,7 @@ export const AuthProvider = ({ children }) => {
       const token = localStorage.getItem('token')
       if (token) {
         const response = await api.get('me')
-        setUser(response.User)
+        setUser(response.data.user)
       }
     } catch {
       localStorage.removeItem('token')
@@ -86,8 +88,7 @@ export const AuthProvider = ({ children }) => {
         password,
       })
 
-      const { token, refreshToken, user } = response
-
+      const { token, refreshToken, user } = response.data
       localStorage.setItem('token', token)
       localStorage.setItem('refreshToken', refreshToken)
 
@@ -104,7 +105,11 @@ export const AuthProvider = ({ children }) => {
     }
   }
 
-  const logout = () => {}
+  const logout = () => {
+    localStorage.removeItem('token')
+    localStorage.removeItem('refreshToken')
+    setUser(null)
+  }
 
   const register = () => {}
 
@@ -113,9 +118,9 @@ export const AuthProvider = ({ children }) => {
       setLoading(true)
       setError('')
 
-      const response = await api.post('send-verification-code', email)
+      const response = await api.post('send-verification-code', { email })
 
-      return { success: response.isSuccess }
+      return { success: response.data.isSuccess }
     } catch {
       return { success: false }
     } finally {

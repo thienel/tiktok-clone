@@ -46,9 +46,9 @@ function LoginModal({ onClose, isOpen }) {
                       <UsernameIcon />
                     </div>
                     {type === 'login' ? (
-                      <h3 className={cx('login-title')}>User phone / email / username</h3>
+                      <h3 className={cx('login-title')}>Use email or username</h3>
                     ) : (
-                      <h3 className={cx('login-title')}>User phone or email</h3>
+                      <h3 className={cx('login-title')}>Continue with email</h3>
                     )}
                   </div>
                   {loginItems.map((item) => {
@@ -86,11 +86,27 @@ function LoginModal({ onClose, isOpen }) {
           <div className={cx('footer')}>
             {type === 'login' ? (
               <div>
-                Don’t have an account? <span onClick={() => setType('register')}>Sign up</span>
+                Don’t have an account?{' '}
+                <span
+                  onClick={() => {
+                    setMethod(null)
+                    setType('register')
+                  }}
+                >
+                  Sign up
+                </span>
               </div>
             ) : (
               <div>
-                Already have an account? <span onClick={() => setType('login')}>Log in</span>
+                Already have an account?{' '}
+                <span
+                  onClick={() => {
+                    setMethod(null)
+                    setType('login')
+                  }}
+                >
+                  Log in
+                </span>
               </div>
             )}
           </div>
