@@ -42,6 +42,10 @@
   color: var(--color-footer);
 }
 
+.age-validation.notvalid {
+  color: red;
+}
+
 .title-method {
   font-size: 15px;
   margin-bottom: 5px;
@@ -108,4 +112,29 @@
 .sendcodebutton.active {
   cursor: pointer;
   color: var(--color-opposite);
+}
+
+.loading {
+  cursor: not-allowed;
+  color: var(--color-placeholder) !important;
+  .loadingIcon {
+    display: flex;
+  }
+}
+
+.loadingIcon {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  animation: 1s linear 0s infinite normal none running loading-animation;
+  margin-left: 4px;
+}
+
+@keyframes loading-animation {
+  0% {
+    transform: rotate(0);
+  }
+  100% {
+    transform: rotate(1turn);
+  }
 }

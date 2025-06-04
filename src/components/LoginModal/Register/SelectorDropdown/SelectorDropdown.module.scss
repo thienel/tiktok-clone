@@ -18,6 +18,10 @@
   color: var(--color-opposite);
 }
 
+.invalid {
+  color: red !important;
+}
+
 .iconwrapper {
   color: var(--color-opposite);
   font-size: 16px;

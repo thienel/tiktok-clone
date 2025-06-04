@@ -3,14 +3,13 @@ import classNames from 'classnames/bind'
 import styles from './Register.module.scss'
 import { useAuth } from '~/hooks'
 import SelectorDropdown from './SelectorDropdown'
+import images from '~/assets/images'
+import { MONTHS } from '~/constants'
 
 const cx = classNames.bind(styles)
 
 function Register({ open }) {
   const [dropdownField, setDropdownField] = useState(null)
-  const monthRef = useRef()
-  const dayRef = useRef()
-  const yearRef = useRef()
   const [month, setMonth] = useState('')
   const [day, setDay] = useState('')
   const [year, setYear] = useState('')
@@ -18,6 +17,11 @@ function Register({ open }) {
   const [password, setPassword] = useState('')
   const [verificationCode, setVerificationCode] = useState('')
   const { sendEmailVerification, loading, error } = useAuth()
+  const [validBirthday, setValidBirthday] = useState('')
+
+  const monthRef = useRef()
+  const dayRef = useRef()
+  const yearRef = useRef()
 
   const sendEmailButtonActive = !!month && !!day && !!year && !!email
 
@@ -49,6 +53,7 @@ function Register({ open }) {
   }, [dropdownField])
 
   const handleSendVerification = async () => {
+    if (!birthdayValidation()) return
     if (!sendEmailButtonActive) return
 
     try {
@@ -58,6 +63,47 @@ function Register({ open }) {
       console.error('Error sending verification:', err)
     }
   }
+
+  const birthdayValidation = () => {
+    const monthValue = MONTHS.find((m) => m.name === month)?.value
+    if (!isValidDate(year, monthValue, day)) {
+      setValidBirthday('Enter a valid date')
+      return false
+    }
+    if (getAge(year, monthValue, day) < 12) {
+      setValidBirthday('Sorry, looks like you’re not eligible for TikTok... But thanks for checking us out!')
+      return false
+    }
+    setValidBirthday('')
+    return true
+  }
+
+  function isValidDate(year, month, day) {
+    const date = new Date(year, month - 1, day)
+    return (
+      date.getFullYear() === parseInt(year) &&
+      date.getMonth() === parseInt(month) - 1 &&
+      date.getDate() === parseInt(day)
+    )
+  }
+
+  function getAge(year, month, day) {
+    const today = new Date()
+    const birthDate = new Date(year, month - 1, day)
+
+    let age = today.getFullYear() - birthDate.getFullYear()
+    const m = today.getMonth() - birthDate.getMonth()
+
+    if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+      age--
+    }
+
+    return age
+  }
+
+  useEffect(() => {
+    setValidBirthday('')
+  }, [day, month, year])
 
   return (
     <div className={cx('wrapper', { open })}>
@@ -71,6 +117,7 @@ function Register({ open }) {
           month={month}
           dropdownField={dropdownField}
           setDropdownField={setDropdownField}
+          invalid={!!validBirthday}
         />
         <SelectorDropdown
           type={'day'}
@@ -81,6 +128,7 @@ function Register({ open }) {
           year={year}
           dropdownField={dropdownField}
           setDropdownField={setDropdownField}
+          invalid={!!validBirthday}
         />
         <SelectorDropdown
           type={'year'}
@@ -89,9 +137,12 @@ function Register({ open }) {
           year={year}
           dropdownField={dropdownField}
           setDropdownField={setDropdownField}
+          invalid={!!validBirthday}
         />
       </div>
-      <span className={cx('age-validation')}>Your birthday won't be shown publicly.</span>
+      <span className={cx('age-validation', { notvalid: !!validBirthday })}>
+        {validBirthday ? validBirthday : "Your birthday won't be shown publicly."}
+      </span>
 
       <div className={cx('title-method')}>Email</div>
       <div className={cx('inputwrapper')}>
@@ -114,11 +165,13 @@ function Register({ open }) {
           maxLength="6"
         />
         <button
-          className={cx('sendcodebutton', { active: sendEmailButtonActive })}
+          className={cx('sendcodebutton', { active: sendEmailButtonActive, loading: loading })}
           onClick={handleSendVerification}
-          disabled={!sendEmailButtonActive || loading}
         >
-          {loading ? 'Sending...' : 'Send code'}
+          Send code
+          <div className={cx('loadingIcon')}>
+            <images.loading style={{ margin: '0', width: '20', height: '20' }} />
+          </div>
         </button>
       </div>
 
