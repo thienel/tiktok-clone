@@ -23,8 +23,15 @@ api.interceptors.request.use(
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null)
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState('')
   const [error, setError] = useState('')
+
+  const LOADING_TYPE = {
+    CHECK_AUTH: 'CHECK_AUTH',
+    LOGIN: 'LOGIN',
+    SEND_EMAIL: 'SEND_EMAIL',
+    REGISTER: 'REGISTER',
+  }
 
   api.interceptors.response.use(
     (response) => response,
@@ -60,11 +67,12 @@ export const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     checkAuth()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const checkAuth = async () => {
     try {
-      setLoading(true)
+      setLoading(LOADING_TYPE.CHECK_AUTH)
       const token = localStorage.getItem('token')
       if (token) {
         const response = await api.get('me')
@@ -74,13 +82,13 @@ export const AuthProvider = ({ children }) => {
       localStorage.removeItem('token')
       localStorage.removeItem('refreshToken')
     } finally {
-      setLoading(false)
+      setLoading('')
     }
   }
 
   const login = async (usernameOrEmail, password) => {
     try {
-      setLoading(true)
+      setLoading(LOADING_TYPE.LOGIN)
       setError('')
 
       const response = await api.post('login', {
@@ -101,7 +109,7 @@ export const AuthProvider = ({ children }) => {
       setError(errorCode)
       return { success: false, message: error.response?.message, errorCode }
     } finally {
-      setLoading(false)
+      setLoading('')
     }
   }
 
@@ -111,14 +119,30 @@ export const AuthProvider = ({ children }) => {
     setUser(null)
   }
 
-  const register = () => {}
+  const register = async (email, password, birthDate, verificationCode) => {
+    try {
+      setLoading(LOADING_TYPE.REGISTER)
+      setError('')
+      const response = await api.post('register', { email, password, birthDate, verificationCode })
+
+      if (response.data.errorCode) setError(response.data.errorCode)
+
+      return { success: response.data.isSuccess }
+    } catch {
+      return { success: false }
+    } finally {
+      setLoading('')
+    }
+  }
 
   const sendEmailVerification = async (email) => {
     try {
-      setLoading(true)
+      setLoading(LOADING_TYPE.SEND_EMAIL)
       setError('')
 
       const response = await api.post('send-verification-code', { email })
+
+      if (response.data.errorCode) setError(response.data.errorCode)
 
       return { success: response.data.isSuccess }
     } catch {
@@ -138,6 +162,7 @@ export const AuthProvider = ({ children }) => {
     sendEmailVerification,
     isAuthenticated: !!user,
     api,
+    LOADING_TYPE,
   }
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>

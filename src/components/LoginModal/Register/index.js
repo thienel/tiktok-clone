@@ -19,7 +19,7 @@ function Register({ open }) {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [verificationCode, setVerificationCode] = useState('')
-  const { sendEmailVerification, loading, error } = useAuth()
+  const { sendEmailVerification, loading, error, LOADING_TYPE, register } = useAuth()
   const [validBirthday, setValidBirthday] = useState('')
   const [allFieldValid, setAllFieldValid] = useState({
     birthday: false,
@@ -71,6 +71,21 @@ function Register({ open }) {
       console.log(result)
     } catch (err) {
       console.error('Error sending verification:', err)
+    }
+  }
+
+  const handleRegister = async () => {
+    birthdayValidation()
+    if (!canNext) return
+    const monthValue = MONTHS.find((m) => m.name === month)?.value
+
+    const birthDate = year + '-' + monthValue + '-' + day
+
+    try {
+      const result = await register(email, password, birthDate, verificationCode)
+      console.log(result)
+    } catch (err) {
+      console.log('Error during register: ', err)
     }
   }
 
@@ -172,9 +187,11 @@ function Register({ open }) {
         onSetValid={(value) => setAllFieldValid((prev) => ({ ...prev, verificationCode: value }))}
         onSendVerification={handleSendVerification}
         sendButtonActive={sendEmailButtonActive}
-        loading={loading}
+        loading={loading === LOADING_TYPE.SEND_EMAIL}
       />
-      <button className={cx('submitbutton', { disabled: !canNext })}>Next</button>
+      <button className={cx('submitbutton', { disabled: !canNext })} onClick={handleRegister}>
+        Next
+      </button>
     </div>
   )
 }

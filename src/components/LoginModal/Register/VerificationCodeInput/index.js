@@ -25,12 +25,16 @@ function VerificationCode({
     if (!focused) {
       const valid = isValidCode(verificationCode)
       setWarning(!valid)
-      onSetValid(verificationCode ? valid : false)
     } else {
       setWarning(false)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [focused])
+
+  useEffect(() => {
+    onSetValid(verificationCode ? isValidCode(verificationCode) : false)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [verificationCode])
 
   const isValidCode = (code) => {
     if (!code) return true
