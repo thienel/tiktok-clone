@@ -116,6 +116,14 @@ namespace TikTokClone.Application.Services
                 await _refreshTokenRepo.AddAsync(refreshTokenEntity);
                 await _refreshTokenRepo.SaveChangesAsync();
 
+                var userResponse = new UserReponseDto
+                {
+                    Name = user.Name,
+                    AvatarURL = user.AvatarURL,
+                    IsVerified = user.IsVerified,
+                    Bio = user.Bio
+                };
+
                 return new AuthResponseDto
                 {
                     IsSuccess = true,
@@ -124,6 +132,7 @@ namespace TikTokClone.Application.Services
                     RefreshToken = refreshToken,
                     ExpiresAt = DateTime.UtcNow
                         .AddMinutes(_jwtSettings.ExpirationInMinutes),
+                    User = userResponse
                 };
             }
             catch (Exception ex)

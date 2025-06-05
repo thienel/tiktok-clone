@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using TikTokClone.Application.Constants;
 using TikTokClone.Application.DTOs;
+using TikTokClone.Application.Interfaces.Repositories;
 using TikTokClone.Application.Interfaces.Services;
 
 namespace TikTokClone.API.Controllers
@@ -13,14 +14,17 @@ namespace TikTokClone.API.Controllers
     public class AuthController : ControllerBase
     {
         private readonly IAuthService _authService;
+        private readonly IUserRepository _userRepository;
         private readonly ILogger<AuthController> _logger;
 
         public AuthController(
             IAuthService authService,
-            ILogger<AuthController> logger)
+            ILogger<AuthController> logger,
+            IUserRepository userRepository)
         {
             _authService = authService;
             _logger = logger;
+            _userRepository = userRepository;
         }
 
         [HttpPost("register")]
@@ -253,6 +257,40 @@ namespace TikTokClone.API.Controllers
                         Message = "An internal server error occurred",
                         ErrorCode = ErrorCodes.UNEXPECTED_ERROR
                     });
+            }
+        }
+
+        [HttpGet("me")]
+        [Authorize]
+        [ProducesResponseType(typeof(UserReponseDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> Me()
+        {
+            try
+            {
+                var userId = User.FindFirst(ClaimTypes.NameIdentifier);
+
+                if (userId == null)
+                    return BadRequest();
+
+                var user = await _userRepository.GetByIdAsync(userId);
+
+                if (user == null)
+                    return BadRequest();
+
+                var userResponse = new UserReponseDto
+                {
+                    Name = user.Name,
+                    AvatarURL = user.AvatarURL,
+                    IsVerified = user.IsVerified,
+                    Bio = user.Bio,
+                };
+                return Ok(new { user = userResponse });
+            }
+            catch
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError);
             }
         }
     }

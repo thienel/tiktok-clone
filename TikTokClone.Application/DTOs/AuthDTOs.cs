@@ -1,4 +1,5 @@
-using TikTokClone.Domain.Entities;
+
+using TikTokClone.Domain.Exceptions;
 
 namespace TikTokClone.Application.DTOs
 {
@@ -29,6 +30,7 @@ namespace TikTokClone.Application.DTOs
         public string? Token { get; set; }
         public string? RefreshToken { get; set; }
         public DateTime? ExpiresAt { get; set; }
+        public UserReponseDto User { get; set; }
     }
 
     public class RefreshTokenRequestDto

@@ -6,6 +6,15 @@ builder.Services.AddControllers();
 builder.Services.AddOpenApi();
 builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddAuthorization();
+builder.Services.AddCors(options =>
+    options.AddPolicy("AllowFrontEnd",
+    builder =>
+    {
+        builder.WithOrigins("http://localhost:3000")
+                           .AllowAnyHeader()
+                           .AllowAnyMethod()
+                           .AllowCredentials();
+    }));
 
 var app = builder.Build();
 
@@ -16,6 +25,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseCors("AllowFrontEnd");
 app.UseAuthentication();
 app.UseAuthorization();
 
