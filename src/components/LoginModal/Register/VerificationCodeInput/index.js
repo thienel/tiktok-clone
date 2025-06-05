@@ -45,9 +45,21 @@ function VerificationCode({
     return regex.test(code)
   }
 
+  useEffect(() => {
+    let timer
+    if (errorCode === 'WAIT_BEFORE_RESEND') {
+      timer = setTimeout(() => {
+        onResetErrorCode()
+      }, 10000)
+    }
+
+    return () => clearTimeout(timer)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [errorCode])
+
   return (
     <>
-      <div className={cx(className, warning ? warningStyle : '')}>
+      <div className={cx(className, warning ? warningStyle : '', cx('inputwrapper'))}>
         <input
           value={verificationCode}
           onChange={(e) => setVerificationCode(e.target.value)}
@@ -66,7 +78,7 @@ function VerificationCode({
         >
           {countdown !== 0 ? `Resend code: ${countdown}s` : 'Send code'}
           <div className={cx('loadingIcon')}>
-            <images.loading style={{ margin: '0', width: '20', height: '20' }} />
+            <images.loading style={{ margin: '0', width: '20', height: '20' }} fill="currentColor" />
           </div>
         </button>
       </div>

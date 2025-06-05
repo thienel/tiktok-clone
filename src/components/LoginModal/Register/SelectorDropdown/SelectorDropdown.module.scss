@@ -6,7 +6,7 @@
   justify-content: space-between;
   align-items: center;
   font-size: 16px;
-  background-color: var(--color-popup-hover);
+  background-color: var(--color-neutral-3);
   cursor: pointer;
   border-radius: 4px;
   color: var(--color-placeholder);
@@ -46,7 +46,7 @@
   height: 294px;
   overflow: auto;
   color: var(--color-opposite);
-  background-color: var(--color-bg-popup-1);
+  background-color: var(--color-popup-bg-dark);
   border-radius: 4px;
   box-shadow: rgba(0, 0, 0, 0.12) 0px 2px 12px;
   z-index: 10;
@@ -73,6 +73,6 @@
   align-items: center;
 
   &:hover {
-    background-color: var(--color-bg-hover);
+    background-color: var(--color-neutral-4);
   }
 }

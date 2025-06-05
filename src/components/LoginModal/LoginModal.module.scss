@@ -24,10 +24,10 @@
 .wrapper {
   border-radius: 8px;
   transition: 300ms ease-out;
-  background-color: var(--color-bg-popup-1);
+  background-color: var(--color-popup-bg-dark);
   transform: none;
   margin: auto;
-  height: 642px;
+  height: 638px;
   width: 483px;
   position: relative;
 }
@@ -67,7 +67,7 @@
 
 .login-option {
   font-size: 15px;
-  border: 1px solid var(--color-border);
+  border: 1px solid var(--color-popup-border);
   border-radius: 8px;
   padding: 0px 12px;
   display: flex;
@@ -79,7 +79,7 @@
   margin-bottom: 12px;
   white-space: nowrap;
   position: relative;
-  background-color: var(--color-bg-popup-2);
+  background-color: var(--color-popup-bg-light);
 
   &:hover {
     background-color: var(--color-popup-hover);
@@ -109,10 +109,9 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: var(--color-bg-popup-2);
+  background-color: var(--color-popup-bg-light);
   padding: 16px 30px;
   margin-bottom: unset;
-  border-top: 3px solid var(--color-bg-popup-1);
   position: absolute;
   bottom: 64px;
 
@@ -146,7 +145,7 @@
   width: 100%;
   user-select: none;
   border-top: 1px solid var(--color-border);
-  background-color: var(--color-bg-popup-2);
+  background-color: var(--color-popup-bg-light);
   border-bottom-right-radius: 8px;
   border-bottom-left-radius: 8px;
 

@@ -1,3 +1,10 @@
+.inputwrapper {
+  background-color: transparent;
+  input {
+    background-color: var(--color-neutral-3);
+  }
+}
+
 .sendcodebutton {
   background-color: transparent;
   cursor: not-allowed;
@@ -7,11 +14,12 @@
   align-items: center;
   border-radius: 0px 4px 4px 0px;
   color: var(--color-placeholder);
-  border-left: 2px solid var(--color-border) !important;
+  border-left: 2px solid var(--color-popup-border) !important;
   font-size: 16px;
   padding: 0px 16px;
   height: 44px;
   white-space: nowrap;
+  background-color: var(--color-popup-bg-disabled) !important;
 }
 
 .sendcodebutton.active {
@@ -33,6 +41,7 @@
   justify-content: center;
   animation: 1s linear 0s infinite normal none running loading-animation;
   margin-left: 4px;
+  color: inherit;
 }
 
 @keyframes loading-animation {

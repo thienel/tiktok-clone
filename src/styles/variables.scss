@@ -39,10 +39,12 @@
   --color-border: rgba(0, 0, 0, 0.12);
   --color-overlay: rgba(255, 255, 255, 0.8);
   --color-opacity-50: rgba(0, 0, 0, 0.5);
-  --color-bg-popup-1: rgba(255, 255, 255, 1);
-  --color-bg-popup-2: rgba(255, 255, 255, 1);
   --color-popup-hover: rgb(242, 242, 242);
   --color-popup-border-hover: rgb(208, 209, 211);
+  --color-popup-bg-dark: rgb(255, 255, 255);
+  --color-popup-bg-light: rgb(255, 255, 255);
+  --color-popup-border: rgba(22, 24, 35, 0.12);
+  --color-popup-bg-disabled: var(--color-neutral-3);
   --color-warning: rgb(255, 76, 58);
   --color-success: rgb(11, 224, 155);
 
@@ -66,11 +68,13 @@
   --color-neutral-1: rgba(255, 255, 255, 0.32);
   --color-neutral-2: rgba(255, 255, 255, 0.19);
   --color-neutral-3: rgba(255, 255, 255, 0.13);
-  --color-neutral-4: rgba(255, 255, 255, 0.13);
+  --color-neutral-4: rgba(255, 255, 255, 0.04);
   --color-border: rgba(255, 255, 255, 0.12);
   --color-overlay: rgba(44, 44, 44, 0.8);
-  --color-bg-popup-1: rgb(18, 18, 18);
-  --color-bg-popup-2: rgba(255, 255, 255, 0.08);
-  --color-popup-hover: var(--color-bg-popup-1);
+  --color-popup-hover: var(--color-popup-bg-dark);
   --color-popup-border-hover: rgb(208, 209, 211);
+  --color-popup-bg-disabled: var(--color-popup-bg-light);
+  --color-popup-border: transparent;
+  --color-popup-bg-dark: rgb(18, 18, 18);
+  --color-popup-bg-light: rgb(37, 37, 37);
 }
