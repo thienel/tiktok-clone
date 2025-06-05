@@ -8,6 +8,7 @@ import PasswordInput from './PasswordInput'
 import { isValidDate, getAge } from '~/utils/dateAndTime'
 import EmailInput from './EmailInput'
 import VerificationCode from './VerificationCodeInput'
+import images from '~/assets/images'
 
 const cx = classNames.bind(styles)
 
@@ -19,7 +20,7 @@ function Register({ open }) {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [verificationCode, setVerificationCode] = useState('')
-  const { sendEmailVerification, loading, error, LOADING_TYPE, register } = useAuth()
+  const { sendEmailVerification, loading, LOADING_TYPE, register } = useAuth()
   const [validBirthday, setValidBirthday] = useState('')
   const [allFieldValid, setAllFieldValid] = useState({
     birthday: false,
@@ -28,6 +29,9 @@ function Register({ open }) {
     verificationCode: true,
   })
   const [canNext, setCanNext] = useState(false)
+  const [error, setError] = useState('')
+  const [countdown, setCountdown] = useState(0)
+  const [emailSent, setEmailSent] = useState(false)
 
   const monthRef = useRef()
   const dayRef = useRef()
@@ -68,7 +72,11 @@ function Register({ open }) {
 
     try {
       const result = await sendEmailVerification(email)
-      console.log(result)
+      setError(result.errorCode ? result.errorCode : '')
+      if (result.success) {
+        setEmailSent(true)
+        setCountdown(60)
+      }
     } catch (err) {
       console.error('Error sending verification:', err)
     }
@@ -84,6 +92,7 @@ function Register({ open }) {
     try {
       const result = await register(email, password, birthDate, verificationCode)
       console.log(result)
+      setError(result.errorCode ? result.errorCode : '')
     } catch (err) {
       console.log('Error during register: ', err)
     }
@@ -115,8 +124,20 @@ function Register({ open }) {
     setCanNext(
       allFieldValid.birthday && allFieldValid.email && allFieldValid.password && allFieldValid.verificationCode,
     )
-    console.log(allFieldValid)
   }, [allFieldValid])
+
+  useEffect(() => {
+    let timer
+    if (countdown > 0) {
+      timer = setInterval(() => {
+        setCountdown((prev) => prev - 1)
+      }, 1000)
+    } else if (countdown === 0 && emailSent) {
+      setEmailSent(false)
+    }
+
+    return () => clearInterval(timer)
+  }, [emailSent, countdown])
 
   return (
     <div className={cx('wrapper', { open })}>
@@ -188,9 +209,20 @@ function Register({ open }) {
         onSendVerification={handleSendVerification}
         sendButtonActive={sendEmailButtonActive}
         loading={loading === LOADING_TYPE.SEND_EMAIL}
+        errorCode={error}
+        onResetErrorCode={() => setError('')}
+        countdown={countdown}
       />
-      <button className={cx('submitbutton', { disabled: !canNext })} onClick={handleRegister}>
+      <button
+        className={cx('submitbutton', loading === LOADING_TYPE.REGISTER ? 'loading' : '', {
+          disabled: !canNext || loading === LOADING_TYPE.REGISTER,
+        })}
+        onClick={canNext ? handleRegister : () => {}}
+      >
         Next
+        <div className={cx('loadingIcon')}>
+          <images.loading style={{ margin: '0', width: '20', height: '20' }} />
+        </div>
       </button>
     </div>
   )

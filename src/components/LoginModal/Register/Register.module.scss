@@ -125,6 +125,9 @@
   color: var(--color-white);
   cursor: pointer;
   margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .submitbutton.disabled {
@@ -139,4 +142,29 @@
   line-height: 15px;
   margin-bottom: 9px;
   width: 100%;
+}
+
+.loading {
+  cursor: not-allowed;
+  color: var(--color-placeholder) !important;
+  .loadingIcon {
+    display: flex;
+  }
+}
+
+.loadingIcon {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  animation: 1s linear 0s infinite normal none running loading-animation;
+  margin-left: 4px;
+}
+
+@keyframes loading-animation {
+  0% {
+    transform: rotate(0);
+  }
+  100% {
+    transform: rotate(1turn);
+  }
 }

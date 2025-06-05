@@ -24,7 +24,6 @@ api.interceptors.request.use(
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null)
   const [loading, setLoading] = useState('')
-  const [error, setError] = useState('')
 
   const LOADING_TYPE = {
     CHECK_AUTH: 'CHECK_AUTH',
@@ -43,7 +42,6 @@ export const AuthProvider = ({ children }) => {
 
         try {
           const refreshToken = localStorage.getItem('refreshToken')
-
           if (refreshToken) {
             const response = await axios.post('refresh', { refreshToken })
 
@@ -61,8 +59,9 @@ export const AuthProvider = ({ children }) => {
           return Promise.reject(refreshError)
         }
       }
+
+      return Promise.reject(error)
     },
-    (error) => Promise.reject(error),
   )
 
   useEffect(() => {
@@ -89,7 +88,6 @@ export const AuthProvider = ({ children }) => {
   const login = async (usernameOrEmail, password) => {
     try {
       setLoading(LOADING_TYPE.LOGIN)
-      setError('')
 
       const response = await api.post('login', {
         usernameOrEmail,
@@ -104,9 +102,8 @@ export const AuthProvider = ({ children }) => {
 
       return { success: true, user }
     } catch (error) {
-      const errorCode = error.response?.errorCode || 'REACT_ERROR'
+      const errorCode = error.response?.data.errorCode || 'REACT_ERROR'
 
-      setError(errorCode)
       return { success: false, message: error.response?.message, errorCode }
     } finally {
       setLoading('')
@@ -122,14 +119,15 @@ export const AuthProvider = ({ children }) => {
   const register = async (email, password, birthDate, verificationCode) => {
     try {
       setLoading(LOADING_TYPE.REGISTER)
-      setError('')
       const response = await api.post('register', { email, password, birthDate, verificationCode })
 
-      if (response.data.errorCode) setError(response.data.errorCode)
+      console.log(response.data)
 
-      return { success: response.data.isSuccess }
-    } catch {
-      return { success: false }
+      return { success: response.data }
+    } catch (error) {
+      const errorCode = error.response?.data.errorCode || 'REACT_ERROR'
+
+      return { success: false, message: error.response?.message, errorCode }
     } finally {
       setLoading('')
     }
@@ -138,24 +136,22 @@ export const AuthProvider = ({ children }) => {
   const sendEmailVerification = async (email) => {
     try {
       setLoading(LOADING_TYPE.SEND_EMAIL)
-      setError('')
 
       const response = await api.post('send-verification-code', { email })
 
-      if (response.data.errorCode) setError(response.data.errorCode)
-
       return { success: response.data.isSuccess }
-    } catch {
-      return { success: false }
+    } catch (error) {
+      const errorCode = error.response?.data.errorCode || 'REACT_ERROR'
+
+      return { success: false, message: error.response?.message, errorCode }
     } finally {
-      setLoading(false)
+      setLoading('')
     }
   }
 
   const value = {
     user,
     loading,
-    error,
     login,
     logout,
     register,

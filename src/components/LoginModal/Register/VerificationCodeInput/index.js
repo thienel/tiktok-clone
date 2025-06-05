@@ -17,6 +17,8 @@ function VerificationCode({
   onSendVerification,
   sendButtonActive,
   loading,
+  onResetErrorCode,
+  countdown,
 }) {
   const [focused, setFocused] = useState(false)
   const [warning, setWarning] = useState(false)
@@ -33,6 +35,7 @@ function VerificationCode({
 
   useEffect(() => {
     onSetValid(verificationCode ? isValidCode(verificationCode) : false)
+    onResetErrorCode('')
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [verificationCode])
 
@@ -58,10 +61,10 @@ function VerificationCode({
           </div>
         )}
         <button
-          className={cx('sendcodebutton', { active: sendButtonActive, loading: loading })}
+          className={cx('sendcodebutton', { active: sendButtonActive && countdown === 0, loading: loading })}
           onClick={onSendVerification}
         >
-          Send code
+          {countdown !== 0 ? `Resend code: ${countdown}s` : 'Send code'}
           <div className={cx('loadingIcon')}>
             <images.loading style={{ margin: '0', width: '20', height: '20' }} />
           </div>
@@ -72,6 +75,9 @@ function VerificationCode({
         errorCode === 'VERIFICATION_CODE_EXPIRED' ||
         errorCode === 'INVALID_VERIFICATION_CODE') && (
         <div className={warningDesStyle}>Verification code is expired or incorrect. Try again.</div>
+      )}
+      {errorCode === 'WAIT_BEFORE_RESEND' && (
+        <div className={warningDesStyle}>Please wait 60s before resend email verification.</div>
       )}
     </>
   )
