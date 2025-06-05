@@ -1,18 +1,17 @@
 import classNames from 'classnames/bind'
 import { useState, useEffect } from 'react'
-import styles from './VerificationCode.module.scss'
+import stylesVerificationCode from './VerificationCode.module.scss'
+import stylesInput from '../InputForms.module.scss'
 import images from '~/assets/images'
+import { isValidCode } from '~/utils/validation'
 
-const cx = classNames.bind(styles)
+const cxVerificationCode = classNames.bind(stylesVerificationCode)
+const cxInput = classNames.bind(stylesInput)
 
 function VerificationCode({
   verificationCode,
   setVerificationCode,
-  className,
-  warningIconStyle,
-  warningStyle,
-  warningDesStyle,
-  onSetValid,
+  setValid,
   errorCode,
   onSendVerification,
   sendButtonActive,
@@ -34,16 +33,10 @@ function VerificationCode({
   }, [focused])
 
   useEffect(() => {
-    onSetValid(verificationCode ? isValidCode(verificationCode) : false)
+    setValid(verificationCode ? isValidCode(verificationCode) : false)
     onResetErrorCode('')
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [verificationCode])
-
-  const isValidCode = (code) => {
-    if (!code) return true
-    const regex = /^\d{6}$/
-    return regex.test(code)
-  }
 
   useEffect(() => {
     let timer
@@ -59,7 +52,7 @@ function VerificationCode({
 
   return (
     <>
-      <div className={cx(className, warning ? warningStyle : '', cx('inputwrapper'))}>
+      <div className={classNames(cxInput('wrapper', warning ? 'warningInput' : ''), cxVerificationCode('wrapper'))}>
         <input
           value={verificationCode}
           onChange={(e) => setVerificationCode(e.target.value)}
@@ -68,28 +61,31 @@ function VerificationCode({
           onBlur={() => setFocused(false)}
         />
         {warning && (
-          <div className={warningIconStyle}>
+          <div className={cxInput('warningIcon')}>
             <images.invalid />
           </div>
         )}
         <button
-          className={cx('sendcodebutton', { active: sendButtonActive && countdown === 0, loading: loading })}
+          className={cxVerificationCode('sendcodebutton', {
+            active: sendButtonActive && countdown === 0,
+            loading: loading,
+          })}
           onClick={onSendVerification}
         >
           {countdown !== 0 ? `Resend code: ${countdown}s` : 'Send code'}
-          <div className={cx('loadingIcon')}>
+          <div className={cxVerificationCode('loadingIcon')}>
             <images.loading style={{ margin: '0', width: '20', height: '20' }} fill="currentColor" />
           </div>
         </button>
       </div>
-      {warning && <div className={warningDesStyle}>Enter 6-digit code</div>}
+      {warning && <div className={cxInput('warningDes')}>Enter 6-digit code</div>}
       {(errorCode === 'VERIFICATION_CODE_NOT_FOUND' ||
         errorCode === 'VERIFICATION_CODE_EXPIRED' ||
         errorCode === 'INVALID_VERIFICATION_CODE') && (
-        <div className={warningDesStyle}>Verification code is expired or incorrect. Try again.</div>
+        <div className={cxInput('warningDes')}>Verification code is expired or incorrect. Try again.</div>
       )}
       {errorCode === 'WAIT_BEFORE_RESEND' && (
-        <div className={warningDesStyle}>Please wait 60s before resend email verification.</div>
+        <div className={cxInput('warningDes')}>Please wait 60s before resend email verification.</div>
       )}
     </>
   )

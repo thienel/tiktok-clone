@@ -1,19 +1,14 @@
 import { useEffect, useState } from 'react'
 import classNames from 'classnames/bind'
-import styles from './PasswordInput.module.scss'
+import stylesPassword from './Password.module.scss'
+import stylesInput from '../InputForms.module.scss'
 import images from '~/assets/images'
+import { checkPasswordAcceptedChar, checkPasswordLength, checkPasswordSpecialChar } from '~/utils/validation'
 
-const cx = classNames.bind(styles)
+const cxPassword = classNames.bind(stylesPassword)
+const cxInput = classNames.bind(stylesInput)
 
-function PasswordInput({
-  password,
-  setPassword,
-  className,
-  warningIconStyle,
-  warningStyle,
-  warningDesStyle,
-  onSetValid,
-}) {
+function Password({ password, setPassword, setValid }) {
   const [passwordVisible, setPasswordVisible] = useState(false)
   const [focused, setFocused] = useState(false)
   const [lengthValid, setLengthValid] = useState(false)
@@ -21,26 +16,14 @@ function PasswordInput({
   const [touched, setTouched] = useState(false)
   const [warningDes, setWarningDes] = useState(false)
 
-  const checkLength = (value) => value.length >= 8 && value.length <= 20
-
-  const acceptedChar = (value) => {
-    const regex = /^[a-zA-Z0-9!@#$%^&*()_\-+=[\]{}|;:'",.<>?\\/]*$/
-    return regex.test(value)
-  }
-
-  const checkSpecialChar = (value) => {
-    const regex = /^(?=.*\d)(?=.*[!@#$%^&*(),.?":{}|<>_\-+=\\/[\]`~]).+$/
-    return regex.test(value)
-  }
-
   useEffect(() => {
     if (!password) {
       setTouched(false)
     }
-    const lengthValid = checkLength(password)
-    const specialCharValid = checkSpecialChar(password)
-    onSetValid(password ? lengthValid && specialCharValid : false)
-    setWarningDes(!acceptedChar(password))
+    const lengthValid = checkPasswordLength(password)
+    const specialCharValid = checkPasswordSpecialChar(password)
+    setValid(password ? lengthValid && specialCharValid : false)
+    setWarningDes(!checkPasswordAcceptedChar(password))
     setLengthValid(lengthValid)
     setSpecialCharValid(specialCharValid)
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -58,7 +41,7 @@ function PasswordInput({
 
   return (
     <>
-      <div className={cx(className, showValidation() ? warningStyle : '')}>
+      <div className={cxInput('wrapper', showValidation() ? 'warningInput' : '')}>
         <input
           value={password}
           onChange={(e) => setPassword(e.target.value)}
@@ -75,27 +58,30 @@ function PasswordInput({
         />
         {showValidation() && (
           <div>
-            <images.invalid className={warningIconStyle} />
+            <images.invalid className={cxInput('warningIcon')} />
           </div>
         )}
-        <div className={cx('passwordIconWrapper')} onClick={() => setPasswordVisible((prev) => !prev)}>
+        <div className={cxPassword('passwordIconWrapper')} onClick={() => setPasswordVisible((prev) => !prev)}>
           {passwordVisible ? <images.passwordView /> : <images.passwordHide />}
         </div>
       </div>
 
       {(focused || showValidation()) && (
         <>
-          <div className={warningDesStyle} style={{ display: warningDes ? 'block' : 'none' }}>
+          <div className={cxInput('warningDes')} style={{ display: warningDes ? 'block' : 'none' }}>
             Invalid special character
           </div>
-          <p className={cx('pwValidationTitle')}>Your password must have:</p>
+          <p className={cxPassword('pwValidationTitle')}>Your password must have:</p>
 
-          <div className={cx('pwValidationDes', getStatusClass(lengthValid))}>
+          <div className={cxPassword('pwValidationDes', getStatusClass(lengthValid))}>
             <images.valid style={{ marginRight: '4px' }} fill="currentColor" />
             <span>8 to 20 characters</span>
           </div>
 
-          <div className={cx('pwValidationDes', getStatusClass(specialCharValid))} style={{ marginBottom: '9px' }}>
+          <div
+            className={cxPassword('pwValidationDes', getStatusClass(specialCharValid))}
+            style={{ marginBottom: '9px' }}
+          >
             <images.valid style={{ marginRight: '4px' }} fill="currentColor" />
             <span>Letters, numbers, and special characters</span>
           </div>
@@ -105,4 +91,4 @@ function PasswordInput({
   )
 }
 
-export default PasswordInput
+export default Password

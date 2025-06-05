@@ -51,25 +51,31 @@
     │   │   └── index.js
     │   ├── LoginModal
     │   │   ├── index.js
+    │   │   ├── InputForms
+    │   │   │   ├── BirthDaySelector
+    │   │   │   │   ├── BirthdaySelector.module.scss
+    │   │   │   │   ├── index.js
+    │   │   │   │   └── SelectorDropdown
+    │   │   │   │       ├── index.js
+    │   │   │   │       └── SelectorDropdown.module.scss
+    │   │   │   ├── Email
+    │   │   │   │   ├── Email.module.scss
+    │   │   │   │   └── index.js
+    │   │   │   ├── index.js
+    │   │   │   ├── InputForms.module.scss
+    │   │   │   ├── Password
+    │   │   │   │   ├── index.js
+    │   │   │   │   └── Password.module.scss
+    │   │   │   └── VerificationCode
+    │   │   │       ├── index.js
+    │   │   │       └── VerificationCode.module.scss
     │   │   ├── Login
     │   │   │   ├── index.js
     │   │   │   └── Login.module.scss
     │   │   ├── LoginModal.module.scss
     │   │   └── Register
-    │   │       ├── EmailInput
-    │   │       │   ├── EmailInput.module.scss
-    │   │       │   └── index.js
     │   │       ├── index.js
-    │   │       ├── PasswordInput
-    │   │       │   ├── index.js
-    │   │       │   └── PasswordInput.module.scss
-    │   │       ├── Register.module.scss
-    │   │       ├── SelectorDropdown
-    │   │       │   ├── index.js
-    │   │       │   └── SelectorDropdown.module.scss
-    │   │       └── VerificationCodeInput
-    │   │           ├── index.js
-    │   │           └── VerificationCode.module.scss
+    │   │       └── Register.module.scss
     │   └── Sidebar
     │       ├── FixedGroup
     │       │   ├── FixedGroup.scss
@@ -115,7 +121,7 @@
     │   ├── reset.scss
     │   └── variables.scss
     └── utils
-        ├── dateAndTime.js
-        └── request.js
+        ├── request.js
+        └── validation.js
 
-38 directories, 81 files
+40 directories, 85 files

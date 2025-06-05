@@ -1,73 +1,32 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect } from 'react'
 import classNames from 'classnames/bind'
 import styles from './Register.module.scss'
 import { useAuth } from '~/hooks'
-import SelectorDropdown from './SelectorDropdown'
-import { MONTHS } from '~/constants'
-import PasswordInput from './PasswordInput'
-import { isValidDate, getAge } from '~/utils/dateAndTime'
-import EmailInput from './EmailInput'
-import VerificationCode from './VerificationCodeInput'
+import { EmailInput, PasswordInput, VerificationCode, BirthdaySelector } from '../InputForms'
 import images from '~/assets/images'
 
 const cx = classNames.bind(styles)
 
 function Register({ open }) {
-  const [dropdownField, setDropdownField] = useState(null)
-  const [month, setMonth] = useState('')
-  const [day, setDay] = useState('')
-  const [year, setYear] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [verificationCode, setVerificationCode] = useState('')
-  const { sendEmailVerification, loading, LOADING_TYPE, register } = useAuth()
-  const [validBirthday, setValidBirthday] = useState('')
+  const [birthDate, setBirthDate] = useState('')
   const [allFieldValid, setAllFieldValid] = useState({
     birthday: false,
     email: false,
     password: false,
-    verificationCode: true,
+    verificationCode: false,
   })
   const [canNext, setCanNext] = useState(false)
   const [error, setError] = useState('')
   const [countdown, setCountdown] = useState(0)
   const [emailSent, setEmailSent] = useState(false)
 
-  const monthRef = useRef()
-  const dayRef = useRef()
-  const yearRef = useRef()
+  const { sendEmailVerification, loading, LOADING_TYPE, register } = useAuth()
 
-  const sendEmailButtonActive = !!month && !!day && !!year && !!email
-
-  const handleClickOutside = (e) => {
-    if (dropdownField) {
-      const ref =
-        dropdownField === 'month'
-          ? monthRef
-          : dropdownField === 'day'
-          ? dayRef
-          : dropdownField === 'year'
-          ? yearRef
-          : null
-      if (ref && ref?.current && !ref.current.contains(e.target)) {
-        setDropdownField(null)
-      }
-    }
-  }
-
-  useEffect(() => {
-    if (dropdownField) {
-      window.addEventListener('mousedown', handleClickOutside)
-    }
-
-    return () => {
-      window.removeEventListener('mousedown', handleClickOutside)
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [dropdownField])
-
+  const sendEmailButtonActive = !!birthDate && !!email
   const handleSendVerification = async () => {
-    birthdayValidation()
     if (!allFieldValid.birthday || !allFieldValid.email) return
 
     try {
@@ -83,11 +42,7 @@ function Register({ open }) {
   }
 
   const handleRegister = async () => {
-    birthdayValidation()
     if (!canNext) return
-    const monthValue = MONTHS.find((m) => m.name === month)?.value
-
-    const birthDate = year + '-' + monthValue + '-' + day
 
     try {
       const result = await register(email, password, birthDate, verificationCode)
@@ -97,28 +52,6 @@ function Register({ open }) {
       console.log('Error during register: ', err)
     }
   }
-
-  const birthdayValidation = () => {
-    const monthValue = MONTHS.find((m) => m.name === month)?.value
-    if (!isValidDate(year, monthValue, day)) {
-      setValidBirthday('Enter a valid date')
-      return
-    }
-    if (getAge(year, monthValue, day) < 12) {
-      setValidBirthday('Sorry, looks like you’re not eligible for TikTok... But thanks for checking us out!')
-      return
-    }
-    setValidBirthday('')
-  }
-
-  useEffect(() => {
-    setValidBirthday('')
-    const monthValue = MONTHS.find((m) => m.name === month)?.value
-    setAllFieldValid((prev) => ({
-      ...prev,
-      birthday: isValidDate(year, monthValue, day) && !(getAge(year, monthValue, day) < 12),
-    }))
-  }, [day, month, year])
 
   useEffect(() => {
     setCanNext(
@@ -142,70 +75,29 @@ function Register({ open }) {
   return (
     <div className={cx('wrapper', { open })}>
       <h2 className={cx('title')}>Sign up</h2>
-      <div className={cx('title-birthday')}>When's your birthday?</div>
-      <div className={cx('age-selector')}>
-        <SelectorDropdown
-          type={'month'}
-          ref={monthRef}
-          setValue={setMonth}
-          month={month}
-          dropdownField={dropdownField}
-          setDropdownField={setDropdownField}
-          invalid={!!validBirthday}
-        />
-        <SelectorDropdown
-          type={'day'}
-          ref={dayRef}
-          setValue={setDay}
-          month={month}
-          day={day}
-          year={year}
-          dropdownField={dropdownField}
-          setDropdownField={setDropdownField}
-          invalid={!!validBirthday}
-        />
-        <SelectorDropdown
-          type={'year'}
-          ref={yearRef}
-          setValue={setYear}
-          year={year}
-          dropdownField={dropdownField}
-          setDropdownField={setDropdownField}
-          invalid={!!validBirthday}
-        />
-      </div>
-      <span className={cx('age-validation', { notvalid: !!validBirthday })}>
-        {validBirthday ? validBirthday : "Your birthday won't be shown publicly."}
-      </span>
+
+      <BirthdaySelector
+        setBirthDate={setBirthDate}
+        setValid={(value) => setAllFieldValid((prev) => ({ ...prev, birthday: value }))}
+        errorCode={error}
+      />
 
       <div className={cx('title-method')}>Email</div>
       <EmailInput
         email={email}
         setEmail={setEmail}
-        className={cx('inputwrapper')}
-        warningIconStyle={cx('warningIcon')}
-        warningStyle={cx('warningInput')}
-        warningDesStyle={cx('warningSpan')}
-        onSetValid={(value) => setAllFieldValid((prev) => ({ ...prev, email: value }))}
+        setValid={(value) => setAllFieldValid((prev) => ({ ...prev, email: value }))}
         errorCode={error}
       />
       <PasswordInput
         password={password}
         setPassword={setPassword}
-        className={cx('inputwrapper')}
-        warningIconStyle={cx('warningIcon')}
-        warningStyle={cx('warningInput')}
-        warningDesStyle={cx('warningSpan')}
-        onSetValid={(value) => setAllFieldValid((prev) => ({ ...prev, password: value }))}
+        setValid={(value) => setAllFieldValid((prev) => ({ ...prev, password: value }))}
       />
       <VerificationCode
         verificationCode={verificationCode}
         setVerificationCode={setVerificationCode}
-        className={cx('inputwrapper')}
-        warningIconStyle={cx('warningIcon')}
-        warningStyle={cx('warningInput')}
-        warningDesStyle={cx('warningSpan')}
-        onSetValid={(value) => setAllFieldValid((prev) => ({ ...prev, verificationCode: value }))}
+        setValid={(value) => setAllFieldValid((prev) => ({ ...prev, verificationCode: value }))}
         onSendVerification={handleSendVerification}
         sendButtonActive={sendEmailButtonActive}
         loading={loading === LOADING_TYPE.SEND_EMAIL}

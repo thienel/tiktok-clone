@@ -1,43 +1,31 @@
 import classNames from 'classnames/bind'
 import { useEffect, useState } from 'react'
-import styles from './EmailInput.module.scss'
+import stylesEmail from './Email.module.scss'
 import images from '~/assets/images'
+import stylesInput from '../InputForms.module.scss'
+import { isValidEmailFormat } from '~/utils/validation'
 
-const cx = classNames.bind(styles)
+const cxEmail = classNames.bind(stylesEmail)
+const cxInput = classNames.bind(stylesInput)
 
-function EmailInput({
-  email,
-  setEmail,
-  className,
-  warningIconStyle,
-  warningStyle,
-  warningDesStyle,
-  onSetValid,
-  errorCode,
-}) {
+function Email({ email, setEmail, setValid, errorCode }) {
   const [focused, setFocused] = useState(false)
   const [warning, setWarning] = useState(false)
 
   useEffect(() => {
     if (!focused) {
-      const valid = isValidEmail(email)
+      const valid = isValidEmailFormat(email)
       setWarning(!valid)
-      onSetValid(email ? valid : false)
+      setValid(email ? valid : false)
     } else {
       setWarning(false)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [focused])
 
-  function isValidEmail(email) {
-    if (!email) return true
-    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-    return regex.test(email)
-  }
-
   return (
     <>
-      <div className={`${className} ${warning ? warningStyle : ''}`}>
+      <div className={cxInput('wrapper', warning ? 'warningInput' : '')}>
         <input
           value={email}
           onChange={(e) => setEmail(e.target.value)}
@@ -47,16 +35,16 @@ function EmailInput({
           onBlur={() => setFocused(false)}
         />
         {warning && (
-          <div className={warningIconStyle}>
+          <div className={cxInput('warningIcon')}>
             <images.invalid />
           </div>
         )}
       </div>
-      {warning && <div className={warningDesStyle}>Enter a valid email address</div>}
+      {warning && <div className={cxInput('warningDes')}>Enter a valid email address</div>}
       {(errorCode === 'EMAIL_ALREADY_CONFIRMED' || errorCode === 'EMAIL_USED') && (
-        <p class={cx('confirmedSpan')}>
+        <p class={cxEmail('confirmedSpan')}>
           You’ve already signed up,
-          <span className={cx('loginLink')}>
+          <span className={cxEmail('loginLink')}>
             Log in
             <images.flipLTR color="currentColor" height="12" width="12" />
           </span>
@@ -66,4 +54,4 @@ function EmailInput({
   )
 }
 
-export default EmailInput
+export default Email
