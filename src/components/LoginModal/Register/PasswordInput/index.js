@@ -5,7 +5,15 @@ import images from '~/assets/images'
 
 const cx = classNames.bind(styles)
 
-function PasswordInput({ password, setPassword, className, warningIconStyle, warningStyle, warningDesStyle }) {
+function PasswordInput({
+  password,
+  setPassword,
+  className,
+  warningIconStyle,
+  warningStyle,
+  warningDesStyle,
+  onSetValid,
+}) {
   const [passwordVisible, setPasswordVisible] = useState(false)
   const [focused, setFocused] = useState(false)
   const [lengthValid, setLengthValid] = useState(false)
@@ -16,7 +24,7 @@ function PasswordInput({ password, setPassword, className, warningIconStyle, war
   const checkLength = (value) => value.length >= 8 && value.length <= 20
 
   const acceptedChar = (value) => {
-    const regex = /^[a-zA-Z0-9!@#$%^&*()_\-+=\[\]{}|;:'",.<>?\\/]*$/
+    const regex = /^[a-zA-Z0-9!@#$%^&*()_\-+=[\]{}|;:'",.<>?\\/]*$/
     return regex.test(value)
   }
 
@@ -29,9 +37,13 @@ function PasswordInput({ password, setPassword, className, warningIconStyle, war
     if (!password) {
       setTouched(false)
     }
+    const lengthValid = checkLength(password)
+    const specialCharValid = checkSpecialChar(password)
+    onSetValid(password ? lengthValid && specialCharValid : false)
     setWarningDes(!acceptedChar(password))
-    setLengthValid(checkLength(password))
-    setSpecialCharValid(checkSpecialChar(password))
+    setLengthValid(lengthValid)
+    setSpecialCharValid(specialCharValid)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [password])
 
   const getStatusClass = (isValid) => {

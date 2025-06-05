@@ -3,11 +3,11 @@ import classNames from 'classnames/bind'
 import styles from './Register.module.scss'
 import { useAuth } from '~/hooks'
 import SelectorDropdown from './SelectorDropdown'
-import images from '~/assets/images'
 import { MONTHS } from '~/constants'
 import PasswordInput from './PasswordInput'
 import { isValidDate, getAge } from '~/utils/dateAndTime'
 import EmailInput from './EmailInput'
+import VerificationCode from './VerificationCodeInput'
 
 const cx = classNames.bind(styles)
 
@@ -22,9 +22,9 @@ function Register({ open }) {
   const { sendEmailVerification, loading, error } = useAuth()
   const [validBirthday, setValidBirthday] = useState('')
   const [allFieldValid, setAllFieldValid] = useState({
-    birthday: true,
-    email: true,
-    password: true,
+    birthday: false,
+    email: false,
+    password: false,
     verificationCode: true,
   })
   const [canNext, setCanNext] = useState(false)
@@ -63,8 +63,8 @@ function Register({ open }) {
   }, [dropdownField])
 
   const handleSendVerification = async () => {
-    if (!birthdayValidation()) return
-    if (!sendEmailButtonActive) return
+    birthdayValidation()
+    if (!allFieldValid.birthday || !allFieldValid.email) return
 
     try {
       const result = await sendEmailVerification(email)
@@ -78,24 +78,29 @@ function Register({ open }) {
     const monthValue = MONTHS.find((m) => m.name === month)?.value
     if (!isValidDate(year, monthValue, day)) {
       setValidBirthday('Enter a valid date')
-      return false
+      return
     }
     if (getAge(year, monthValue, day) < 12) {
       setValidBirthday('Sorry, looks like you’re not eligible for TikTok... But thanks for checking us out!')
-      return false
+      return
     }
     setValidBirthday('')
-    return true
   }
 
   useEffect(() => {
     setValidBirthday('')
+    const monthValue = MONTHS.find((m) => m.name === month)?.value
+    setAllFieldValid((prev) => ({
+      ...prev,
+      birthday: isValidDate(year, monthValue, day) && !(getAge(year, monthValue, day) < 12),
+    }))
   }, [day, month, year])
 
   useEffect(() => {
     setCanNext(
       allFieldValid.birthday && allFieldValid.email && allFieldValid.password && allFieldValid.verificationCode,
     )
+    console.log(allFieldValid)
   }, [allFieldValid])
 
   return (
@@ -145,6 +150,8 @@ function Register({ open }) {
         warningIconStyle={cx('warningIcon')}
         warningStyle={cx('warningInput')}
         warningDesStyle={cx('warningSpan')}
+        onSetValid={(value) => setAllFieldValid((prev) => ({ ...prev, email: value }))}
+        errorCode={error}
       />
       <PasswordInput
         password={password}
@@ -153,25 +160,20 @@ function Register({ open }) {
         warningIconStyle={cx('warningIcon')}
         warningStyle={cx('warningInput')}
         warningDesStyle={cx('warningSpan')}
+        onSetValid={(value) => setAllFieldValid((prev) => ({ ...prev, password: value }))}
       />
-
-      <div className={cx('inputwrapper')}>
-        <input
-          value={verificationCode}
-          onChange={(e) => setVerificationCode(e.target.value)}
-          placeholder="Enter 6-digit code"
-          maxLength="6"
-        />
-        <button
-          className={cx('sendcodebutton', { active: sendEmailButtonActive, loading: loading })}
-          onClick={handleSendVerification}
-        >
-          Send code
-          <div className={cx('loadingIcon')}>
-            <images.loading style={{ margin: '0', width: '20', height: '20' }} />
-          </div>
-        </button>
-      </div>
+      <VerificationCode
+        verificationCode={verificationCode}
+        setVerificationCode={setVerificationCode}
+        className={cx('inputwrapper')}
+        warningIconStyle={cx('warningIcon')}
+        warningStyle={cx('warningInput')}
+        warningDesStyle={cx('warningSpan')}
+        onSetValid={(value) => setAllFieldValid((prev) => ({ ...prev, verificationCode: value }))}
+        onSendVerification={handleSendVerification}
+        sendButtonActive={sendEmailButtonActive}
+        loading={loading}
+      />
       <button className={cx('submitbutton', { disabled: !canNext })}>Next</button>
     </div>
   )

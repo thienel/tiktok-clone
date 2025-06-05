@@ -1,0 +1,22 @@
+.confirmedSpan {
+  width: 100%;
+  font-size: 12px;
+  line-height: 15px;
+  margin: 0px 0px 9px;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.loginLink {
+  color: var(--color-primary) !important;
+  display: flex;
+  align-items: center;
+  margin-left: 3px;
+  font-weight: 600;
+  user-select: none;
+
+  &:hover {
+    cursor: pointer;
+  }
+}

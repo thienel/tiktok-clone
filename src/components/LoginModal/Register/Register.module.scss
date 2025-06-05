@@ -112,52 +112,6 @@
   }
 }
 
-.sendcodebutton {
-  background-color: transparent;
-  cursor: not-allowed;
-  font-weight: 600;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  border-radius: 0px 4px 4px 0px;
-  color: var(--color-placeholder);
-  border-left: 2px solid var(--color-border) !important;
-  font-size: 16px;
-  padding: 0px 16px;
-  height: 44px;
-  white-space: nowrap;
-}
-
-.sendcodebutton.active {
-  cursor: pointer;
-  color: var(--color-opposite);
-}
-
-.loading {
-  cursor: not-allowed;
-  color: var(--color-placeholder) !important;
-  .loadingIcon {
-    display: flex;
-  }
-}
-
-.loadingIcon {
-  display: none;
-  align-items: center;
-  justify-content: center;
-  animation: 1s linear 0s infinite normal none running loading-animation;
-  margin-left: 4px;
-}
-
-@keyframes loading-animation {
-  0% {
-    transform: rotate(0);
-  }
-  100% {
-    transform: rotate(1turn);
-  }
-}
-
 .submitbutton {
   user-select: none;
   height: 44px;

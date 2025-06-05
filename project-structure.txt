@@ -1,0 +1,121 @@
+.
+├── config-overrides.js
+├── jsconfig.json
+├── package-lock.json
+├── package.json
+├── project-structure.txt
+├── public
+│   ├── favicon.ico
+│   ├── index.html
+│   ├── logo192.png
+│   ├── logo512.png
+│   ├── manifest.json
+│   └── robots.txt
+├── README.md
+└── src
+    ├── apiServices
+    │   └── searchServices.js
+    ├── App.js
+    ├── App.test.js
+    ├── assets
+    │   ├── fonts
+    │   │   ├── TikTokDisplayFont-Bold.woff2
+    │   │   ├── TikTokFont-Bold.woff2
+    │   │   ├── TikTokFont-Regular.woff2
+    │   │   └── TikTokFont-Semibold.woff2
+    │   └── images
+    │       ├── index.js
+    │       ├── loginOptions
+    │       └── tooltip
+    ├── components
+    │   ├── Button
+    │   │   ├── Button.module.scss
+    │   │   └── index.js
+    │   ├── CircleButton
+    │   │   ├── CircleButton.module.scss
+    │   │   └── index.js
+    │   ├── Drawer
+    │   │   ├── Drawer.module.scss
+    │   │   ├── index.js
+    │   │   ├── More
+    │   │   │   ├── index.js
+    │   │   │   └── More.module.scss
+    │   │   └── Search
+    │   │       ├── index.js
+    │   │       └── Search.module.scss
+    │   ├── FeedVideo
+    │   │   ├── FeedVideo.module.scss
+    │   │   └── index.js
+    │   ├── FixedTop
+    │   │   ├── FixedTop.module.scss
+    │   │   └── index.js
+    │   ├── LoginModal
+    │   │   ├── index.js
+    │   │   ├── Login
+    │   │   │   ├── index.js
+    │   │   │   └── Login.module.scss
+    │   │   ├── LoginModal.module.scss
+    │   │   └── Register
+    │   │       ├── EmailInput
+    │   │       │   ├── EmailInput.module.scss
+    │   │       │   └── index.js
+    │   │       ├── index.js
+    │   │       ├── PasswordInput
+    │   │       │   ├── index.js
+    │   │       │   └── PasswordInput.module.scss
+    │   │       ├── Register.module.scss
+    │   │       ├── SelectorDropdown
+    │   │       │   ├── index.js
+    │   │       │   └── SelectorDropdown.module.scss
+    │   │       └── VerificationCodeInput
+    │   │           ├── index.js
+    │   │           └── VerificationCode.module.scss
+    │   └── Sidebar
+    │       ├── FixedGroup
+    │       │   ├── FixedGroup.scss
+    │       │   └── index.js
+    │       ├── Footer
+    │       │   ├── Footer.scss
+    │       │   └── index.js
+    │       ├── index.js
+    │       ├── MainNav
+    │       │   ├── index.js
+    │       │   └── MainNav.module.scss
+    │       └── Sidebar.module.scss
+    ├── constants
+    │   ├── drawer.js
+    │   ├── footer.js
+    │   ├── index.js
+    │   ├── loginOptions.js
+    │   └── tooltip.js
+    ├── context
+    │   ├── AuthContext.js
+    │   └── ThemeContext.js
+    ├── hooks
+    │   ├── index.js
+    │   ├── useAuth.js
+    │   ├── useDebounce.js
+    │   ├── useTheme.js
+    │   └── useWindowWidth.js
+    ├── index.js
+    ├── layouts
+    │   ├── index.js
+    │   └── Main
+    │       ├── index.js
+    │       └── MainLayout.module.scss
+    ├── pages
+    │   └── Home
+    │       └── index.js
+    ├── reportWebVitals.js
+    ├── routes
+    │   └── index.js
+    ├── setupTests.js
+    ├── styles
+    │   ├── index.js
+    │   ├── reset.scss
+    │   └── variables.scss
+    └── utils
+        ├── dateAndTime.js
+        └── request.js
+
+38 directories, 81 files

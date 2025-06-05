@@ -1,13 +1,28 @@
+import classNames from 'classnames/bind'
 import { useEffect, useState } from 'react'
+import styles from './EmailInput.module.scss'
 import images from '~/assets/images'
 
-function EmailInput({ email, setEmail, className, warningIconStyle, warningStyle, warningDesStyle }) {
+const cx = classNames.bind(styles)
+
+function EmailInput({
+  email,
+  setEmail,
+  className,
+  warningIconStyle,
+  warningStyle,
+  warningDesStyle,
+  onSetValid,
+  errorCode,
+}) {
   const [focused, setFocused] = useState(false)
   const [warning, setWarning] = useState(false)
 
   useEffect(() => {
     if (!focused) {
-      setWarning(!isValidEmail(email))
+      const valid = isValidEmail(email)
+      setWarning(!valid)
+      onSetValid(email ? valid : false)
     } else {
       setWarning(false)
     }
@@ -38,6 +53,15 @@ function EmailInput({ email, setEmail, className, warningIconStyle, warningStyle
         )}
       </div>
       {warning && <div className={warningDesStyle}>Enter a valid email address</div>}
+      {(errorCode === 'EMAIL_ALREADY_CONFIRMED' || errorCode === 'EMAIL_USED') && (
+        <p class={cx('confirmedSpan')}>
+          You’ve already signed up,
+          <span className={cx('loginLink')}>
+            Log in
+            <images.flipLTR color="currentColor" height="12" width="12" />
+          </span>
+        </p>
+      )}
     </>
   )
 }
