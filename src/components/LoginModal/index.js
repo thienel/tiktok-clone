@@ -64,7 +64,9 @@ function LoginModal({ onClose, isOpen }) {
                   })}
                 </div>
               )}
+
               <Login open={method === 'username' && type === 'login'} onBack={() => setMethod(null)} />
+
               <Register open={method === 'username' && type === 'register'} onBack={() => setMethod(null)} />
             </div>
           </div>

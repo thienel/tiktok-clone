@@ -1,0 +1,35 @@
+.wrapper {
+  user-select: none;
+  height: 44px;
+  min-height: 44px;
+  border-radius: 4px;
+  width: 100%;
+  font-size: 16px;
+  font-weight: 700;
+  margin-top: 12px;
+  background-color: var(--color-primary);
+  color: var(--color-white);
+  cursor: pointer;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  div {
+    display: none;
+  }
+}
+
+.wrapper.disabled {
+  background-color: var(--color-popup-bg-disabled);
+  color: var(--color-footer);
+  pointer-events: none;
+}
+
+.loading {
+  cursor: not-allowed;
+  color: var(--color-placeholder) !important;
+  div {
+    display: flex;
+  }
+}

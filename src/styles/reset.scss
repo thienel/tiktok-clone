@@ -39,3 +39,21 @@ body {
 
   transition: color 0.3s ease-in;
 }
+
+.loadingIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: 1s linear 0s infinite normal none running loading-animation;
+  margin-left: 4px;
+  color: inherit;
+}
+
+@keyframes loading-animation {
+  0% {
+    transform: rotate(0);
+  }
+  100% {
+    transform: rotate(1turn);
+  }
+}

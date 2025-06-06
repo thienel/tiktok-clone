@@ -1,4 +1,4 @@
-.title-birthday {
+.title {
   font-size: 16px;
   line-height: 22px;
   margin-bottom: 4px;
@@ -8,22 +8,9 @@
   font-weight: 600;
 }
 
-.age-selector {
+.selector {
   width: 100%;
   display: flex;
   justify-content: space-between;
   margin-bottom: 4px;
-}
-
-.age-validation {
-  font-size: 14px;
-  line-height: 20px;
-  margin-bottom: 16px;
-  text-align: left;
-  width: 100%;
-  color: var(--color-footer);
-}
-
-.age-validation.notvalid {
-  color: red;
 }

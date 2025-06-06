@@ -48,3 +48,16 @@
   margin-bottom: 9px;
   width: 100%;
 }
+
+.description {
+  font-size: 14px;
+  line-height: 20px;
+  margin-bottom: 16px;
+  text-align: left;
+  width: 100%;
+  color: var(--color-footer);
+}
+
+.description.warning {
+  color: var(--color-warning);
+}

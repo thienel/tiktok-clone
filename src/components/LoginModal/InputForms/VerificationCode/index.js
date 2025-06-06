@@ -73,7 +73,7 @@ function VerificationCode({
           onClick={onSendVerification}
         >
           {countdown !== 0 ? `Resend code: ${countdown}s` : 'Send code'}
-          <div className={cxVerificationCode('loadingIcon')}>
+          <div className="loadingIcon">
             <images.loading style={{ margin: '0', width: '20', height: '20' }} fill="currentColor" />
           </div>
         </button>

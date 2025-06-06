@@ -1,11 +1,13 @@
 import { useState, useEffect, useRef } from 'react'
 import classNames from 'classnames/bind'
-import styles from './BirthdaySelector.module.scss'
+import stylesBirthday from './BirthdaySelector.module.scss'
+import stylesInput from '../InputForms.module.scss'
 import SelectorDropdown from './SelectorDropdown'
 import { isValidDate } from '~/utils/validation'
 import { MONTHS } from '~/constants'
 
-const cx = classNames.bind(styles)
+const cxBirthday = classNames.bind(stylesBirthday)
+const cxInput = classNames.bind(stylesInput)
 
 function BirthdaySelector({ setBirthDate, errorCode, setValid }) {
   const [month, setMonth] = useState('')
@@ -47,22 +49,23 @@ function BirthdaySelector({ setBirthDate, errorCode, setValid }) {
 
   useEffect(() => {
     const monthValue = MONTHS.find((m) => m.name === month)?.value
-    const birthDate = year + '-' + monthValue + '-' + day
-    setBirthDate(birthDate)
     const isValid = isValidDate(year, monthValue, day)
     setValid(isValid)
-    if (!day && !month && !year) {
+    if (!day || !month || !year) {
+      setBirthDate('')
       setWarning(false)
     } else {
       setWarning(!isValid)
+      const birthDate = year + '-' + monthValue + '-' + day
+      setBirthDate(birthDate)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [day, month, year])
 
   return (
     <>
-      <div className={cx('title-birthday')}>When's your birthday?</div>
-      <div className={cx('age-selector')}>
+      <div className={cxBirthday('title')}>When's your birthday?</div>
+      <div className={cxBirthday('selector')}>
         <SelectorDropdown
           type={'month'}
           ref={monthRef}
@@ -93,7 +96,7 @@ function BirthdaySelector({ setBirthDate, errorCode, setValid }) {
           invalid={warning}
         />
       </div>
-      <span className={cx('age-validation', { notvalid: warning })}>
+      <span className={cxInput('description', { warning })}>
         {warning ? 'Enter a valid date' : "Your birthday won't be shown publicly."}
       </span>
     </>

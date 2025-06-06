@@ -4,6 +4,7 @@ import styles from './Register.module.scss'
 import { useAuth } from '~/hooks'
 import { EmailInput, PasswordInput, VerificationCode, BirthdaySelector } from '../InputForms'
 import images from '~/assets/images'
+import SubmitButton from '../SubmitButton'
 
 const cx = classNames.bind(styles)
 
@@ -105,17 +106,12 @@ function Register({ open }) {
         onResetErrorCode={() => setError('')}
         countdown={countdown}
       />
-      <button
-        className={cx('submitbutton', loading === LOADING_TYPE.REGISTER ? 'loading' : '', {
-          disabled: !canNext || loading === LOADING_TYPE.REGISTER,
-        })}
-        onClick={canNext ? handleRegister : () => {}}
-      >
-        Next
-        <div className={cx('loadingIcon')}>
-          <images.loading style={{ margin: '0', width: '20', height: '20' }} fill="currentColor" />
-        </div>
-      </button>
+      <SubmitButton
+        disabled={!canNext}
+        loading={loading === LOADING_TYPE.REGISTER}
+        content={'Next'}
+        onClick={handleRegister}
+      />
     </div>
   )
 }
