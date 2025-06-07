@@ -12,6 +12,7 @@ function Home() {
           setLogin(true)
         }}
       />
+      <button>Get me</button>
       <LoginModal onClose={() => setLogin(false)} isOpen={login} />
     </div>
   )
