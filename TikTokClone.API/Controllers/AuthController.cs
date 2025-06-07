@@ -294,8 +294,7 @@ namespace TikTokClone.API.Controllers
             }
         }
 
-        [HttpGet("check-username")]
-        [Authorize]
+        [HttpPost("check-username")]
         [ProducesResponseType(typeof(UserReponseDto), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -303,7 +302,30 @@ namespace TikTokClone.API.Controllers
         {
             try
             {
-                var result = await _authService.CheckValidUsername(request.Username);
+                var result = await _authService.CheckValidUsernameAsync(request.Username);
+                if (!result.IsSuccess)
+                {
+                    return BadRequest(result);
+                }
+
+                return Ok(result);
+            }
+            catch
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+        }
+
+        [HttpPost("change-username")]
+        [ProducesResponseType(typeof(UserReponseDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> ChangeUsername([FromBody] ChangeUsernameDto request)
+        {
+            try
+            {
+                var result = await _authService.ChangeUsernameAsync(request.Email, request.Username);
+
                 if (!result.IsSuccess)
                 {
                     return BadRequest(result);

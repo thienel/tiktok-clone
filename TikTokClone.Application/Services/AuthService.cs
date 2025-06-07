@@ -376,7 +376,7 @@ namespace TikTokClone.Application.Services
             }
         }
 
-        public async Task<AuthResponseDto> CheckValidUsername(string username)
+        public async Task<AuthResponseDto> CheckValidUsernameAsync(string username)
         {
 
             if (string.IsNullOrWhiteSpace(username))
@@ -499,5 +499,47 @@ namespace TikTokClone.Application.Services
             }
         }
 
+        public async Task<AuthResponseDto> ChangeUsernameAsync(string email, string username)
+        {
+            var user = await _userManager.FindByEmailAsync(email);
+            if (user == null)
+            {
+                return new AuthResponseDto
+                {
+                    IsSuccess = false,
+                    Message = "User not found",
+                    ErrorCode = ErrorCodes.USER_NOT_FOUND
+                };
+            }
+
+            if (!user.ChangeUserName(username))
+            {
+                return new AuthResponseDto
+                {
+                    IsSuccess = false,
+                    Message = "Change username failed",
+                    ErrorCode = ErrorCodes.USERNAME_CHANGE_FAILED
+                };
+            }
+
+            var result = await _userManager.UpdateAsync(user);
+
+            if (!result.Succeeded)
+            {
+
+                return new AuthResponseDto
+                {
+                    IsSuccess = false,
+                    Message = "Change username failed",
+                    ErrorCode = ErrorCodes.USERNAME_CHANGE_FAILED
+                };
+            }
+
+            return new AuthResponseDto
+            {
+                IsSuccess = true,
+                Message = "Change username successfully",
+            };
+        }
     }
 }
