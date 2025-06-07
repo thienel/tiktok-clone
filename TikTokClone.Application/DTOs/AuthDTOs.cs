@@ -38,8 +38,13 @@ namespace TikTokClone.Application.DTOs
         public string RefreshToken { get; set; } = string.Empty;
     }
 
-    public class SendVerificationCode
+    public class SendVerificationCodeDto
     {
         public string Email { get; set; } = string.Empty;
+    }
+
+    public class CheckUsernameDto
+    {
+        public string Username { get; set; } = string.Empty;
     }
 }

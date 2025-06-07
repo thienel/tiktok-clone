@@ -7,6 +7,7 @@ using TikTokClone.Application.Constants;
 using TikTokClone.Application.Exceptions;
 using TikTokClone.Domain.Entities;
 using TikTokClone.Domain.Exceptions;
+using System.Text.RegularExpressions;
 
 namespace TikTokClone.Application.Services
 {
@@ -375,6 +376,49 @@ namespace TikTokClone.Application.Services
             }
         }
 
+        public async Task<AuthResponseDto> CheckValidUsername(string username)
+        {
+
+            if (string.IsNullOrWhiteSpace(username))
+            {
+                return new AuthResponseDto
+                {
+                    IsSuccess = false,
+                    Message = "Username can not be empty",
+                    ErrorCode = ErrorCodes.INVALID_CREDENTIALS
+                };
+            }
+
+            Regex _userNameRegex = new(@"^[a-z0-9._]{2,24}$", RegexOptions.Compiled);
+            username = username.Trim();
+            if (!_userNameRegex.IsMatch(username))
+            {
+                return new AuthResponseDto
+                {
+                    IsSuccess = false,
+                    Message = "Invalid username format",
+                    ErrorCode = ErrorCodes.INVALID_USERNAME_FORMAT
+                };
+            }
+
+            var existingUser = await _userManager.FindByNameAsync(username);
+            if (existingUser != null)
+            {
+                return new AuthResponseDto
+                {
+                    IsSuccess = false,
+                    Message = "Username is already in use",
+                    ErrorCode = ErrorCodes.USERNAME_USED
+                };
+            }
+
+            return new AuthResponseDto
+            {
+                IsSuccess = true,
+                Message = "Username is valid"
+            };
+        }
+
         public async Task<AuthResponseDto> SendEmailVerificationCodeAsync(string email)
         {
             try
@@ -454,5 +498,6 @@ namespace TikTokClone.Application.Services
                 };
             }
         }
+
     }
 }

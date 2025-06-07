@@ -219,7 +219,7 @@ namespace TikTokClone.API.Controllers
         [ProducesResponseType(typeof(AuthResponseDto), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> SendVerificationCode([FromBody] SendVerificationCode request)
+        public async Task<IActionResult> SendVerificationCode([FromBody] SendVerificationCodeDto request)
         {
             try
             {
@@ -287,6 +287,29 @@ namespace TikTokClone.API.Controllers
                     Bio = user.Bio,
                 };
                 return Ok(new { user = userResponse });
+            }
+            catch
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+        }
+
+        [HttpGet("check-username")]
+        [Authorize]
+        [ProducesResponseType(typeof(UserReponseDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> CheckUsername([FromBody] CheckUsernameDto request)
+        {
+            try
+            {
+                var result = await _authService.CheckValidUsername(request.Username);
+                if (!result.IsSuccess)
+                {
+                    return BadRequest(result);
+                }
+
+                return Ok(result);
             }
             catch
             {
