@@ -31,6 +31,7 @@ export const AuthProvider = ({ children }) => {
     SEND_EMAIL: 'SEND_EMAIL',
     REGISTER: 'REGISTER',
     CHECK_USERNAME: 'CHECK_USERNAME',
+    CHANGE_USERNAME: 'CHANGE_USERNAME',
   }
 
   api.interceptors.response.use(
@@ -166,6 +167,21 @@ export const AuthProvider = ({ children }) => {
     }
   }
 
+  const changeUsername = async (email, username) => {
+    try {
+      setLoading(LOADING_TYPE.CHANGE_USERNAME)
+
+      const response = await api.post('change-username', { username, email })
+      return { success: response.data.isSuccess }
+    } catch (error) {
+      const errorCode = error.response?.data.errorCode || 'REACT_ERROR'
+
+      return { success: false, message: error.message, errorCode }
+    } finally {
+      setLoading('')
+    }
+  }
+
   const value = {
     user,
     loading,
@@ -174,6 +190,7 @@ export const AuthProvider = ({ children }) => {
     register,
     sendEmailVerification,
     checkUsername,
+    changeUsername,
     isAuthenticated: !!user,
     api,
     LOADING_TYPE,

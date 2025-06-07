@@ -12,6 +12,7 @@ const cx = classNames.bind(styles)
 function LoginModal({ onClose, isOpen }) {
   const [type, setType] = useState('login')
   const [method, setMethod] = useState(null)
+  const [hidePolicy, setHidePolicy] = useState(false)
 
   const QrIcon = loginIconMapper['qr']
   const UsernameIcon = loginIconMapper['username']
@@ -65,12 +66,12 @@ function LoginModal({ onClose, isOpen }) {
                 </div>
               )}
 
-              <Login open={method === 'username' && type === 'login'} onBack={() => setMethod(null)} />
+              {method === 'username' && type === 'login' && <Login />}
 
-              <Register open={method === 'username' && type === 'register'} onBack={() => setMethod(null)} />
+              {method === 'username' && type === 'register' && <Register setHidePolicy={setHidePolicy} />}
             </div>
           </div>
-          {!(type === 'login' && method) && (
+          {(!(type === 'login' && method) || !hidePolicy) && (
             <div className={cx('policy-confirm')}>
               <p>
                 By continuing with an account located in <a href="/">Vietnam</a>, you agree to our{' '}

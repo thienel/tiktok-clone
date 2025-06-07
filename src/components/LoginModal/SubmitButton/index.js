@@ -4,13 +4,17 @@ import images from '~/assets/images'
 
 const cx = classNames.bind(styles)
 
-function SubmitButton({ disabled, loading, content, onClick }) {
+function SubmitButton({ disabled, loading, content, onClick, className }) {
   return (
     <button
-      className={cx('wrapper', {
-        disabled,
-        loading,
-      })}
+      className={cx(
+        'wrapper',
+        {
+          disabled,
+          loading,
+        },
+        className,
+      )}
       onClick={!(disabled || loading) ? onClick : () => {}}
     >
       {content}
