@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import classNames from 'classnames/bind'
 import stylesPassword from './Password.module.scss'
-import stylesInput from '../InputForms.module.scss'
+import stylesInput from '~/components/LoginModal/InputForms/InputForms.module.scss'
 import images from '~/assets/images'
 import { checkPasswordAcceptedChar, checkPasswordLength, checkPasswordSpecialChar } from '~/utils/validation'
 

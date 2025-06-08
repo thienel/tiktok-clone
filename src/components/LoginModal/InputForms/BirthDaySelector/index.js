@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import classNames from 'classnames/bind'
 import stylesBirthday from './BirthdaySelector.module.scss'
-import stylesInput from '../InputForms.module.scss'
+import stylesInput from '~/components/LoginModal/InputForms/InputForms.module.scss'
 import SelectorDropdown from './SelectorDropdown'
 import { isValidDate } from '~/utils/validation'
 import { MONTHS } from '~/constants'

@@ -165,3 +165,40 @@
   top: 24px;
   cursor: pointer;
 }
+
+.contentWrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  overflow-y: scroll;
+  height: 437px;
+  scrollbar-width: none;
+}
+
+.contentTitle {
+  width: 100%;
+  text-align: center;
+  font-size: 32px;
+  margin-bottom: 16px;
+}
+
+.contentSubTitle {
+  font-size: 15px;
+  margin-bottom: 5px;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: 600;
+
+  span {
+    color: var(--color-link);
+    font-size: 12px;
+    cursor: pointer;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}

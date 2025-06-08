@@ -3,7 +3,7 @@ import classNames from 'classnames/bind'
 import { useAuth } from '~/hooks'
 import { EmailInput, PasswordInput, VerificationCode, BirthdaySelector } from '~/components/LoginModal/InputForms'
 import SubmitButton from '~/components/LoginModal/SubmitButton'
-import styles from '../Register.module.scss'
+import styles from '~/components/LoginModal/LoginModal.module.scss'
 
 const cx = classNames.bind(styles)
 
@@ -32,8 +32,6 @@ function Signup({ onSignupSuccess }) {
     try {
       const resultCheckBirthdate = await checkBirthdate(birthDate)
       setError(resultCheckBirthdate.errorCode ? resultCheckBirthdate.errorCode : '')
-      console.log(resultCheckBirthdate)
-      console.log(birthDate)
       if (!resultCheckBirthdate.success) return
 
       const result = await sendEmailVerification(email)
@@ -83,8 +81,8 @@ function Signup({ onSignupSuccess }) {
   }, [emailSent, countdown])
 
   return (
-    <div className={cx('wrapper')}>
-      <h2 className={cx('title')}>Sign up</h2>
+    <div className={cx('contentWrapper')}>
+      <h2 className={cx('contentTitle')}>Sign up</h2>
 
       <BirthdaySelector
         setBirthDate={setBirthDate}
@@ -92,7 +90,7 @@ function Signup({ onSignupSuccess }) {
         errorCode={error}
       />
 
-      <div className={cx('title-method')}>Email</div>
+      <div className={cx('contentSubTitle')}>Email</div>
       <EmailInput
         email={email}
         setEmail={setEmail}

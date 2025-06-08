@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import classNames from 'classnames/bind'
-import stylesInput from '../InputForms.module.scss'
+import stylesInput from '~/components/LoginModal/InputForms/InputForms.module.scss'
 import images from '~/assets/images'
 import { useAuth } from '~/hooks'
 

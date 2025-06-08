@@ -2,7 +2,7 @@ import classNames from 'classnames/bind'
 import { useEffect, useState } from 'react'
 import stylesEmail from './Email.module.scss'
 import images from '~/assets/images'
-import stylesInput from '../InputForms.module.scss'
+import stylesInput from '~/components/LoginModal/InputForms/InputForms.module.scss'
 import { isValidEmailFormat } from '~/utils/validation'
 
 const cxEmail = classNames.bind(stylesEmail)
@@ -42,7 +42,7 @@ function Email({ email, setEmail, setValid, errorCode }) {
       </div>
       {warning && <div className={cxInput('warningDes')}>Enter a valid email address</div>}
       {(errorCode === 'EMAIL_ALREADY_CONFIRMED' || errorCode === 'EMAIL_USED') && (
-        <p class={cxEmail('confirmedSpan')}>
+        <p className={cxEmail('confirmedSpan')}>
           You’ve already signed up,
           <span className={cxEmail('loginLink')}>
             Log in

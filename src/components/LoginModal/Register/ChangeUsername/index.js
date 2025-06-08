@@ -1,10 +1,12 @@
 import { useState } from 'react'
 import classNames from 'classnames/bind'
-import styles from '../Register.module.scss'
-import Username from '../../InputForms/Username'
-import SubmitButton from '../../SubmitButton'
+import stylesContent from '~/components/LoginModal/LoginModal.module.scss'
+import styles from './ChangeUsername.module.scss'
+import Username from '~/components/LoginModal/InputForms/Username'
+import SubmitButton from '~/components/LoginModal/SubmitButton'
 import { useAuth } from '~/hooks'
 
+const cxContent = classNames.bind(stylesContent)
 const cx = classNames.bind(styles)
 
 function ChangeUsername({ email, onLogin }) {
@@ -26,8 +28,8 @@ function ChangeUsername({ email, onLogin }) {
   }
 
   return (
-    <div className={cx('wrapper')}>
-      <h2 className={cx('title')}>Sign up</h2>
+    <div className={cxContent('contentWrapper')}>
+      <h2 className={cxContent('contentTitle')}>Sign up</h2>
       <Username username={username} setUsername={setUsername} setValid={(value) => setValid(value)} />
       <SubmitButton
         disabled={!valid}

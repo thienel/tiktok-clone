@@ -10,7 +10,7 @@ export const isValidDateString = (dateStr) => {
   if (!regex.test(dateStr)) return false
 
   const [year, month, day] = dateStr.split('-').map(Number)
-  return isValidDate(year, month - 1, day)
+  return isValidDate(year, month, day)
 }
 
 export const isValidCode = (code) => {

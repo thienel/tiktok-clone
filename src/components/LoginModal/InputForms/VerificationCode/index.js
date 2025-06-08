@@ -1,7 +1,7 @@
 import classNames from 'classnames/bind'
 import { useState, useEffect } from 'react'
 import stylesVerificationCode from './VerificationCode.module.scss'
-import stylesInput from '../InputForms.module.scss'
+import stylesInput from '~/components/LoginModal/InputForms/InputForms.module.scss'
 import images from '~/assets/images'
 import { isValidCode } from '~/utils/validation'
 
