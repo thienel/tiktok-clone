@@ -23,13 +23,19 @@ function Signup({ onSignupSuccess }) {
   const [countdown, setCountdown] = useState(0)
   const [emailSent, setEmailSent] = useState(false)
 
-  const { sendEmailVerification, loading, LOADING_TYPE, register } = useAuth()
+  const { sendEmailVerification, checkBirthdate, loading, LOADING_TYPE, register } = useAuth()
 
   const sendEmailButtonActive = !!birthDate && !!email
   const handleSendVerification = async () => {
     if (!allFieldValid.birthday || !allFieldValid.email) return
 
     try {
+      const resultCheckBirthdate = await checkBirthdate(birthDate)
+      setError(resultCheckBirthdate.errorCode ? resultCheckBirthdate.errorCode : '')
+      console.log(resultCheckBirthdate)
+      console.log(birthDate)
+      if (!resultCheckBirthdate.success) return
+
       const result = await sendEmailVerification(email)
       setError(result.errorCode ? result.errorCode : '')
       if (result.success) {

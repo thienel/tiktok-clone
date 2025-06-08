@@ -96,8 +96,12 @@ function BirthdaySelector({ setBirthDate, errorCode, setValid }) {
           invalid={warning}
         />
       </div>
-      <span className={cxInput('description', { warning })}>
-        {warning ? 'Enter a valid date' : "Your birthday won't be shown publicly."}
+      <span className={cxInput('description', { warning: warning || errorCode === 'INVALID_BIRTH_DATE' })}>
+        {errorCode === 'INVALID_BIRTH_DATE'
+          ? 'Sorry, looks like you’re not eligible for TikTok... But thanks for checking us out!'
+          : warning
+          ? 'Enter a valid date'
+          : "Your birthday won't be shown publicly."}
       </span>
     </>
   )

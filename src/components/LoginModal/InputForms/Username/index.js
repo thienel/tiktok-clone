@@ -43,9 +43,9 @@ function Username({ username, setUsername, setValid }) {
     }
 
     if (!warning) {
-      console.log('call api')
       check()
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [username])
 
   const validateUsername = (username) => {
@@ -64,7 +64,12 @@ function Username({ username, setUsername, setValid }) {
   return (
     <>
       <div className={cxInput('wrapper', warningMessage ? 'warningInput' : '')}>
-        <input value={username} onChange={(e) => setUsername(e.target.value)} placeholder="Username" />
+        <input
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
+          placeholder="Username"
+          spellCheck="false"
+        />
         {!!warningMessage && (
           <div className={cxInput('warningIcon')}>
             <images.invalid />

@@ -1,5 +1,6 @@
 import { createContext, useState, useEffect, useCallback } from 'react'
 import axios from 'axios'
+import { isValidDateString } from '~/utils/validation'
 
 export const AuthContext = createContext()
 export default AuthContext
@@ -35,6 +36,7 @@ export const AuthProvider = ({ children }) => {
     CHECK_USERNAME: 'CHECK_USERNAME',
     CHANGE_USERNAME: 'CHANGE_USERNAME',
     LOGOUT: 'LOGOUT',
+    CHECK_BIRTHDATE: 'CHECK_BIRTHDATE',
   }
 
   const logout = useCallback(() => {
@@ -242,6 +244,33 @@ export const AuthProvider = ({ children }) => {
     }
   }
 
+  const checkBirthdate = async (birthDate) => {
+    try {
+      birthDate = birthDate.trim()
+      if (!birthDate || !isValidDateString(birthDate)) {
+        return {
+          success: false,
+          message: 'BirthDate is required',
+          errorCode: 'VALIDATION_ERROR',
+        }
+      }
+
+      setLoading(LOADING_TYPE.CHECK_BIRTHDATE)
+
+      const response = await api.post('check-birthdate', { birthDate })
+
+      return { success: response.data?.isSuccess || false, data: response.data }
+    } catch (error) {
+      console.error('Check birthdate error:', error)
+      const errorCode = error.response?.data?.errorCode || 'BIRTHDATE_CHECK_ERROR'
+      const message = error.response?.data?.message || error.message || 'Failed to check birthdate'
+
+      return { success: false, message, errorCode }
+    } finally {
+      setLoading('')
+    }
+  }
+
   const changeUsername = async (email, username) => {
     try {
       if (!email || !username) {
@@ -282,6 +311,7 @@ export const AuthProvider = ({ children }) => {
     checkUsername,
     changeUsername,
     checkAuth,
+    checkBirthdate,
     isAuthenticated: !!user,
     api,
     LOADING_TYPE,

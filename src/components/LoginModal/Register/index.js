@@ -36,8 +36,7 @@ function Register({ setHidePolicy }) {
   return (
     <>
       {!signUpSuccess && <Signup onSignupSuccess={handleSignupSuccess} />}
-      {signUpSuccess && <ChangeUsername onLogin={handleLogin} />}
-      {/* <ChangeUsername onLogin={handleLogin} /> */}
+      {signUpSuccess && <ChangeUsername email={loginRequest.usernameOrEmail} onLogin={handleLogin} />}
     </>
   )
 }

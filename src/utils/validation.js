@@ -1,8 +1,16 @@
-export function isValidDate(year, month, day) {
+export const isValidDate = (year, month, day) => {
   const date = new Date(year, month - 1, day)
   return (
     date.getFullYear() === parseInt(year) && date.getMonth() === parseInt(month) - 1 && date.getDate() === parseInt(day)
   )
+}
+
+export const isValidDateString = (dateStr) => {
+  const regex = /^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])$/
+  if (!regex.test(dateStr)) return false
+
+  const [year, month, day] = dateStr.split('-').map(Number)
+  return isValidDate(year, month - 1, day)
 }
 
 export const isValidCode = (code) => {
