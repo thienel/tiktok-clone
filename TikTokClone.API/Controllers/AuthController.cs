@@ -295,7 +295,7 @@ namespace TikTokClone.API.Controllers
         }
 
         [HttpPost("check-username")]
-        [ProducesResponseType(typeof(UserReponseDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(AuthResponseDto), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> CheckUsername([FromBody] CheckUsernameDto request)
@@ -317,7 +317,7 @@ namespace TikTokClone.API.Controllers
         }
 
         [HttpPost("change-username")]
-        [ProducesResponseType(typeof(UserReponseDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(AuthResponseDto), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> ChangeUsername([FromBody] ChangeUsernameDto request)
@@ -325,6 +325,31 @@ namespace TikTokClone.API.Controllers
             try
             {
                 var result = await _authService.ChangeUsernameAsync(request.Email, request.Username);
+
+                if (!result.IsSuccess)
+                {
+                    return BadRequest(result);
+                }
+
+                return Ok(result);
+            }
+            catch
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+        }
+
+
+
+        [HttpPost("check-birthdate")]
+        [ProducesResponseType(typeof(UserReponseDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public IActionResult CheckBirthdate([FromBody] CheckBirthdateDto request)
+        {
+            try
+            {
+                var result = _authService.CheckValidBirthDate(request.BirthDate);
 
                 if (!result.IsSuccess)
                 {

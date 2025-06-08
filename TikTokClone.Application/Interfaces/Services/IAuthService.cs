@@ -11,5 +11,6 @@ namespace TikTokClone.Application.Interfaces.Services
         Task<AuthResponseDto> SendEmailVerificationCodeAsync(string email);
         Task<AuthResponseDto> CheckValidUsernameAsync(string username);
         Task<AuthResponseDto> ChangeUsernameAsync(string email, string username);
+        AuthResponseDto CheckValidBirthDate(DateOnly birthDate);
     }
 }

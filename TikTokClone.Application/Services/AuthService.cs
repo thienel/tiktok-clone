@@ -541,5 +541,26 @@ namespace TikTokClone.Application.Services
                 Message = "Change username successfully",
             };
         }
+
+        public AuthResponseDto CheckValidBirthDate(DateOnly birthDate)
+        {
+            var result = User.IsValidBirthDate(birthDate);
+
+            if (!result)
+            {
+                return new AuthResponseDto
+                {
+                    IsSuccess = false,
+                    Message = "Birthdate is not valid",
+                    ErrorCode = ErrorCodes.INVALID_BIRTH_DATE
+                };
+            }
+
+            return new AuthResponseDto
+            {
+                IsSuccess = true,
+                Message = "Birthdate is valid"
+            };
+        }
     }
 }
