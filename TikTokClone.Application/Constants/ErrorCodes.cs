@@ -21,6 +21,7 @@ namespace TikTokClone.Application.Constants
         public const string VERIFICATION_CODE_EXPIRED = "VERIFICATION_CODE_EXPIRED";
         public const string USERNAME_USED = "USERNAME_USED";
         public const string USERNAME_CHANGE_FAILED = "USERNAME_CHANGE_FAILED";
+        public const string PASSWORD_CHANGE_FAILED = "PASSWORD_CHANGE_FAILED";
 
 
         public const string INVALID_EMAIL_FORMAT = "INVALID_EMAIL_FORMAT";
