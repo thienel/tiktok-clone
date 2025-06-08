@@ -1,7 +1,7 @@
 
 namespace TikTokClone.Domain.Entities
 {
-    public class EmailVerification
+    public class EmailCode
     {
         public int Id { get; private set; }
         public string Email { get; init; }
@@ -10,7 +10,7 @@ namespace TikTokClone.Domain.Entities
         public DateTime LastTimeGenerateCode { get; private set; }
         public const int ExpiryTimeInHours = 48;
 
-        public EmailVerification(string email)
+        public EmailCode(string email)
         {
             Email = email;
             Code = GenerateRandomSixDigitCode();

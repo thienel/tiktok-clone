@@ -5,13 +5,13 @@ using TikTokClone.Infrastructure.Data;
 
 namespace TikTokClone.Infrastructure.Repositories
 {
-    public class EmailVerificationRepository : BaseRepository<EmailVerification>, IEmailVerificationRepository
+    public class EmailCodeRepository : BaseRepository<EmailCode>, IEmailCodeRepository
     {
-        public EmailVerificationRepository(AppDbContext context) : base(context)
+        public EmailCodeRepository(AppDbContext context) : base(context)
         {
 
         }
-        public async Task<EmailVerification?> FindByEmailAsync(string email)
+        public async Task<EmailCode?> FindByEmailAsync(string email)
         {
             return await _dbSet.FirstOrDefaultAsync(e => e.Email == email);
         }

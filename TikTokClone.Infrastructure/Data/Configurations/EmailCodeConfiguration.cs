@@ -4,9 +4,9 @@ using TikTokClone.Domain.Entities;
 
 namespace TikTokClone.Infrastructure.Data.Configurations
 {
-    public class EmailVerificationConfiguration : IEntityTypeConfiguration<EmailVerification>
+    public class EmailCodeConfiguration : IEntityTypeConfiguration<EmailCode>
     {
-        public void Configure(EntityTypeBuilder<EmailVerification> builder)
+        public void Configure(EntityTypeBuilder<EmailCode> builder)
         {
             builder.ToTable("EmailVerifications");
 
