@@ -25,6 +25,14 @@ function LoginModal({ onClose, isOpen }) {
     onClose()
   }
 
+  const isShowPolicy = () => {
+    if (!method) return true
+
+    if (!!method && type === 'login') return false
+
+    return !hidePolicy
+  }
+
   return (
     <div className={cx('container', { open: isOpen })}>
       <div className={cx('wrapper')}>
@@ -66,12 +74,27 @@ function LoginModal({ onClose, isOpen }) {
                 </div>
               )}
 
-              {method === 'username' && type === 'login' && <Login />}
+              {method === 'username' && type === 'login' && (
+                <Login
+                  onRegister={() => {
+                    setType('register')
+                    setMethod('username')
+                  }}
+                />
+              )}
 
-              {method === 'username' && type === 'register' && <Register setHidePolicy={setHidePolicy} />}
+              {method === 'username' && type === 'register' && (
+                <Register
+                  setHidePolicy={setHidePolicy}
+                  onLogin={() => {
+                    setType('login')
+                    setMethod('username')
+                  }}
+                />
+              )}
             </div>
           </div>
-          {(!(type === 'login' && method) || !hidePolicy) && (
+          {isShowPolicy() && (
             <div className={cx('policy-confirm')}>
               <p>
                 By continuing with an account located in <a href="/">Vietnam</a>, you agree to our{' '}
