@@ -174,7 +174,7 @@ namespace TikTokClone.Application.Services
                     };
                 }
 
-                if (!emailCode.IsVertificationCodeActive())
+                if (!emailCode.IsVerificationCodeActive())
                 {
                     return new AuthResponseDto
                     {
@@ -208,6 +208,9 @@ namespace TikTokClone.Application.Services
                         ErrorCode = ErrorCodes.REGISTRATION_FAILED
                     };
                 }
+
+                _emailCodeRepo.Remove(emailCode);
+                await _emailCodeRepo.SaveChangesAsync();
 
                 return new AuthResponseDto
                 {
@@ -263,7 +266,7 @@ namespace TikTokClone.Application.Services
                     };
                 }
 
-                if (!emailCode.IsVertificationCodeActive())
+                if (!emailCode.IsVerificationCodeActive())
                 {
                     return new AuthResponseDto
                     {
@@ -278,7 +281,7 @@ namespace TikTokClone.Application.Services
                     return new AuthResponseDto
                     {
                         IsSuccess = false,
-                        Message = "Verification code is not match",
+                        Message = "Verification code does not match",
                         ErrorCode = ErrorCodes.INVALID_VERIFICATION_CODE
                     };
                 }
@@ -295,6 +298,9 @@ namespace TikTokClone.Application.Services
                         ErrorCode = ErrorCodes.PASSWORD_RESET_FAILED
                     };
                 }
+
+                _emailCodeRepo.Remove(emailCode);
+                await _emailCodeRepo.SaveChangesAsync();
 
                 return new AuthResponseDto
                 {

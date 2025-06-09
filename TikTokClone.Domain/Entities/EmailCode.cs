@@ -18,7 +18,7 @@ namespace TikTokClone.Domain.Entities
             SetGenerateCodeTime();
         }
 
-        public bool IsVertificationCodeActive()
+        public bool IsVerificationCodeActive()
         {
             return Expiry > DateTime.UtcNow;
         }
