@@ -37,6 +37,7 @@ export const AuthProvider = ({ children }) => {
     CHANGE_USERNAME: 'CHANGE_USERNAME',
     LOGOUT: 'LOGOUT',
     CHECK_BIRTHDATE: 'CHECK_BIRTHDATE',
+    RESET_PASSWORD: 'RESET_PASSWORD',
   }
 
   const logout = useCallback(() => {
@@ -188,7 +189,7 @@ export const AuthProvider = ({ children }) => {
     }
   }
 
-  const sendEmailVerification = async (email) => {
+  const sendEmailVerification = async (email, type = '') => {
     try {
       if (!email) {
         return {
@@ -202,6 +203,7 @@ export const AuthProvider = ({ children }) => {
 
       const response = await api.post('send-verification-code', {
         email: email.trim().toLowerCase(),
+        type,
       })
 
       return { success: response.data?.isSuccess || false, data: response.data }
@@ -300,6 +302,36 @@ export const AuthProvider = ({ children }) => {
     }
   }
 
+  const resetPassword = async (email, password, verificationCode) => {
+    try {
+      if (!email || !password || !verificationCode) {
+        return {
+          success: false,
+          message: 'All fields are required',
+          errorCode: 'VALIDATION_ERROR',
+        }
+      }
+
+      setLoading(LOADING_TYPE.RESET_PASSWORD)
+
+      const response = await api.post('reset-password', {
+        email: email.trim(),
+        password: password.trim(),
+        verificationCode: verificationCode.trim(),
+      })
+
+      return { success: response.data?.isSuccess || false, data: response.data }
+    } catch (error) {
+      console.error('Reset password error:', error)
+      const errorCode = error.response?.data?.errorCode || 'PASSWORD_RESET_ERROR'
+      const message = error.response?.data?.message || error.message || 'Failed to reset password'
+
+      return { success: false, message, errorCode }
+    } finally {
+      setLoading('')
+    }
+  }
+
   const value = {
     user,
     loading,
@@ -312,6 +344,7 @@ export const AuthProvider = ({ children }) => {
     changeUsername,
     checkAuth,
     checkBirthdate,
+    resetPassword,
     isAuthenticated: !!user,
     api,
     LOADING_TYPE,
