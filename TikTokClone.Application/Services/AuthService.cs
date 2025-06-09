@@ -237,7 +237,7 @@ namespace TikTokClone.Application.Services
             }
         }
 
-        public async Task<AuthResponseDto> ChangePasswordAsync(ChangePasswordRequestDto request)
+        public async Task<AuthResponseDto> ResetPasswordAsync(ResetPasswordRequestDto request)
         {
             try
             {
@@ -292,7 +292,7 @@ namespace TikTokClone.Application.Services
                     {
                         IsSuccess = false,
                         Message = string.Join(", ", result.Errors.Select(e => e.Description)),
-                        ErrorCode = ErrorCodes.PASSWORD_CHANGE_FAILED
+                        ErrorCode = ErrorCodes.PASSWORD_RESET_FAILED
                     };
                 }
 
@@ -501,7 +501,7 @@ namespace TikTokClone.Application.Services
             try
             {
                 var existingUser = await _userManager.FindByEmailAsync(email);
-                if (existingUser != null && existingUser.EmailConfirmed && type == "verification")
+                if (existingUser != null && existingUser.EmailConfirmed && string.IsNullOrWhiteSpace(type))
                 {
                     return new AuthResponseDto
                     {
@@ -511,7 +511,7 @@ namespace TikTokClone.Application.Services
                     };
                 }
 
-                if (type == "change-password" && existingUser == null)
+                if (type == "reset-password" && existingUser == null)
                 {
                     return new AuthResponseDto
                     {
@@ -539,7 +539,7 @@ namespace TikTokClone.Application.Services
                     _emailCodeRepo.Update(existingEmailCode);
                     await _emailCodeRepo.SaveChangesAsync();
 
-                    if (type == "change-password")
+                    if (type == "reset-password")
                         sendResult = await _emailService.SendPasswordResetEmailAsync(email, existingEmailCode.Code, existingUser!.Name);
                     else
                         sendResult = await _emailService.SendEmailVerificationCodeAsync(email, existingEmailCode.Code);
@@ -565,7 +565,7 @@ namespace TikTokClone.Application.Services
                 await _emailCodeRepo.AddAsync(emailCode);
                 await _emailCodeRepo.SaveChangesAsync();
 
-                if (type == "change-password")
+                if (type == "reset-password")
                     sendResult = await _emailService.SendPasswordResetEmailAsync(email, emailCode.Code, existingUser!.Name);
                 else
                     sendResult = await _emailService.SendEmailVerificationCodeAsync(email, emailCode.Code);

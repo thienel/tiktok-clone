@@ -74,15 +74,15 @@ namespace TikTokClone.API.Controllers
         }
 
 
-        [HttpPost("change-password")]
+        [HttpPost("reset-password")]
         [ProducesResponseType(typeof(AuthResponseDto), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(AuthResponseDto), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordRequestDto request)
+        public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordRequestDto request)
         {
             try
             {
-                _logger.LogInformation("Change password attempt for email: {Email}", request?.Email);
+                _logger.LogInformation("Reset password attempt for email: {Email}", request?.Email);
 
                 if (!ModelState.IsValid)
                 {
@@ -95,21 +95,21 @@ namespace TikTokClone.API.Controllers
                     });
                 }
 
-                var result = await _authService.ChangePasswordAsync(request!);
+                var result = await _authService.ResetPasswordAsync(request!);
 
                 if (!result.IsSuccess)
                 {
-                    _logger.LogWarning("Change password failed for {Email}: {Message}",
+                    _logger.LogWarning("Reset password failed for {Email}: {Message}",
                         request!.Email, result.Message);
                     return BadRequest(result);
                 }
 
-                _logger.LogInformation("Password change successfully: {Email}", request!.Email);
+                _logger.LogInformation("Password reset successfully: {Email}", request!.Email);
                 return Ok(result);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error during change password for email: {Email}", request?.Email);
+                _logger.LogError(ex, "Error during reset password for email: {Email}", request?.Email);
                 return StatusCode(StatusCodes.Status500InternalServerError,
                     new AuthResponseDto
                     {
