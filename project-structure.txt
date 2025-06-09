@@ -1,5 +1,8 @@
 .
+├── project-structure.txt
 ├── TikTokClone.API
+│   ├── appsettings.Development.json
+│   ├── appsettings.json
 │   ├── Controllers
 │   │   └── AuthController.cs
 │   ├── Program.cs
@@ -7,26 +10,28 @@
 │   │   └── launchSettings.json
 │   ├── TikTokClone.API.csproj
 │   ├── TikTokClone.API.csproj.user
-│   ├── TikTokClone.API.http
-│   ├── appsettings.Development.json
-│   └── appsettings.json
+│   └── TikTokClone.API.http
 ├── TikTokClone.Application
 │   ├── Constants
 │   │   └── ErrorCodes.cs
 │   ├── DTOs
-│   │   └── AuthDTOs.cs
+│   │   ├── AuthDTOs.cs
+│   │   └── UserDTOs.cs
 │   ├── Exceptions
 │   │   └── ExceptionHandler.cs
 │   ├── Interfaces
 │   │   ├── Repositories
 │   │   │   ├── IBaseRepository.cs
+│   │   │   ├── IEmailCodeRepository.cs
 │   │   │   ├── IRefreshTokenRepository.cs
 │   │   │   └── IUserRepository.cs
 │   │   ├── Services
 │   │   │   ├── IAuthService.cs
+│   │   │   ├── IEmailService.cs
 │   │   │   ├── ITokenService.cs
 │   │   │   └── IUserService.cs
 │   │   └── Settings
+│   │       ├── IFirebaseSettings.cs
 │   │       └── IJwtSettings.cs
 │   ├── Mappers
 │   │   └── ErrorCodeMapper.cs
@@ -36,6 +41,7 @@
 │   └── TikTokClone.Application.csproj
 ├── TikTokClone.Domain
 │   ├── Entities
+│   │   ├── EmailCode.cs
 │   │   ├── RefreshToken.cs
 │   │   └── User.cs
 │   ├── Event
@@ -47,27 +53,27 @@
 │   │   └── UserException.cs
 │   └── TikTokClone.Domain.csproj
 ├── TikTokClone.Infrastructure
-│   ├── Authentication
-│   │   ├── JwtSettings.cs
-│   │   └── TokenService.cs
 │   ├── Data
 │   │   ├── AppDbContext.cs
 │   │   └── Configurations
+│   │       ├── EmailCodeConfiguration.cs
 │   │       ├── RefreshTokenConfiguration.cs
 │   │       └── UserConfiguration.cs
 │   ├── DependencyInjection.cs
 │   ├── Migrations
-│   │   ├── 20250529181942_InitDb.Designer.cs
-│   │   ├── 20250529181942_InitDb.cs
-│   │   ├── 20250530170118_ChangeFieldAndRelationshipRefreshToken.Designer.cs
-│   │   ├── 20250530170118_ChangeFieldAndRelationshipRefreshToken.cs
-│   │   └── AppDbContextModelSnapshot.cs
 │   ├── Repositories
 │   │   ├── BaseRepository.cs
+│   │   ├── EmailCodeRepository.cs
 │   │   ├── RefreshTokenRepository.cs
 │   │   └── UserRepository.cs
+│   ├── Services
+│   │   ├── EmailServices.cs
+│   │   └── TokenService.cs
+│   ├── Settings
+│   │   ├── FirebaseSettings.cs
+│   │   ├── JwtSettings.cs
+│   │   └── serviceAccountKey.json
 │   └── TikTokClone.Infrastructure.csproj
-├── TikTokClone.sln
-└── project-structure.txt
+└── TikTokClone.sln
 
-24 directories, 47 files
+25 directories, 61 files
