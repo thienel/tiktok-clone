@@ -28,6 +28,7 @@
 │   │   ├── Services
 │   │   │   ├── IAuthService.cs
 │   │   │   ├── IEmailService.cs
+│   │   │   ├── IFirebaseService.cs
 │   │   │   ├── ITokenService.cs
 │   │   │   └── IUserService.cs
 │   │   └── Settings
@@ -68,6 +69,7 @@
 │   │   └── UserRepository.cs
 │   ├── Services
 │   │   ├── EmailServices.cs
+│   │   ├── FirebaseService.cs
 │   │   └── TokenService.cs
 │   ├── Settings
 │   │   ├── FirebaseSettings.cs
@@ -76,4 +78,4 @@
 │   └── TikTokClone.Infrastructure.csproj
 └── TikTokClone.sln
 
-25 directories, 61 files
+25 directories, 63 files

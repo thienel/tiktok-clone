@@ -19,63 +19,115 @@ namespace TikTokClone.Infrastructure.Services
             _firebaseSettings = firebaseSettings;
 
             var credential = GoogleCredential.FromFile(_firebaseSettings.ServiceAccountKeyPath);
-            _firebaseApp = FirebaseApp.Create(new AppOptions()
+
+            if (FirebaseApp.DefaultInstance == null)
             {
-                Credential = credential,
-                ProjectId = _firebaseSettings.ProjectId,
-            });
+                _firebaseApp = FirebaseApp.Create(new AppOptions()
+                {
+                    Credential = credential,
+                    ProjectId = _firebaseSettings.ProjectId,
+                });
+            }
+            else
+            {
+                _firebaseApp = FirebaseApp.DefaultInstance;
+            }
 
             _firestoreDb = FirestoreDb.Create(_firebaseSettings.ProjectId);
             _storageClient = StorageClient.Create(credential);
         }
 
-        #region Firestore Operations
-        public Task<DocumentReference> AddDocumentAsync<T>(string collection, T data) where T : class
+        #region  Firestore Operations
+        public async Task<DocumentReference> AddDocumentAsync<T>(string collection, T data) where T : class
         {
-            throw new NotImplementedException();
+            var collectionRef = _firestoreDb.Collection(collection);
+            var documentRef = await collectionRef.AddAsync(data);
+
+            return documentRef;
         }
-        public Task<T?> GetDocumentAsync<T>(string collection, string documentId) where T : class
+
+        public async Task<T?> GetDocumentAsync<T>(string collection, string documentId) where T : class
         {
-            throw new NotImplementedException();
+            var documentRef = _firestoreDb.Collection(collection).Document(documentId);
+            var snapshot = await documentRef.GetSnapshotAsync();
+
+            if (snapshot.Exists)
+            {
+                return snapshot.ConvertTo<T>();
+            }
+
+            return null;
         }
-        public Task UpdateDocumentAsync<T>(string collection, string documentId, T data) where T : class
+
+        public async Task UpdateDocumentAsync<T>(string collection, string documentId, T data) where T : class
         {
-            throw new NotImplementedException();
+            var documentRef = _firestoreDb.Collection(collection).Document(documentId);
+            await documentRef.SetAsync(data, SetOptions.MergeAll);
         }
-        public Task DeleteDocumentAsync(string collection, string documentId)
+
+        public async Task DeleteDocumentAsync(string collection, string documentId)
         {
-            throw new NotImplementedException();
+            var documentRef = _firestoreDb.Collection(collection).Document(documentId);
+            await documentRef.DeleteAsync();
         }
-        public Task<IEnumerable<T>> GetCollectionAsync<T>(string collection) where T : class
+
+        public async Task<IEnumerable<T>> GetCollectionAsync<T>(string collection) where T : class
         {
-            throw new NotImplementedException();
+            var snapshot = await _firestoreDb.Collection(collection).GetSnapshotAsync();
+            var result = new List<T>();
+
+            foreach (var document in snapshot.Documents)
+            {
+                if (document.Exists)
+                {
+                    result.Add(document.ConvertTo<T>());
+                }
+            }
+
+            return result;
         }
         #endregion
 
-        #region Storage Operations
+        #region  Storage Operations
         public Task<string> UploadFileAsync(Stream fileStream, string fileName, string contentType)
         {
             throw new NotImplementedException();
         }
+
         public Task<Stream> DownloadFileAsync(string fileName)
         {
             throw new NotImplementedException();
         }
+
         public Task DeleteFileAsync(string fileName)
         {
             throw new NotImplementedException();
         }
         #endregion
 
-        #region Authentication Operations
+        #region  Helper Methods for TikTok Clone
+        public Task<string> UploadVideoAsync(Stream videoStream, string originalFileName)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<string> UploadImageAsync(Stream imageStream, string originalFileName)
+        {
+            throw new NotImplementedException();
+        }
+        #endregion
+
+        #region  Authentication Operations
         public Task<string> CreateCustomTokenAsync(string uid, Dictionary<string, object>? additionalClaims = null)
         {
             throw new NotImplementedException();
         }
+
         public Task<FirebaseAdmin.Auth.UserRecord> GetUserAsync(string uid)
         {
             throw new NotImplementedException();
         }
+
         public Task<FirebaseAdmin.Auth.UserRecord> CreateUserAsync(FirebaseAdmin.Auth.UserRecordArgs args)
         {
             throw new NotImplementedException();
