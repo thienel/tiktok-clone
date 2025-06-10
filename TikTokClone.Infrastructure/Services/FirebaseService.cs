@@ -1,4 +1,5 @@
 using FirebaseAdmin;
+using Google.Api;
 using Google.Apis.Auth.OAuth2;
 using Google.Cloud.Firestore;
 using Google.Cloud.Storage.V1;
@@ -89,19 +90,62 @@ namespace TikTokClone.Infrastructure.Services
         #endregion
 
         #region  Storage Operations
-        public Task<string> UploadFileAsync(Stream fileStream, string fileName, string contentType)
+        public async Task<string> UploadFileAsync(Stream fileStream, string fileName, string contentType)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var uniqueFileName = $"{Guid.NewGuid()}_{fileName}";
+
+                var storageObject = await _storageClient.UploadObjectAsync(
+                    bucket: _firebaseSettings.StorageBucket,
+                    objectName: uniqueFileName,
+                    contentType: contentType,
+                    source: fileStream
+                );
+
+                var downloadUrl = $"https://firebasestorage.googleapis.com/v0/b/{_firebaseSettings.StorageBucket}/o/{Uri.EscapeDataString(uniqueFileName)}?alt=media";
+
+                return downloadUrl;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Error uploading file: {ex.Message}", ex);
+            }
         }
 
-        public Task<Stream> DownloadFileAsync(string fileName)
+        public async Task<Stream> DownloadFileAsync(string fileName)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var stream = new MemoryStream();
+                await _storageClient.DownloadObjectAsync(
+                    bucket: _firebaseSettings.StorageBucket,
+                    objectName: fileName,
+                    destination: stream
+                );
+
+                stream.Position = 0;
+                return stream;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Error downloading file: {ex.Message}", ex);
+            }
         }
 
-        public Task DeleteFileAsync(string fileName)
+        public async Task DeleteFileAsync(string fileName)
         {
-            throw new NotImplementedException();
+            try
+            {
+                await _storageClient.DeleteObjectAsync(
+                    bucket: _firebaseSettings.StorageBucket,
+                    objectName: fileName
+                );
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Error deleting file: {ex.Message}", ex);
+            }
         }
         #endregion
 
