@@ -309,7 +309,7 @@ namespace TikTokClone.API.Controllers
 
         [HttpGet("me")]
         [Authorize]
-        [ProducesResponseType(typeof(UserReponseDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProfileResponseDto), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Me()
@@ -326,7 +326,7 @@ namespace TikTokClone.API.Controllers
                 if (user == null)
                     return BadRequest();
 
-                var userResponse = new UserReponseDto
+                var userResponse = new ProfileResponseDto
                 {
                     Name = user.Name,
                     AvatarURL = user.AvatarURL,
@@ -389,7 +389,7 @@ namespace TikTokClone.API.Controllers
 
 
         [HttpPost("check-birthdate")]
-        [ProducesResponseType(typeof(UserReponseDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(AuthResponseDto), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public IActionResult CheckBirthdate([FromBody] CheckBirthdateDto request)

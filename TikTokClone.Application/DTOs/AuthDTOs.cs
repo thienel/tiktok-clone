@@ -32,7 +32,7 @@ namespace TikTokClone.Application.DTOs
         public string? Token { get; set; }
         public string? RefreshToken { get; set; }
         public DateTime? ExpiresAt { get; set; }
-        public UserReponseDto User { get; set; }
+        public ProfileResponseDto? User { get; set; }
     }
 
     public class RefreshTokenRequestDto
