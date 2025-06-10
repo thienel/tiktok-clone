@@ -72,9 +72,13 @@ namespace TikTokClone.Infrastructure
                 };
             });
 
+            var firebaseSettings = new FirebaseSettings();
+            configuration.GetSection("FirebaseSettings").Bind(firebaseSettings);
+            services.AddSingleton<IFirebaseSettings>(firebaseSettings);
 
             services.AddScoped<ITokenService, TokenService>();
             services.AddScoped<IAuthService, AuthService>();
+            services.AddScoped<IFirebaseService, FirebaseService>();
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IEmailCodeRepository, EmailCodeRepository>();
             services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();

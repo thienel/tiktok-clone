@@ -1,6 +1,8 @@
+using TikTokClone.Application.Interfaces.Settings;
+
 namespace TikTokClone.Infrastructure.Settings
 {
-    public class FirebaseSettings
+    public class FirebaseSettings : IFirebaseSettings
     {
         public string ProjectId { get; set; } = string.Empty;
         public string ServiceAccountKeyPath { get; set; } = string.Empty;
