@@ -1,4 +1,5 @@
 using FirebaseAdmin;
+using FirebaseAdmin.Auth;
 using Google.Api;
 using Google.Apis.Auth.OAuth2;
 using Google.Cloud.Firestore;
@@ -149,33 +150,98 @@ namespace TikTokClone.Infrastructure.Services
         }
         #endregion
 
+        #region Authentication Operations
+        public async Task<string> CreateCustomTokenAsync(string uid, Dictionary<string, object>? additionalClaims = null)
+        {
+            try
+            {
+                var customToken = await FirebaseAuth.DefaultInstance.CreateCustomTokenAsync(uid, additionalClaims);
+                return customToken;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Error creating custom token: {ex.Message}", ex);
+            }
+        }
+
+        public async Task<UserRecord> GetUserAsync(string uid)
+        {
+            try
+            {
+                var userRecord = await FirebaseAuth.DefaultInstance.GetUserAsync(uid);
+                return userRecord;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Error getting user: {ex.Message}", ex);
+            }
+        }
+
+        public async Task<UserRecord> CreateUserAsync(UserRecordArgs args)
+        {
+            try
+            {
+                var userRecord = await FirebaseAuth.DefaultInstance.CreateUserAsync(args);
+                return userRecord;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Error creating user: {ex.Message}", ex);
+            }
+        }
+        #endregion
+
         #region  Helper Methods for TikTok Clone
-        public Task<string> UploadVideoAsync(Stream videoStream, string originalFileName)
+        public async Task<string> UploadVideoAsync(Stream videoStream, string originalFileName)
         {
-            throw new NotImplementedException();
+            var contentType = GetContentType(originalFileName);
+            if (!IsVideoFile(contentType))
+            {
+                throw new ArgumentException("File must be a video");
+            }
+
+            return await UploadFileAsync(videoStream, originalFileName, contentType);
         }
 
-        public Task<string> UploadImageAsync(Stream imageStream, string originalFileName)
+        public async Task<string> UploadImageAsync(Stream imageStream, string originalFileName)
         {
-            throw new NotImplementedException();
+            var contentType = GetContentType(originalFileName);
+            if (!IsImageFile(contentType))
+            {
+                throw new ArgumentException("File must be an image");
+            }
+
+            return await UploadFileAsync(imageStream, originalFileName, contentType);
+        }
+
+        private string GetContentType(string fileName)
+        {
+            var extension = Path.GetExtension(fileName).ToLowerInvariant();
+            return extension switch
+            {
+                ".jpg" or ".jpeg" => "image/jpeg",
+                ".png" => "image/png",
+                ".gif" => "image/gif",
+                ".webp" => "image/webp",
+                ".mp4" => "video/mp4",
+                ".avi" => "video/avi",
+                ".mov" => "video/quicktime",
+                ".wmv" => "video/x-ms-wmv",
+                ".webm" => "video/webm",
+                _ => "application/octet-stream"
+            };
+        }
+
+        private bool IsImageFile(string contentType)
+        {
+            return contentType.StartsWith("image/");
+        }
+
+        private bool IsVideoFile(string contentType)
+        {
+            return contentType.StartsWith("video/");
         }
         #endregion
 
-        #region  Authentication Operations
-        public Task<string> CreateCustomTokenAsync(string uid, Dictionary<string, object>? additionalClaims = null)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<FirebaseAdmin.Auth.UserRecord> GetUserAsync(string uid)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<FirebaseAdmin.Auth.UserRecord> CreateUserAsync(FirebaseAdmin.Auth.UserRecordArgs args)
-        {
-            throw new NotImplementedException();
-        }
-        #endregion
     }
 }
