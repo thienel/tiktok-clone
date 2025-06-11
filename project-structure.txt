@@ -24,9 +24,52 @@
     │   │   ├── TikTokFont-Regular.woff2
     │   │   └── TikTokFont-Semibold.woff2
     │   └── images
+    │       ├── checked.svg
+    │       ├── clear.svg
+    │       ├── close.svg
+    │       ├── flipLTR.svg
+    │       ├── flipRTL.svg
+    │       ├── getApp.svg
+    │       ├── getCoins.svg
     │       ├── index.js
+    │       ├── invalid.svg
+    │       ├── loading.svg
     │       ├── loginOptions
-    │       └── tooltip
+    │       │   ├── apple.svg
+    │       │   ├── facebook.svg
+    │       │   ├── google.svg
+    │       │   ├── kakaotalk.svg
+    │       │   ├── line.svg
+    │       │   ├── qr.svg
+    │       │   └── username.svg
+    │       ├── logo.svg
+    │       ├── logoFull.svg
+    │       ├── passwordHide.svg
+    │       ├── passwordView.svg
+    │       ├── pcApp.svg
+    │       ├── searchIcon.svg
+    │       ├── selector.svg
+    │       ├── tooltip
+    │       │   ├── activity.svg
+    │       │   ├── activityFocused.svg
+    │       │   ├── explore.svg
+    │       │   ├── exploreFocused.svg
+    │       │   ├── following.svg
+    │       │   ├── followingFocused.svg
+    │       │   ├── foryou.svg
+    │       │   ├── foryouFocused.svg
+    │       │   ├── friends.svg
+    │       │   ├── friendsFocused.svg
+    │       │   ├── live.svg
+    │       │   ├── liveFocused.svg
+    │       │   ├── messages.svg
+    │       │   ├── messagesFocused.svg
+    │       │   ├── more.svg
+    │       │   ├── profile.svg
+    │       │   ├── seemore.svg
+    │       │   └── upload.svg
+    │       ├── valid.svg
+    │       └── verify.svg
     ├── components
     │   ├── Button
     │   │   ├── Button.module.scss
@@ -58,6 +101,8 @@
     │   │   │   │   └── SelectorDropdown
     │   │   │   │       ├── index.js
     │   │   │   │       └── SelectorDropdown.module.scss
+    │   │   │   ├── Default
+    │   │   │   │   └── index.js
     │   │   │   ├── Email
     │   │   │   │   ├── Email.module.scss
     │   │   │   │   └── index.js
@@ -66,6 +111,9 @@
     │   │   │   ├── Password
     │   │   │   │   ├── index.js
     │   │   │   │   └── Password.module.scss
+    │   │   │   ├── Username
+    │   │   │   │   ├── index.js
+    │   │   │   │   └── Username.module.scss
     │   │   │   └── VerificationCode
     │   │   │       ├── index.js
     │   │   │       └── VerificationCode.module.scss
@@ -73,9 +121,16 @@
     │   │   │   ├── index.js
     │   │   │   └── Login.module.scss
     │   │   ├── LoginModal.module.scss
-    │   │   └── Register
+    │   │   ├── Register
+    │   │   │   ├── ChangeUsername
+    │   │   │   │   ├── ChangeUsername.module.scss
+    │   │   │   │   └── index.js
+    │   │   │   ├── index.js
+    │   │   │   └── Signup
+    │   │   │       └── index.js
+    │   │   └── SubmitButton
     │   │       ├── index.js
-    │   │       └── Register.module.scss
+    │   │       └── SubmitButton.module.scss
     │   └── Sidebar
     │       ├── FixedGroup
     │       │   ├── FixedGroup.scss
@@ -90,6 +145,7 @@
     │       └── Sidebar.module.scss
     ├── constants
     │   ├── drawer.js
+    │   ├── errorCode.js
     │   ├── footer.js
     │   ├── index.js
     │   ├── loginOptions.js
@@ -124,4 +180,4 @@
         ├── request.js
         └── validation.js
 
-40 directories, 85 files
+45 directories, 136 files

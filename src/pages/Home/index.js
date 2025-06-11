@@ -1,20 +1,22 @@
 import { useState } from 'react'
 import FixedTop from '~/components/FixedTop'
 import LoginModal from '~/components/LoginModal'
+import { MainLayout } from '~/layouts'
 
 function Home() {
   const [login, setLogin] = useState(false)
   return (
-    <div>
-      <h2 style={{ textAlign: 'center' }}>Home page</h2>
-      <FixedTop
-        onLogin={() => {
-          setLogin(true)
-        }}
-      />
-      <button>Get me</button>
-      <LoginModal onClose={() => setLogin(false)} isOpen={login} />
-    </div>
+    <MainLayout>
+      <div>
+        <h2 style={{ textAlign: 'center' }}>Home page</h2>
+        <FixedTop
+          onLogin={() => {
+            setLogin(true)
+          }}
+        />
+        <LoginModal onClose={() => setLogin(false)} isOpen={login} />
+      </div>
+    </MainLayout>
   )
 }
 

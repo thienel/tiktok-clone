@@ -26,10 +26,10 @@ function BirthdaySelector({ setBirthDate, errorCode, setValid }) {
         dropdownField === 'month'
           ? monthRef
           : dropdownField === 'day'
-          ? dayRef
-          : dropdownField === 'year'
-          ? yearRef
-          : null
+            ? dayRef
+            : dropdownField === 'year'
+              ? yearRef
+              : null
       if (ref && ref?.current && !ref.current.contains(e.target)) {
         setDropdownField(null)
       }
@@ -100,8 +100,8 @@ function BirthdaySelector({ setBirthDate, errorCode, setValid }) {
         {errorCode === 'INVALID_BIRTH_DATE'
           ? 'Sorry, looks like you’re not eligible for TikTok... But thanks for checking us out!'
           : warning
-          ? 'Enter a valid date'
-          : "Your birthday won't be shown publicly."}
+            ? 'Enter a valid date'
+            : "Your birthday won't be shown publicly."}
       </span>
     </>
   )

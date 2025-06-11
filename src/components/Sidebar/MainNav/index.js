@@ -15,16 +15,18 @@ function MainNav({ onSelect, selectedTooltip, isCollapsed }) {
         const Icon = tooltips[key]
         const IconSelected = tooltips[focused]
         const isSelected = selectedTooltip === key
-        return (!loginRequired || (loginRequired && isAuthenticated)) && (
-          <Button key={key} to={url} onClick={() => onSelect(key)} selected={isSelected} left>
-            <div className={cx('TooltipContent')}>
-              <div className={cx('TooltipIconWrapper')} style={{ fontSize: size }}>
-                {isSelected ? <IconSelected /> : <Icon />}
+        return (
+          (!loginRequired || (loginRequired && isAuthenticated)) && (
+            <Button key={key} to={url} onClick={() => onSelect(key)} selected={isSelected} left>
+              <div className={cx('TooltipContent')}>
+                <div className={cx('TooltipIconWrapper')} style={{ fontSize: size }}>
+                  {isSelected ? <IconSelected /> : <Icon />}
+                </div>
+                <span>{label}</span>
               </div>
-              <span>{label}</span>
-            </div>
-          </Button>
-              )
+            </Button>
+          )
+        )
       })}
     </div>
   )
