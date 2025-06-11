@@ -40,17 +40,21 @@
   scroll-snap-align: start center;
 }
 
+.content.expand {
+  padding: 1rem !important;
+  padding-left: 48px !important;
+}
+
 .video-wrapper {
   position: relative;
-  box-sizing: border-box;
-  background-size: cover;
+  top: 0;
+  bottom: 0;
+  width: 100%;
+  max-width: 465px;
+  aspect-ratio: 9 / 16;
   cursor: pointer;
-  aspect-ratio: 0.5625 / 1;
-  min-width: calc(500px - 9.5rem);
-  min-height: calc(888.889px - 16.8889rem);
-  max-height: calc(100vh - 0px - 2rem);
   align-self: center;
-  flex-grow: 1;
+  flex-shrink: 0;
 }
 
 .player-container {
@@ -64,4 +68,20 @@
   top: 0px;
   left: 0px;
   border-radius: 16px;
+  object-fit: cover;
+}
+
+.section-actionBar {
+  width: 48px;
+  height: 100%;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: center;
+  background-color: #aaa;
+}
+
+.actionBar {
+  background-color: #aaa;
 }
