@@ -61,7 +61,7 @@ function VerificationCode({
           onBlur={() => setFocused(false)}
         />
         {warning && (
-          <div className={cxInput('warningIcon')}>
+          <div className={classNames(cxInput('warningIcon'), cxVerificationCode('warningIcon'))}>
             <images.invalid />
           </div>
         )}

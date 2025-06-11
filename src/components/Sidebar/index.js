@@ -18,7 +18,7 @@ function Sidebar({ selectedTooltip, onSelectTooltip, isCollapsed, searchValue })
       <FixedGroup isCollapsed={isCollapsed} onSelect={onSelectTooltip} searchValue={searchValue} />
       <div className={cx('NavWrapper')}>
         <MainNav onSelect={onSelectTooltip} selectedTooltip={selectedTooltip} isCollapsed={isCollapsed} />
-        {isAuthenticated && (
+        {!isAuthenticated && (
           <>
             <div className={cx('LoginButtonWrapper')}>
               <Button primary onClick={() => setLogin(true)}>
