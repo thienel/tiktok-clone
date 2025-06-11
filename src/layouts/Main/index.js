@@ -9,7 +9,6 @@ import Drawer from '~/components/Drawer'
 const cx = classNames.bind(styles)
 
 function MainLayout({ children }) {
-  console.log('render Main Layout')
   const [selectedTooltip, setSelectedTooltip] = useState('foryou')
   const prevSelectedTooltip = useRef('foryou')
   const [searchValue, setSearchValue] = useState('')
@@ -51,7 +50,7 @@ function MainLayout({ children }) {
         isCollapsed={isCollapsed}
         searchValue={searchValue}
       />
-      <div className={cx('MainContent')}>{children}</div>
+      <main className={cx('MainContent', { expand: isCollapsed })}>{children}</main>
     </div>
   )
 }

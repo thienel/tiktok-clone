@@ -9,8 +9,12 @@
 
 .MainContent {
   position: absolute;
-  left: var(--width-sidebar-content-collapse);
+  left: var(--width-sidebar);
   right: 0;
   top: 0;
   bottom: 0;
+}
+
+.MainContent.expand {
+  left: var(--width-sidebar-collapse);
 }

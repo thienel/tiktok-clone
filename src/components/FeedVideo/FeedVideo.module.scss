@@ -1,0 +1,67 @@
+.wrapper {
+  width: 100%;
+  height: 100vh;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.container {
+  width: 100%;
+  height: 100%;
+  padding-right: 64px;
+  scroll-snap-type: y mandatory;
+  overflow-y: scroll;
+  scrollbar-width: none;
+  scroll-behavior: smooth;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.content {
+  width: 100%;
+  height: 100%;
+  padding: 16px;
+  padding-right: 128px;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  padding-block: 1rem;
+  margin: 0px auto;
+  transition-property: margin, width, padding;
+  transition-duration: 300ms;
+  transition-timing-function: linear;
+  overflow: hidden clip;
+  scroll-snap-stop: always;
+  scroll-snap-align: start center;
+}
+
+.video-wrapper {
+  position: relative;
+  box-sizing: border-box;
+  background-size: cover;
+  cursor: pointer;
+  aspect-ratio: 0.5625 / 1;
+  min-width: calc(500px - 9.5rem);
+  min-height: calc(888.889px - 16.8889rem);
+  max-height: calc(100vh - 0px - 2rem);
+  align-self: center;
+  flex-grow: 1;
+}
+
+.player-container {
+  border-radius: 16px;
+}
+
+.video {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  border-radius: 16px;
+}
