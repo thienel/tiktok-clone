@@ -1,89 +1,25 @@
 import { createContext, useState, useEffect, useCallback } from 'react'
-import axios from 'axios'
+import { authAPI, tokenManager, setupAPIInterceptors, handleAPIError, LOADING_TYPES } from '~/utils/api'
 import { isValidDateString } from '~/utils/validation'
 
 export const AuthContext = createContext()
 export default AuthContext
-
-const baseURL = process.env.REACT_APP_API_BASE_URL
-
-const api = axios.create({
-  baseURL: baseURL + 'auth/',
-  timeout: 10000, // 10 second timeout
-})
-
-api.interceptors.request.use(
-  (config) => {
-    const token = localStorage.getItem('token')
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`
-    }
-    return config
-  },
-  (error) => Promise.reject(error),
-)
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null)
   const [loading, setLoading] = useState('')
   const [isInitialized, setIsInitialized] = useState(false)
 
-  const LOADING_TYPE = {
-    CHECK_AUTH: 'CHECK_AUTH',
-    LOGIN: 'LOGIN',
-    SEND_EMAIL: 'SEND_EMAIL',
-    REGISTER: 'REGISTER',
-    CHECK_USERNAME: 'CHECK_USERNAME',
-    CHANGE_USERNAME: 'CHANGE_USERNAME',
-    LOGOUT: 'LOGOUT',
-    CHECK_BIRTHDATE: 'CHECK_BIRTHDATE',
-    RESET_PASSWORD: 'RESET_PASSWORD',
-  }
-
   const logout = useCallback(() => {
-    localStorage.removeItem('token')
-    localStorage.removeItem('refreshToken')
+    tokenManager.clearTokens()
     setUser(null)
     setLoading('')
   }, [])
 
-  api.interceptors.response.use(
-    (response) => response,
-    async (error) => {
-      const originalRequest = error.config
-
-      if (error.response?.status === 401 && !originalRequest._retry) {
-        originalRequest._retry = true
-
-        try {
-          const refreshToken = localStorage.getItem('refreshToken')
-          if (!refreshToken) {
-            logout()
-            return Promise.reject(error)
-          }
-
-          const response = await api.post('refresh', { refreshToken })
-          const { token: newToken, refreshToken: newRefreshToken } = response.data
-
-          // Validate tokens exist
-          if (!newToken || !newRefreshToken) {
-            throw new Error('Invalid refresh response')
-          }
-
-          localStorage.setItem('token', newToken)
-          localStorage.setItem('refreshToken', newRefreshToken)
-
-          originalRequest.headers.Authorization = `Bearer ${newToken}`
-          return api(originalRequest)
-        } catch (refreshError) {
-          logout()
-          return Promise.reject(refreshError)
-        }
-      }
-
-      return Promise.reject(error)
-    },
-  )
+  // Initialize API interceptors with logout callback
+  useEffect(() => {
+    setupAPIInterceptors(logout)
+  }, [logout])
 
   useEffect(() => {
     checkAuth()
@@ -92,26 +28,24 @@ export const AuthProvider = ({ children }) => {
 
   const checkAuth = async () => {
     try {
-      setLoading(LOADING_TYPE.CHECK_AUTH)
-      const token = localStorage.getItem('token')
+      setLoading(LOADING_TYPES.CHECK_AUTH)
+      const token = tokenManager.getToken()
 
       if (!token) {
         setIsInitialized(true)
         return
       }
 
-      const response = await api.get('me')
+      const response = await authAPI.get('me')
 
       if (response.data?.user) {
         setUser(response.data.user)
       } else {
-        // Invalid response structure
         throw new Error('Invalid user data')
       }
     } catch (error) {
       console.error('Auth check failed:', error)
-      localStorage.removeItem('token')
-      localStorage.removeItem('refreshToken')
+      tokenManager.clearTokens()
       setUser(null)
     } finally {
       setLoading('')
@@ -129,9 +63,9 @@ export const AuthProvider = ({ children }) => {
         }
       }
 
-      setLoading(LOADING_TYPE.LOGIN)
+      setLoading(LOADING_TYPES.LOGIN)
 
-      const response = await api.post('login', {
+      const response = await authAPI.post('login', {
         usernameOrEmail: usernameOrEmail.trim(),
         password,
       })
@@ -142,16 +76,12 @@ export const AuthProvider = ({ children }) => {
         throw new Error('Invalid login response')
       }
 
-      localStorage.setItem('token', token)
-      localStorage.setItem('refreshToken', refreshToken)
+      tokenManager.setTokens(token, refreshToken)
       setUser(user)
 
       return { success: true, user }
     } catch (error) {
-      console.error('Login error:', error)
-      const errorCode = error.response?.data?.errorCode || 'LOGIN_ERROR'
-      const message = error.response?.data?.message || error.message || 'Login failed'
-
+      const { errorCode, message } = handleAPIError(error)
       return { success: false, message, errorCode }
     } finally {
       setLoading('')
@@ -168,9 +98,9 @@ export const AuthProvider = ({ children }) => {
         }
       }
 
-      setLoading(LOADING_TYPE.REGISTER)
+      setLoading(LOADING_TYPES.REGISTER)
 
-      const response = await api.post('register', {
+      const response = await authAPI.post('register', {
         email: email.trim().toLowerCase(),
         password,
         birthDate,
@@ -179,10 +109,7 @@ export const AuthProvider = ({ children }) => {
 
       return { success: true, data: response.data }
     } catch (error) {
-      console.error('Registration error:', error)
-      const errorCode = error.response?.data?.errorCode || 'REGISTRATION_ERROR'
-      const message = error.response?.data?.message || error.message || 'Registration failed'
-
+      const { errorCode, message } = handleAPIError(error)
       return { success: false, message, errorCode }
     } finally {
       setLoading('')
@@ -199,19 +126,16 @@ export const AuthProvider = ({ children }) => {
         }
       }
 
-      setLoading(LOADING_TYPE.SEND_EMAIL)
+      setLoading(LOADING_TYPES.SEND_EMAIL)
 
-      const response = await api.post('send-verification-code', {
+      const response = await authAPI.post('send-verification-code', {
         email: email.trim().toLowerCase(),
         type,
       })
 
       return { success: response.data?.isSuccess || false, data: response.data }
     } catch (error) {
-      console.error('Send email error:', error)
-      const errorCode = error.response?.data?.errorCode || 'EMAIL_ERROR'
-      const message = error.response?.data?.message || error.message || 'Failed to send email'
-
+      const { errorCode, message } = handleAPIError(error)
       return { success: false, message, errorCode }
     } finally {
       setLoading('')
@@ -228,18 +152,15 @@ export const AuthProvider = ({ children }) => {
         }
       }
 
-      setLoading(LOADING_TYPE.CHECK_USERNAME)
+      setLoading(LOADING_TYPES.CHECK_USERNAME)
 
-      const response = await api.post('check-username', {
+      const response = await authAPI.post('check-username', {
         username: username.trim(),
       })
 
       return { success: response.data?.isSuccess || false, data: response.data }
     } catch (error) {
-      console.error('Check username error:', error)
-      const errorCode = error.response?.data?.errorCode || 'USERNAME_CHECK_ERROR'
-      const message = error.response?.data?.message || error.message || 'Failed to check username'
-
+      const { errorCode, message } = handleAPIError(error)
       return { success: false, message, errorCode }
     } finally {
       setLoading('')
@@ -257,16 +178,13 @@ export const AuthProvider = ({ children }) => {
         }
       }
 
-      setLoading(LOADING_TYPE.CHECK_BIRTHDATE)
+      setLoading(LOADING_TYPES.CHECK_BIRTHDATE)
 
-      const response = await api.post('check-birthdate', { birthDate })
+      const response = await authAPI.post('check-birthdate', { birthDate })
 
       return { success: response.data?.isSuccess || false, data: response.data }
     } catch (error) {
-      console.error('Check birthdate error:', error)
-      const errorCode = error.response?.data?.errorCode || 'BIRTHDATE_CHECK_ERROR'
-      const message = error.response?.data?.message || error.message || 'Failed to check birthdate'
-
+      const { errorCode, message } = handleAPIError(error)
       return { success: false, message, errorCode }
     } finally {
       setLoading('')
@@ -283,19 +201,16 @@ export const AuthProvider = ({ children }) => {
         }
       }
 
-      setLoading(LOADING_TYPE.CHANGE_USERNAME)
+      setLoading(LOADING_TYPES.CHANGE_USERNAME)
 
-      const response = await api.post('change-username', {
+      const response = await authAPI.post('change-username', {
         username: username.trim(),
         email: email.trim().toLowerCase(),
       })
 
       return { success: response.data?.isSuccess || false, data: response.data }
     } catch (error) {
-      console.error('Change username error:', error)
-      const errorCode = error.response?.data?.errorCode || 'USERNAME_CHANGE_ERROR'
-      const message = error.response?.data?.message || error.message || 'Failed to change username'
-
+      const { errorCode, message } = handleAPIError(error)
       return { success: false, message, errorCode }
     } finally {
       setLoading('')
@@ -312,9 +227,9 @@ export const AuthProvider = ({ children }) => {
         }
       }
 
-      setLoading(LOADING_TYPE.RESET_PASSWORD)
+      setLoading(LOADING_TYPES.RESET_PASSWORD)
 
-      const response = await api.post('reset-password', {
+      const response = await authAPI.post('reset-password', {
         email: email.trim(),
         password: password.trim(),
         verificationCode: verificationCode.trim(),
@@ -322,10 +237,7 @@ export const AuthProvider = ({ children }) => {
 
       return { success: response.data?.isSuccess || false, data: response.data }
     } catch (error) {
-      console.error('Reset password error:', error)
-      const errorCode = error.response?.data?.errorCode || 'PASSWORD_RESET_ERROR'
-      const message = error.response?.data?.message || error.message || 'Failed to reset password'
-
+      const { errorCode, message } = handleAPIError(error)
       return { success: false, message, errorCode }
     } finally {
       setLoading('')
@@ -346,8 +258,7 @@ export const AuthProvider = ({ children }) => {
     checkBirthdate,
     resetPassword,
     isAuthenticated: !!user,
-    api,
-    LOADING_TYPE,
+    LOADING_TYPES,
   }
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
