@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.CodeDom;
 using System.Security.Claims;
 using TikTokClone.Application.Constants;
 using TikTokClone.Application.DTOs;
@@ -33,46 +34,31 @@ namespace TikTokClone.API.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Register([FromBody] RegisterRequestDto request)
         {
-            try
+            _logger.LogInformation("Registration attempt for email: {Email}", request?.Email);
+
+            if (!ModelState.IsValid)
             {
-                _logger.LogInformation("Registration attempt for email: {Email}", request?.Email);
-
-                if (!ModelState.IsValid)
+                _logger.LogWarning("Invalid model state for registration");
+                return BadRequest(new AuthResponseDto
                 {
-                    _logger.LogWarning("Invalid model state for registration");
-                    return BadRequest(new AuthResponseDto
-                    {
-                        IsSuccess = false,
-                        Message = "Invalid input data",
-                        ErrorCode = ErrorCodes.VALIDATION_ERROR
-                    });
-                }
-
-                var result = await _authService.RegisterAsync(request!);
-
-                if (!result.IsSuccess)
-                {
-                    _logger.LogWarning("Registration failed for {Email}: {Message}",
-                        request!.Email, result.Message);
-                    return BadRequest(result);
-                }
-
-                _logger.LogInformation("User registered successfully: {Email}", request!.Email);
-                return Ok(result);
+                    IsSuccess = false,
+                    Message = "Invalid input data",
+                    ErrorCode = ErrorCodes.VALIDATION_ERROR
+                });
             }
-            catch (Exception ex)
+
+            var result = await _authService.RegisterAsync(request!);
+
+            if (!result.IsSuccess)
             {
-                _logger.LogError(ex, "Error during registration for email: {Email}", request?.Email);
-                return StatusCode(StatusCodes.Status500InternalServerError,
-                    new AuthResponseDto
-                    {
-                        IsSuccess = false,
-                        Message = "An internal server error occurred",
-                        ErrorCode = ErrorCodes.UNEXPECTED_ERROR
-                    });
+                _logger.LogWarning("Registration failed for {Email}: {Message}",
+                    request!.Email, result.Message);
+                return BadRequest(result);
             }
+
+            _logger.LogInformation("User registered successfully: {Email}", request!.Email);
+            return Ok(result);
         }
-
 
         [HttpPost("reset-password")]
         [ProducesResponseType(typeof(AuthResponseDto), StatusCodes.Status200OK)]
@@ -80,44 +66,30 @@ namespace TikTokClone.API.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordRequestDto request)
         {
-            try
+            _logger.LogInformation("Reset password attempt for email: {Email}", request?.Email);
+
+            if (!ModelState.IsValid)
             {
-                _logger.LogInformation("Reset password attempt for email: {Email}", request?.Email);
-
-                if (!ModelState.IsValid)
+                _logger.LogWarning("Invalid model state for password reset");
+                return BadRequest(new AuthResponseDto
                 {
-                    _logger.LogWarning("Invalid model state for registration");
-                    return BadRequest(new AuthResponseDto
-                    {
-                        IsSuccess = false,
-                        Message = "Invalid input data",
-                        ErrorCode = ErrorCodes.VALIDATION_ERROR
-                    });
-                }
-
-                var result = await _authService.ResetPasswordAsync(request!);
-
-                if (!result.IsSuccess)
-                {
-                    _logger.LogWarning("Reset password failed for {Email}: {Message}",
-                        request!.Email, result.Message);
-                    return BadRequest(result);
-                }
-
-                _logger.LogInformation("Password reset successfully: {Email}", request!.Email);
-                return Ok(result);
+                    IsSuccess = false,
+                    Message = "Invalid input data",
+                    ErrorCode = ErrorCodes.VALIDATION_ERROR
+                });
             }
-            catch (Exception ex)
+
+            var result = await _authService.ResetPasswordAsync(request!);
+
+            if (!result.IsSuccess)
             {
-                _logger.LogError(ex, "Error during reset password for email: {Email}", request?.Email);
-                return StatusCode(StatusCodes.Status500InternalServerError,
-                    new AuthResponseDto
-                    {
-                        IsSuccess = false,
-                        Message = "An internal server error occurred",
-                        ErrorCode = ErrorCodes.UNEXPECTED_ERROR
-                    });
+                _logger.LogWarning("Reset password failed for {Email}: {Message}",
+                    request!.Email, result.Message);
+                return BadRequest(result);
             }
+
+            _logger.LogInformation("Password reset successfully: {Email}", request!.Email);
+            return Ok(result);
         }
 
         [HttpPost("login")]
@@ -126,46 +98,31 @@ namespace TikTokClone.API.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Login([FromBody] LoginRequestDto request)
         {
-            try
+            _logger.LogInformation("Login attempt for: {UsernameOrEmail}", request?.UsernameOrEmail);
+
+            if (!ModelState.IsValid)
             {
-                _logger.LogInformation("Login attempt for: {UsernameOrEmail}", request?.UsernameOrEmail);
-
-                if (!ModelState.IsValid)
+                _logger.LogWarning("Invalid model state for login");
+                return BadRequest(new AuthResponseDto
                 {
-                    _logger.LogWarning("Invalid model state for login");
-                    return BadRequest(new AuthResponseDto
-                    {
-                        IsSuccess = false,
-                        Message = "Invalid input data",
-                        ErrorCode = ErrorCodes.VALIDATION_ERROR
-                    });
-                }
-
-                var result = await _authService.LoginAsync(request!);
-
-                if (!result.IsSuccess)
-                {
-                    _logger.LogWarning("Login failed for {UsernameOrEmail}: {Message}",
-                        request!.UsernameOrEmail, result.Message);
-                    return BadRequest(result);
-                }
-
-                _logger.LogInformation("User logged in successfully: {UsernameOrEmail}",
-                    request!.UsernameOrEmail);
-                return Ok(result);
+                    IsSuccess = false,
+                    Message = "Invalid input data",
+                    ErrorCode = ErrorCodes.VALIDATION_ERROR
+                });
             }
-            catch (Exception ex)
+
+            var result = await _authService.LoginAsync(request!);
+
+            if (!result.IsSuccess)
             {
-                _logger.LogError(ex, "Error during login for: {UsernameOrEmail}",
-                    request?.UsernameOrEmail);
-                return StatusCode(StatusCodes.Status500InternalServerError,
-                    new AuthResponseDto
-                    {
-                        IsSuccess = false,
-                        Message = "An internal server error occurred",
-                        ErrorCode = ErrorCodes.UNEXPECTED_ERROR
-                    });
+                _logger.LogWarning("Login failed for {UsernameOrEmail}: {Message}",
+                    request!.UsernameOrEmail, result.Message);
+                return BadRequest(result);
             }
+
+            _logger.LogInformation("User logged in successfully: {UsernameOrEmail}",
+                request!.UsernameOrEmail);
+            return Ok(result);
         }
 
         [HttpPost("refresh")]
@@ -174,43 +131,29 @@ namespace TikTokClone.API.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> RefreshToken([FromBody] RefreshTokenRequestDto request)
         {
-            try
+            _logger.LogInformation("Token refresh attempt");
+
+            if (!ModelState.IsValid)
             {
-                _logger.LogInformation("Token refresh attempt");
-
-                if (!ModelState.IsValid)
+                _logger.LogWarning("Invalid model state for token refresh");
+                return BadRequest(new AuthResponseDto
                 {
-                    _logger.LogWarning("Invalid model state for token refresh");
-                    return BadRequest(new AuthResponseDto
-                    {
-                        IsSuccess = false,
-                        Message = "Invalid input data",
-                        ErrorCode = "VALIDATION_ERROR"
-                    });
-                }
-
-                var result = await _authService.RefreshTokenAsync(request.RefreshToken);
-
-                if (!result.IsSuccess)
-                {
-                    _logger.LogWarning("Token refresh failed: {Message}", result.Message);
-                    return BadRequest(result);
-                }
-
-                _logger.LogInformation("Tokens refreshed successfully");
-                return Ok(result);
+                    IsSuccess = false,
+                    Message = "Invalid input data",
+                    ErrorCode = ErrorCodes.VALIDATION_ERROR
+                });
             }
-            catch (Exception ex)
+
+            var result = await _authService.RefreshTokenAsync(request.RefreshToken);
+
+            if (!result.IsSuccess)
             {
-                _logger.LogError(ex, "Error during token refresh");
-                return StatusCode(StatusCodes.Status500InternalServerError,
-                    new AuthResponseDto
-                    {
-                        IsSuccess = false,
-                        Message = "An internal server error occurred",
-                        ErrorCode = "INTERNAL_ERROR"
-                    });
+                _logger.LogWarning("Token refresh failed: {Message}", result.Message);
+                return BadRequest(result);
             }
+
+            _logger.LogInformation("Tokens refreshed successfully");
+            return Ok(result);
         }
 
         [HttpPost("logout")]
@@ -221,194 +164,189 @@ namespace TikTokClone.API.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Logout()
         {
-            try
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            if (string.IsNullOrEmpty(userId))
             {
-                var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-
-                if (string.IsNullOrEmpty(userId))
+                _logger.LogWarning("Logout attempt with invalid token - no user ID found");
+                return BadRequest(new AuthResponseDto
                 {
-                    _logger.LogWarning("Logout attempt with invalid token - no user ID found");
-                    return BadRequest(new
-                    {
-                        IsSuccess = false,
-                        Message = "Invalid token - user ID not found",
-                        ErrorCode = ErrorCodes.INVALID_TOKEN
-                    });
-                }
-
-                _logger.LogInformation("Logout attempt for user: {UserId}", userId);
-
-                var result = await _authService.LogoutAsync(userId);
-
-                if (!result.IsSuccess)
-                {
-                    _logger.LogWarning("Logout failed for user: {UserId}", userId);
-                    return BadRequest(result);
-                }
-
-                _logger.LogInformation("User logged out successfully: {UserId}", userId);
-                return Ok(result);
+                    IsSuccess = false,
+                    Message = "Invalid token - user ID not found",
+                    ErrorCode = ErrorCodes.INVALID_TOKEN
+                });
             }
-            catch (Exception ex)
+
+            _logger.LogInformation("Logout attempt for user: {UserId}", userId);
+
+            var result = await _authService.LogoutAsync(userId);
+
+            if (!result.IsSuccess)
             {
-                _logger.LogError(ex, "Error during logout");
-                return StatusCode(StatusCodes.Status500InternalServerError,
-                    new AuthResponseDto
-                    {
-                        IsSuccess = false,
-                        Message = "An internal server error occurred",
-                        ErrorCode = ErrorCodes.UNEXPECTED_ERROR
-                    });
+                _logger.LogWarning("Logout failed for user: {UserId}", userId);
+                return BadRequest(result);
             }
+
+            _logger.LogInformation("User logged out successfully: {UserId}", userId);
+            return Ok(result);
         }
 
         [HttpPost("send-verification-code")]
         [ProducesResponseType(typeof(AuthResponseDto), StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(AuthResponseDto), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> SendVerificationCode([FromBody] SendVerificationCodeDto request)
         {
-            try
+            _logger.LogInformation("Send confirmation attempt for email: {Email}", request?.Email);
+
+            if (!ModelState.IsValid || string.IsNullOrWhiteSpace(request?.Email))
             {
-                _logger.LogInformation("Send confirmation attempt for email: {Email}", request?.Email);
-
-                if (!ModelState.IsValid || string.IsNullOrWhiteSpace(request?.Email))
+                _logger.LogWarning("Invalid email for resend confirmation");
+                return BadRequest(new AuthResponseDto
                 {
-                    _logger.LogWarning("Invalid email for resend confirmation");
-                    return BadRequest(new AuthResponseDto
-                    {
-                        IsSuccess = false,
-                        Message = "Valid email address is required",
-                        ErrorCode = ErrorCodes.VALIDATION_ERROR
-                    });
-                }
-
-                var result = await _authService.SendEmailCodeAsync(request.Email, request.Type);
-
-                if (!result.IsSuccess)
-                {
-                    _logger.LogWarning("Could not send confirmation email to: {Email}", request.Email);
-                    return BadRequest(result);
-                }
-
-                _logger.LogInformation("Confirmation email sent successfully to: {Email}", request.Email);
-                return Ok(result);
+                    IsSuccess = false,
+                    Message = "Valid email address is required",
+                    ErrorCode = ErrorCodes.VALIDATION_ERROR
+                });
             }
-            catch (Exception ex)
+
+            var result = await _authService.SendEmailCodeAsync(request.Email, request.Type);
+
+            if (!result.IsSuccess)
             {
-                _logger.LogError(ex, "Error during send confirmation for email: {Email}", request?.Email);
-                return StatusCode(StatusCodes.Status500InternalServerError,
-                    new AuthResponseDto
-                    {
-                        IsSuccess = false,
-                        Message = "An internal server error occurred",
-                        ErrorCode = ErrorCodes.UNEXPECTED_ERROR
-                    });
+                _logger.LogWarning("Could not send confirmation email to: {Email}", request.Email);
+                return BadRequest(result);
             }
+
+            _logger.LogInformation("Confirmation email sent successfully to: {Email}", request.Email);
+            return Ok(result);
         }
 
         [HttpGet("me")]
         [Authorize]
-        [ProducesResponseType(typeof(ProfileResponseDto), StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(AuthResponseDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(AuthResponseDto), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Me()
         {
-            try
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            if (userId == null)
             {
-                var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-
-                if (userId == null)
-                    return BadRequest();
-
-                var user = await _userRepository.GetByIdAsync(userId);
-
-                if (user == null)
-                    return BadRequest();
-
-                var userResponse = new ProfileResponseDto
+                _logger.LogWarning("Me endpoint called with invalid token - no user ID found");
+                return BadRequest(new AuthResponseDto
                 {
-                    Name = user.Name,
-                    AvatarURL = user.AvatarURL,
-                    IsVerified = user.IsVerified,
-                    Bio = user.Bio,
-                };
-                return Ok(new { user = userResponse });
+                    IsSuccess = false,
+                    Message = "Invalid token - user ID not found",
+                    ErrorCode = ErrorCodes.INVALID_TOKEN
+                });
             }
-            catch
+
+            var user = await _userRepository.GetByIdAsync(userId);
+
+            if (user == null)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError);
+                _logger.LogWarning("User not found for ID: {UserId}", userId);
+                return BadRequest(new AuthResponseDto
+                {
+                    IsSuccess = false,
+                    Message = "User not found",
+                    ErrorCode = ErrorCodes.USER_NOT_FOUND
+                });
             }
+
+            var userResponse = new ProfileResponseDto
+            {
+                Name = user.Name,
+                AvatarURL = user.AvatarURL,
+                IsVerified = user.IsVerified,
+                Bio = user.Bio,
+            };
+
+            return Ok(new AuthResponseDto
+            {
+                IsSuccess = true,
+                Message = "User profile retrieved successfully",
+                User = userResponse
+            });
         }
 
         [HttpPost("check-username")]
         [ProducesResponseType(typeof(AuthResponseDto), StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(AuthResponseDto), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> CheckUsername([FromBody] CheckUsernameDto request)
         {
-            try
+            if (!ModelState.IsValid)
             {
-                var result = await _authService.CheckValidUsernameAsync(request.Username);
-                if (!result.IsSuccess)
+                return BadRequest(new AuthResponseDto
                 {
-                    return BadRequest(result);
-                }
+                    IsSuccess = false,
+                    Message = "Invalid input data",
+                    ErrorCode = ErrorCodes.VALIDATION_ERROR
+                });
+            }
 
-                return Ok(result);
-            }
-            catch
+            var result = await _authService.CheckValidUsernameAsync(request.Username);
+
+            if (!result.IsSuccess)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError);
+                return BadRequest(result);
             }
+
+            return Ok(result);
         }
 
         [HttpPost("change-username")]
         [ProducesResponseType(typeof(AuthResponseDto), StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(AuthResponseDto), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> ChangeUsername([FromBody] ChangeUsernameDto request)
         {
-            try
+            if (!ModelState.IsValid)
             {
-                var result = await _authService.ChangeUsernameAsync(request.Email, request.Username);
-
-                if (!result.IsSuccess)
+                return BadRequest(new AuthResponseDto
                 {
-                    return BadRequest(result);
-                }
-
-                return Ok(result);
+                    IsSuccess = false,
+                    Message = "Invalid input data",
+                    ErrorCode = ErrorCodes.VALIDATION_ERROR
+                });
             }
-            catch
+
+            var result = await _authService.ChangeUsernameAsync(request.Email, request.Username);
+
+            if (!result.IsSuccess)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError);
+                return BadRequest(result);
             }
+
+            return Ok(result);
         }
-
-
 
         [HttpPost("check-birthdate")]
         [ProducesResponseType(typeof(AuthResponseDto), StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(AuthResponseDto), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public IActionResult CheckBirthdate([FromBody] CheckBirthdateDto request)
         {
-            try
+            if (!ModelState.IsValid)
             {
-                var result = _authService.CheckValidBirthDate(request.BirthDate);
-
-                if (!result.IsSuccess)
+                return BadRequest(new AuthResponseDto
                 {
-                    return BadRequest(result);
-                }
+                    IsSuccess = false,
+                    Message = "Invalid input data",
+                    ErrorCode = ErrorCodes.VALIDATION_ERROR
+                });
+            }
 
-                return Ok(result);
-            }
-            catch
+            var result = _authService.CheckValidBirthDate(request.BirthDate);
+
+            if (!result.IsSuccess)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError);
+                return BadRequest(result);
             }
+
+            return Ok(result);
         }
     }
 }
