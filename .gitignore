@@ -68,3 +68,5 @@ coverage/
 # Local tool settings
 *.db
 TikTokClone.Infrastructure/Settings/serviceAccountKey.json
+BACKEND_REVIEW.md
+.gitignore
