@@ -4,7 +4,6 @@ using TikTokClone.Application.DTOs;
 using TikTokClone.Application.Exceptions;
 using TikTokClone.Application.Interfaces.Repositories;
 using TikTokClone.Application.Interfaces.Services;
-using TikTokClone.Domain.Entities;
 using TikTokClone.Domain.Exceptions;
 
 namespace TikTokClone.Application.Services
@@ -26,7 +25,7 @@ namespace TikTokClone.Application.Services
                     return new UserResponseDto
                     {
                         IsSuccess = false,
-                        Message = "User ID cannot be null or empty.",
+                        Message = "User ID cannot be null or empty",
                         ErrorCode = ErrorCodes.INVALID_CREDENTIALS
                     };
                 }
@@ -39,7 +38,7 @@ namespace TikTokClone.Application.Services
                     return new UserResponseDto
                     {
                         IsSuccess = false,
-                        Message = "User not found.",
+                        Message = "User not found",
                         ErrorCode = ErrorCodes.USER_NOT_FOUND
                     };
                 }
@@ -47,7 +46,7 @@ namespace TikTokClone.Application.Services
                 return new UserResponseDto
                 {
                     IsSuccess = true,
-                    Message = "User profile retrieved successfully.",
+                    Message = "User profile retrieved successfully",
                     Profile = new ProfileResponseDto
                     {
                         Name = user.Name,
@@ -80,7 +79,7 @@ namespace TikTokClone.Application.Services
                     return new UserResponseDto
                     {
                         IsSuccess = false,
-                        Message = "User ID cannot be null or empty.",
+                        Message = "User ID cannot be null or empty",
                         ErrorCode = ErrorCodes.INVALID_CREDENTIALS
                     };
                 }
@@ -90,7 +89,7 @@ namespace TikTokClone.Application.Services
                     return new UserResponseDto
                     {
                         IsSuccess = false,
-                        Message = "Invalid avatar URL format.",
+                        Message = "Invalid avatar URL format",
                         ErrorCode = ErrorCodes.INVALID_AVATAR_URL
                     };
                 }
@@ -103,7 +102,7 @@ namespace TikTokClone.Application.Services
                     return new UserResponseDto
                     {
                         IsSuccess = false,
-                        Message = "User not found.",
+                        Message = "User not found",
                         ErrorCode = ErrorCodes.USER_NOT_FOUND
                     };
                 }
@@ -113,7 +112,7 @@ namespace TikTokClone.Application.Services
                     return new UserResponseDto
                     {
                         IsSuccess = false,
-                        Message = "Failed to change avatar.",
+                        Message = "Failed to change avatar",
                         ErrorCode = ErrorCodes.USER_UPDATE_FAILED
                     };
                 }
@@ -124,7 +123,7 @@ namespace TikTokClone.Application.Services
                 return new UserResponseDto
                 {
                     IsSuccess = true,
-                    Message = "Avatar changed successfully.",
+                    Message = "Avatar changed successfully",
                 };
             }
             catch (DomainException domainEx)
@@ -149,14 +148,134 @@ namespace TikTokClone.Application.Services
             }
         }
 
-        public Task<UserResponseDto> ChangeBioAsync(string userId, string bio)
+        public async Task<UserResponseDto> ChangeBioAsync(string userId, string bio)
         {
-            throw new NotImplementedException();
+            try
+            {
+                if (string.IsNullOrWhiteSpace(userId))
+                {
+                    return new UserResponseDto
+                    {
+                        IsSuccess = false,
+                        Message = "User ID cannot be null or empty",
+                        ErrorCode = ErrorCodes.INVALID_CREDENTIALS
+                    };
+                }
+
+                userId = userId.Trim();
+
+                var user = await _userRepository.GetByIdAsync(userId);
+                if (user == null)
+                {
+                    return new UserResponseDto
+                    {
+                        IsSuccess = false,
+                        Message = "User not found",
+                        ErrorCode = ErrorCodes.USER_NOT_FOUND
+                    };
+                }
+
+                if (!user.ChangeBio(bio))
+                {
+                    return new UserResponseDto
+                    {
+                        IsSuccess = false,
+                        Message = "Failed to change bio",
+                        ErrorCode = ErrorCodes.USER_UPDATE_FAILED
+                    };
+                }
+
+                return new UserResponseDto
+                {
+                    IsSuccess = true,
+                    Message = "Bio changed successfully",
+                };
+            }
+            catch (DomainException domainEx)
+            {
+                var (errorCode, message) = ExceptionHandler.HandleDomainException(domainEx);
+                return new UserResponseDto
+                {
+                    IsSuccess = false,
+                    Message = message,
+                    ErrorCode = errorCode
+                };
+            }
+            catch (Exception ex)
+            {
+                var (errorCode, message) = ExceptionHandler.HandleGenericException(ex);
+                return new UserResponseDto
+                {
+                    IsSuccess = false,
+                    Message = message,
+                    ErrorCode = errorCode
+                };
+            }
         }
 
-        public Task<UserResponseDto> ChangeNameAsync(string userId, string name)
+        public async Task<UserResponseDto> ChangeNameAsync(string userId, string name)
         {
-            throw new NotImplementedException();
+            try
+            {
+                if (string.IsNullOrWhiteSpace(userId))
+                {
+                    return new UserResponseDto
+                    {
+                        IsSuccess = false,
+                        Message = "User ID cannot be null or empty",
+                        ErrorCode = ErrorCodes.INVALID_CREDENTIALS
+                    };
+                }
+
+                userId = userId.Trim();
+
+                var user = await _userRepository.GetByIdAsync(userId);
+                if (user == null)
+                {
+                    return new UserResponseDto
+                    {
+                        IsSuccess = false,
+                        Message = "User not found",
+                        ErrorCode = ErrorCodes.USER_NOT_FOUND
+                    };
+                }
+
+                if (!user.ChangeName(name))
+                {
+                    return new UserResponseDto
+                    {
+                        IsSuccess = false,
+                        Message = "Failed to change name",
+                        ErrorCode = ErrorCodes.USER_UPDATE_FAILED
+                    };
+                }
+
+                return new UserResponseDto
+                {
+                    IsSuccess = true,
+                    Message = "Name changed successfully",
+                };
+            }
+            catch (DomainException domainEx)
+            {
+                var (errorCode, message) = ExceptionHandler.HandleDomainException(domainEx);
+                return new UserResponseDto
+                {
+                    IsSuccess = false,
+                    Message = message,
+                    ErrorCode = errorCode
+                };
+            }
+            catch (Exception ex)
+            {
+                var (errorCode, message) = ExceptionHandler.HandleGenericException(ex);
+                return new UserResponseDto
+                {
+                    IsSuccess = false,
+                    Message = message,
+                    ErrorCode = errorCode
+                };
+            }
         }
 
         public Task<UserResponseDto> ChangeUserNameAsync(string userId, string userName)
