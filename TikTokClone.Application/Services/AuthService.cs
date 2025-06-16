@@ -459,49 +459,6 @@ namespace TikTokClone.Application.Services
             }
         }
 
-        public async Task<AuthResponseDto> CheckValidUsernameAsync(string username)
-        {
-
-            if (string.IsNullOrWhiteSpace(username))
-            {
-                return new AuthResponseDto
-                {
-                    IsSuccess = false,
-                    Message = "Username can not be empty",
-                    ErrorCode = ErrorCodes.INVALID_CREDENTIALS
-                };
-            }
-
-            Regex _userNameRegex = new(@"^[a-z0-9._]{2,24}$", RegexOptions.Compiled);
-            username = username.Trim();
-            if (!_userNameRegex.IsMatch(username))
-            {
-                return new AuthResponseDto
-                {
-                    IsSuccess = false,
-                    Message = "Invalid username format",
-                    ErrorCode = ErrorCodes.INVALID_USERNAME_FORMAT
-                };
-            }
-
-            var existingUser = await _userManager.FindByNameAsync(username);
-            if (existingUser != null)
-            {
-                return new AuthResponseDto
-                {
-                    IsSuccess = false,
-                    Message = "Username is already in use",
-                    ErrorCode = ErrorCodes.USERNAME_USED
-                };
-            }
-
-            return new AuthResponseDto
-            {
-                IsSuccess = true,
-                Message = "Username is valid"
-            };
-        }
-
         public async Task<AuthResponseDto> SendEmailCodeAsync(string email, string type)
         {
             try
@@ -603,70 +560,5 @@ namespace TikTokClone.Application.Services
                 };
             }
         }
-
-        public async Task<AuthResponseDto> ChangeUsernameAsync(string email, string username)
-        {
-            var user = await _userManager.FindByEmailAsync(email);
-            if (user == null)
-            {
-                return new AuthResponseDto
-                {
-                    IsSuccess = false,
-                    Message = "User not found",
-                    ErrorCode = ErrorCodes.USER_NOT_FOUND
-                };
-            }
-
-            if (!user.ChangeUserName(username))
-            {
-                return new AuthResponseDto
-                {
-                    IsSuccess = false,
-                    Message = "Change username failed",
-                    ErrorCode = ErrorCodes.USERNAME_CHANGE_FAILED
-                };
-            }
-
-            var result = await _userManager.UpdateAsync(user);
-
-            if (!result.Succeeded)
-            {
-
-                return new AuthResponseDto
-                {
-                    IsSuccess = false,
-                    Message = "Change username failed",
-                    ErrorCode = ErrorCodes.USERNAME_CHANGE_FAILED
-                };
-            }
-
-            return new AuthResponseDto
-            {
-                IsSuccess = true,
-                Message = "Change username successfully",
-            };
-        }
-
-        public AuthResponseDto CheckValidBirthDate(DateOnly birthDate)
-        {
-            var result = User.IsValidBirthDate(birthDate);
-
-            if (!result)
-            {
-                return new AuthResponseDto
-                {
-                    IsSuccess = false,
-                    Message = "Birthdate is not valid",
-                    ErrorCode = ErrorCodes.INVALID_BIRTH_DATE
-                };
-            }
-
-            return new AuthResponseDto
-            {
-                IsSuccess = true,
-                Message = "Birthdate is valid"
-            };
-        }
-
     }
 }
