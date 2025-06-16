@@ -1,4 +1,6 @@
 
+using TikTokClone.Application.Constants;
+
 namespace TikTokClone.Application.DTOs
 {
     public class ProfileResponseDto
@@ -11,8 +13,8 @@ namespace TikTokClone.Application.DTOs
 
     public class UserResponseDto
     {
-        public bool IsSuccess { get; set; }
-        public string Message { get; set; } = string.Empty;
+        public bool IsSuccess { get; set; } = false;
+        public string Message { get; set; } = "Response result is missing";
         public string ErrorCode { get; set; } = string.Empty;
         public ProfileResponseDto? Profile { get; set; } = null;
     }
@@ -20,5 +22,22 @@ namespace TikTokClone.Application.DTOs
     public class SearchUserResponseDto
     {
         List<ProfileResponseDto> Users { get; set; } = new List<ProfileResponseDto>();
+    }
+
+    public class CheckUsernameDto
+    {
+        public string Username { get; set; } = string.Empty;
+    }
+
+    public class ChangeUsernameDto
+    {
+        public string IdOrEmail { get; set; } = string.Empty;
+        public string Username { get; set; } = string.Empty;
+        public string Type { get; set; } = string.Empty;
+    }
+
+    public class CheckBirthdateDto
+    {
+        public DateOnly BirthDate { get; set; }
     }
 }

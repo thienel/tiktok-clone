@@ -67,20 +67,4 @@ namespace TikTokClone.Application.DTOs
         public string Email { get; set; } = string.Empty;
         public string Type { get; set; } = string.Empty;
     }
-
-    public class CheckUsernameDto
-    {
-        public string Username { get; set; } = string.Empty;
-    }
-
-    public class ChangeUsernameDto
-    {
-        public string Email { get; set; } = string.Empty;
-        public string Username { get; set; } = string.Empty;
-    }
-
-    public class CheckBirthdateDto
-    {
-        public DateOnly BirthDate { get; set; }
-    }
 }
