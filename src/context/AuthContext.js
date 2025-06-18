@@ -1,22 +1,23 @@
 import { createContext, useState, useEffect, useCallback } from 'react'
 import { authAPI, tokenManager, setupAPIInterceptors, handleAPIError, LOADING_TYPES } from '~/utils/api'
-import { isValidDateString } from '~/utils/validation'
+import { useLoading } from './LoadingContext'
 
 export const AuthContext = createContext()
 export default AuthContext
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null)
-  const [loading, setLoading] = useState('')
   const [isInitialized, setIsInitialized] = useState(false)
+  const { setLoading, clearLoading, isLoading } = useLoading()
 
   const logout = useCallback(() => {
     tokenManager.clearTokens()
     setUser(null)
-    setLoading('')
-  }, [])
+    clearLoading(LOADING_TYPES.LOGIN)
+    clearLoading(LOADING_TYPES.REGISTER)
+    clearLoading(LOADING_TYPES.CHECK_AUTH)
+  }, [clearLoading])
 
-  // Initialize API interceptors with logout callback
   useEffect(() => {
     setupAPIInterceptors(logout)
   }, [logout])
@@ -48,7 +49,7 @@ export const AuthProvider = ({ children }) => {
       tokenManager.clearTokens()
       setUser(null)
     } finally {
-      setLoading('')
+      clearLoading(LOADING_TYPES.CHECK_AUTH)
       setIsInitialized(true)
     }
   }
@@ -84,7 +85,7 @@ export const AuthProvider = ({ children }) => {
       const { errorCode, message } = handleAPIError(error)
       return { success: false, message, errorCode }
     } finally {
-      setLoading('')
+      clearLoading(LOADING_TYPES.LOGIN)
     }
   }
 
@@ -112,7 +113,7 @@ export const AuthProvider = ({ children }) => {
       const { errorCode, message } = handleAPIError(error)
       return { success: false, message, errorCode }
     } finally {
-      setLoading('')
+      clearLoading(LOADING_TYPES.REGISTER)
     }
   }
 
@@ -138,82 +139,7 @@ export const AuthProvider = ({ children }) => {
       const { errorCode, message } = handleAPIError(error)
       return { success: false, message, errorCode }
     } finally {
-      setLoading('')
-    }
-  }
-
-  const checkUsername = async (username) => {
-    try {
-      if (!username) {
-        return {
-          success: false,
-          message: 'Username is required',
-          errorCode: 'VALIDATION_ERROR',
-        }
-      }
-
-      setLoading(LOADING_TYPES.CHECK_USERNAME)
-
-      const response = await authAPI.post('check-username', {
-        username: username.trim(),
-      })
-
-      return { success: response.data?.isSuccess || false, data: response.data }
-    } catch (error) {
-      const { errorCode, message } = handleAPIError(error)
-      return { success: false, message, errorCode }
-    } finally {
-      setLoading('')
-    }
-  }
-
-  const checkBirthdate = async (birthDate) => {
-    try {
-      birthDate = birthDate.trim()
-      if (!birthDate || !isValidDateString(birthDate)) {
-        return {
-          success: false,
-          message: 'BirthDate is required',
-          errorCode: 'VALIDATION_ERROR',
-        }
-      }
-
-      setLoading(LOADING_TYPES.CHECK_BIRTHDATE)
-
-      const response = await authAPI.post('check-birthdate', { birthDate })
-
-      return { success: response.data?.isSuccess || false, data: response.data }
-    } catch (error) {
-      const { errorCode, message } = handleAPIError(error)
-      return { success: false, message, errorCode }
-    } finally {
-      setLoading('')
-    }
-  }
-
-  const changeUsername = async (email, username) => {
-    try {
-      if (!email || !username) {
-        return {
-          success: false,
-          message: 'Email and username are required',
-          errorCode: 'VALIDATION_ERROR',
-        }
-      }
-
-      setLoading(LOADING_TYPES.CHANGE_USERNAME)
-
-      const response = await authAPI.post('change-username', {
-        username: username.trim(),
-        email: email.trim().toLowerCase(),
-      })
-
-      return { success: response.data?.isSuccess || false, data: response.data }
-    } catch (error) {
-      const { errorCode, message } = handleAPIError(error)
-      return { success: false, message, errorCode }
-    } finally {
-      setLoading('')
+      clearLoading(LOADING_TYPES.SEND_EMAIL)
     }
   }
 
@@ -240,25 +166,25 @@ export const AuthProvider = ({ children }) => {
       const { errorCode, message } = handleAPIError(error)
       return { success: false, message, errorCode }
     } finally {
-      setLoading('')
+      clearLoading(LOADING_TYPES.RESET_PASSWORD)
     }
   }
 
   const value = {
     user,
-    loading,
     isInitialized,
     login,
     logout,
     register,
     sendEmailVerification,
-    checkUsername,
-    changeUsername,
     checkAuth,
-    checkBirthdate,
     resetPassword,
     isAuthenticated: !!user,
-    LOADING_TYPES,
+    isLoggingIn: isLoading(LOADING_TYPES.LOGIN),
+    isRegistering: isLoading(LOADING_TYPES.REGISTER),
+    isCheckingAuth: isLoading(LOADING_TYPES.CHECK_AUTH),
+    isSendingEmail: isLoading(LOADING_TYPES.SEND_EMAIL),
+    isResettingPassword: isLoading(LOADING_TYPES.RESET_PASSWORD),
   }
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
