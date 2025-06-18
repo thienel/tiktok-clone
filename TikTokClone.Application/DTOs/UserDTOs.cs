@@ -21,7 +21,7 @@ namespace TikTokClone.Application.DTOs
 
     public class SearchUserResponseDto
     {
-        List<ProfileResponseDto> Users { get; set; } = new List<ProfileResponseDto>();
+        public IEnumerable<ProfileResponseDto> Users { get; set; } = new List<ProfileResponseDto>();
     }
 
     public class CheckUsernameDto
@@ -39,5 +39,11 @@ namespace TikTokClone.Application.DTOs
     public class CheckBirthdateDto
     {
         public DateOnly BirthDate { get; set; }
+    }
+
+    public class SearchUserDto
+    {
+        public string Value { get; set; } = string.Empty;
+        public int Limit { get; set; } = 10;
     }
 }

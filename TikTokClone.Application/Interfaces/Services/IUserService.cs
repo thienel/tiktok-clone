@@ -12,7 +12,7 @@ namespace TikTokClone.Application.Interfaces.Services
         Task<UserResponseDto> ChangeUsernameByEmailAsync(string email, string username);
         Task<UserResponseDto> VerifyUserAsync(string userId);
         Task<UserResponseDto> UnVerifyUserAsync(string userId);
-        Task<SearchUserResponseDto> Search(string value);
+        Task<SearchUserResponseDto> Search(string value, int? limit);
         Task<UserResponseDto> CheckValidUsernameAsync(string username);
         UserResponseDto CheckValidBirthDate(DateOnly birthDate);
     }

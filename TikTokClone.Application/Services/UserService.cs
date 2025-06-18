@@ -399,9 +399,31 @@ namespace TikTokClone.Application.Services
             throw new NotImplementedException();
         }
 
-        public Task<SearchUserResponseDto> Search(string value)
+        public async Task<SearchUserResponseDto> Search(string value, int? limit = 10)
         {
-            throw new NotImplementedException();
+            var response = new SearchUserResponseDto();
+            if (string.IsNullOrWhiteSpace(value))
+            {
+                return response;
+            }
+
+            value = value.Trim().ToLower();
+            var users = await _userRepository
+                .GetManyAsync(u =>
+                    u.UserName!.ToLower().Contains(value) ||
+                    u.Name.ToLower().Contains(value));
+
+            users = users.Take(limit ?? 10);
+
+            response.Users = users.Select(u => new ProfileResponseDto
+            {
+                Name = u.Name,
+                AvatarURL = u.AvatarURL,
+                IsVerified = u.IsVerified,
+                Bio = u.Bio
+            }).ToList();
+
+            return response;
         }
 
         public UserResponseDto CheckValidBirthDate(DateOnly birthDate)

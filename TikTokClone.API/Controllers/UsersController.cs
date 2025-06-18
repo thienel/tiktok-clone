@@ -8,12 +8,12 @@ namespace TikTokClone.API.Controllers
     [ApiController]
     [Route("/api/[controller]")]
     [Produces("application/json")]
-    public class UserController : ControllerBase
+    public class UsersController : ControllerBase
     {
         private readonly IUserService _userService;
-        private readonly ILogger<UserController> _logger;
+        private readonly ILogger<UsersController> _logger;
 
-        public UserController(IUserService userService, ILogger<UserController> logger)
+        public UsersController(IUserService userService, ILogger<UsersController> logger)
         {
             _userService = userService;
             _logger = logger;
@@ -107,6 +107,28 @@ namespace TikTokClone.API.Controllers
             {
                 return BadRequest(result);
             }
+
+            return Ok(result);
+        }
+
+
+        [HttpPost("search")]
+        [ProducesResponseType(typeof(SearchUserResponseDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(SearchUserResponseDto), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> Search([FromBody] SearchUserDto request)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(new UserResponseDto
+                {
+                    IsSuccess = false,
+                    Message = "Invalid search value",
+                    ErrorCode = ErrorCodes.VALIDATION_ERROR
+                });
+            }
+
+            var result = await _userService.Search(request.Value, request.Limit);
 
             return Ok(result);
         }
