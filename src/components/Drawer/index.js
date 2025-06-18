@@ -7,8 +7,6 @@ import Search from './Search'
 const cx = classNames.bind(styles)
 
 function Drawer({ type, onExpand, searchValue, setSearchValue }) {
-  console.log('render drawer')
-
   const [overlay, setOverlay] = useState(false)
   useEffect(() => {
     setOverlay(() => type !== 'messages')

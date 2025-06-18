@@ -9,8 +9,6 @@ import { useTheme } from '~/hooks'
 const cx = classNames.bind(styles)
 
 function More({ onExpand }) {
-  console.log('render more')
-
   const { themeSetting, handleSetTheme } = useTheme()
 
   const handlerMap = {

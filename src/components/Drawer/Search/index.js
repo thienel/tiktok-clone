@@ -4,7 +4,7 @@ import CircleButton from '~/components/CircleButton'
 import images from '~/assets/images'
 import { useEffect, useRef, useState } from 'react'
 import { useDebounce } from '~/hooks'
-import * as searchServices from '~/apiServices/searchServices'
+import { useUsersAPI } from '~/hooks/useUsersAPI'
 
 const cx = classNames.bind(styles)
 
@@ -14,28 +14,22 @@ function Search({ onExpand, searchValue, setSearchValue }) {
   const loadingRef = useRef()
   const [isFocused, setIsFocused] = useState(false)
   const debouncedSearchValue = useDebounce(searchValue, 500)
-  const [loading, setLoading] = useState(false)
   const [searchResult, setSearchResult] = useState([])
-
-  console.log('search render')
+  const { searchUsers, isSearchingUsers } = useUsersAPI()
 
   useEffect(() => {
     if (!debouncedSearchValue.trim()) {
       setSearchResult([])
-      setLoading(false)
       return
     }
 
-    setLoading(true)
-
     const fetch = async () => {
-      const result = await searchServices.search(debouncedSearchValue)
-      setSearchResult(result)
-      setLoading(false)
+      const result = await searchUsers(debouncedSearchValue)
+      setSearchResult(result.data || [])
     }
 
     fetch()
-  }, [debouncedSearchValue])
+  }, [debouncedSearchValue, searchUsers])
 
   const handleClear = () => {
     inputRef.current.focus()
@@ -49,12 +43,12 @@ function Search({ onExpand, searchValue, setSearchValue }) {
 
   useEffect(() => {
     if (clearRef.current) {
-      clearRef.current.style.display = !loading ? 'flex' : 'none'
+      clearRef.current.style.display = !isSearchingUsers ? 'flex' : 'none'
     }
     if (loadingRef.current) {
-      loadingRef.current.style.display = loading ? 'flex' : 'none'
+      loadingRef.current.style.display = isSearchingUsers ? 'flex' : 'none'
     }
-  }, [loading])
+  }, [isSearchingUsers])
 
   return (
     <div className={cx('wrapper')}>
@@ -98,14 +92,14 @@ function Search({ onExpand, searchValue, setSearchValue }) {
                     </span>
                     <div className={cx('userInfo')}>
                       <h4>
-                        {item.full_name}{' '}
-                        {item.tick && (
+                        {item.name}{' '}
+                        {item.isVerified && (
                           <span className={cx('verifyWrapper')}>
                             <images.verify />
                           </span>
                         )}
                       </h4>
-                      <p>{item.nickname}</p>
+                      <p>{item.username}</p>
                     </div>
                   </li>
                 )

@@ -90,12 +90,42 @@ export const useUsersAPI = () => {
     [setLoading, clearLoading],
   )
 
+  const searchUsers = useCallback(
+    async (value) => {
+      try {
+        if (!value) {
+          return {
+            success: false,
+            message: 'Search value is required',
+            errorCode: 'VALIDATION_ERROR',
+          }
+        }
+
+        setLoading(LOADING_TYPES.SEARCH_USERS)
+
+        const response = await userAPI.post('search', {
+          value: value.trim(),
+        })
+
+        return { data: response.data.users || [] }
+      } catch (error) {
+        const { errorCode, message } = handleAPIError(error)
+        return { success: false, message, errorCode }
+      } finally {
+        clearLoading(LOADING_TYPES.SEARCH_USERS)
+      }
+    },
+    [setLoading, clearLoading],
+  )
+
   return {
     checkUsername,
     checkBirthdate,
     changeUsername,
+    searchUsers,
     isCheckingUsername: isLoading(LOADING_TYPES.CHECK_USERNAME),
     isCheckingBirthdate: isLoading(LOADING_TYPES.CHECK_BIRTHDATE),
     isChangingUsername: isLoading(LOADING_TYPES.CHANGE_USERNAME),
+    isSearchingUsers: isLoading(LOADING_TYPES.SEARCH_USERS),
   }
 }

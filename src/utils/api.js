@@ -49,6 +49,7 @@ export const LOADING_TYPES = {
   LOGOUT: 'LOGOUT',
   CHECK_BIRTHDATE: 'CHECK_BIRTHDATE',
   RESET_PASSWORD: 'RESET_PASSWORD',
+  SEARCH_USERS: 'SEARCH_USERS',
 }
 
 const addAuthInterceptor = (apiInstance) => {
