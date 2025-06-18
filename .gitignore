@@ -23,3 +23,6 @@ yarn-debug.log*
 yarn-error.log*
 
 .env.local
+FRONTEND_REVIEW_FINAL.md
+FRONTEND_REVIEW.md
+LOADING_ARCHITECTURE.md
