@@ -119,6 +119,7 @@ namespace TikTokClone.Application.Services
 
                 var profileReponseDto = new ProfileResponseDto
                 {
+                    Username = user.UserName!,
                     Name = user.Name,
                     AvatarURL = user.AvatarURL,
                     IsVerified = user.IsVerified,

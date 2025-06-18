@@ -54,6 +54,7 @@ namespace TikTokClone.Application.Services
                     Message = "User profile retrieved successfully",
                     Profile = new ProfileResponseDto
                     {
+                        Username = user.UserName!,
                         Name = user.Name,
                         AvatarURL = user.AvatarURL,
                         IsVerified = user.IsVerified,
@@ -417,6 +418,7 @@ namespace TikTokClone.Application.Services
 
             response.Users = users.Select(u => new ProfileResponseDto
             {
+                Username = u.UserName!,
                 Name = u.Name,
                 AvatarURL = u.AvatarURL,
                 IsVerified = u.IsVerified,

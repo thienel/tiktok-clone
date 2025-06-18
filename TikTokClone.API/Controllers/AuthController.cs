@@ -257,6 +257,7 @@ namespace TikTokClone.API.Controllers
 
             var userResponse = new ProfileResponseDto
             {
+                Username = user.UserName!,
                 Name = user.Name,
                 AvatarURL = user.AvatarURL,
                 IsVerified = user.IsVerified,

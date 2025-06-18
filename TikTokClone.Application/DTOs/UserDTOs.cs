@@ -5,6 +5,7 @@ namespace TikTokClone.Application.DTOs
 {
     public class ProfileResponseDto
     {
+        public string Username { get; set; } = string.Empty;
         public string Name { get; set; } = string.Empty;
         public string? AvatarURL { get; set; }
         public bool IsVerified { get; set; } = false;
