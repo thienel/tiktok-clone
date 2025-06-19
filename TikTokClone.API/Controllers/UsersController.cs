@@ -54,7 +54,8 @@ namespace TikTokClone.API.Controllers
             _logger.LogInformation("ChangeUsername called with Type: {Type}, IdOrEmail: {IdOrEmail}, Username: {Username}",
                 request.Type, request.IdOrEmail, request.Username);
 
-            if (!ModelState.IsValid || !(request.Type == "Email" || request.Type == "Id"))
+            request.Type = request.Type?.Trim()?.ToLower()!;
+            if (!ModelState.IsValid || !(request.Type == "email" || request.Type == "id"))
             {
                 _logger.LogWarning("ChangeUsername failed due to invalid input");
                 return BadRequest(new UserResponseDto
@@ -66,11 +67,11 @@ namespace TikTokClone.API.Controllers
             }
 
             var result = new UserResponseDto();
-            if (request.Type == "Email")
+            if (request.Type == "email")
             {
                 result = await _userService.ChangeUsernameByEmailAsync(request.IdOrEmail, request.Username);
             }
-            else if (request.Type == "Id")
+            else if (request.Type == "id")
             {
                 result = await _userService.ChangeUsernameByIdAsync(request.IdOrEmail, request.Username);
             }
