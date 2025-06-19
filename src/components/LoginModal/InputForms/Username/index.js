@@ -2,13 +2,13 @@ import { useEffect, useState } from 'react'
 import classNames from 'classnames/bind'
 import stylesInput from '~/components/LoginModal/InputForms/InputForms.module.scss'
 import images from '~/assets/images'
-import { useAuth } from '~/hooks'
+import { useUsersAPI } from '~/hooks'
 
 const cxInput = classNames.bind(stylesInput)
 
 function Username({ username, setUsername, setValid }) {
   const [warningMessage, setWarningMessage] = useState('')
-  const { checkUsername, loading, LOADING_TYPE } = useAuth()
+  const { checkUsername, isCheckingUsername } = useUsersAPI()
 
   useEffect(() => {
     if (!username) {
@@ -75,7 +75,7 @@ function Username({ username, setUsername, setValid }) {
             <images.invalid />
           </div>
         )}
-        {!warningMessage && loading === LOADING_TYPE.CHECK_USERNAME && (
+        {!warningMessage && isCheckingUsername && (
           <div className="loadingIcon">
             <images.loading />
           </div>

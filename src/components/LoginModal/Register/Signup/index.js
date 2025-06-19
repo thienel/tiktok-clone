@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import classNames from 'classnames/bind'
-import { useAuth } from '~/hooks'
+import { useAuth, useUsersAPI } from '~/hooks'
 import { EmailInput, PasswordInput, VerificationCode, BirthdaySelector } from '~/components/LoginModal/InputForms'
 import SubmitButton from '~/components/LoginModal/SubmitButton'
 import styles from '~/components/LoginModal/LoginModal.module.scss'
@@ -23,7 +23,8 @@ function Signup({ onSignupSuccess }) {
   const [countdown, setCountdown] = useState(0)
   const [emailSent, setEmailSent] = useState(false)
 
-  const { sendEmailVerification, checkBirthdate, loading, LOADING_TYPE, register } = useAuth()
+  const { sendEmailVerification, register, isRegistering, isSendingEmail } = useAuth()
+  const { checkBirthdate } = useUsersAPI()
 
   const sendEmailButtonActive = !!birthDate && !!email
   const handleSendVerification = async () => {
@@ -108,17 +109,12 @@ function Signup({ onSignupSuccess }) {
         setValid={(value) => setAllFieldValid((prev) => ({ ...prev, verificationCode: value }))}
         onSendVerification={handleSendVerification}
         sendButtonActive={sendEmailButtonActive}
-        loading={loading === LOADING_TYPE.SEND_EMAIL}
+        loading={isSendingEmail}
         errorCode={error}
         onResetErrorCode={() => setError('')}
         countdown={countdown}
       />
-      <SubmitButton
-        disabled={!canNext}
-        loading={loading === LOADING_TYPE.REGISTER}
-        content={'Next'}
-        onClick={handleRegister}
-      />
+      <SubmitButton disabled={!canNext} loading={isRegistering} content={'Next'} onClick={handleRegister} />
     </div>
   )
 }

@@ -4,7 +4,7 @@ import stylesContent from '~/components/LoginModal/LoginModal.module.scss'
 import styles from './ChangeUsername.module.scss'
 import Username from '~/components/LoginModal/InputForms/Username'
 import SubmitButton from '~/components/LoginModal/SubmitButton'
-import { useAuth } from '~/hooks'
+import { useAuth, useUsersAPI } from '~/hooks'
 
 const cxContent = classNames.bind(stylesContent)
 const cx = classNames.bind(styles)
@@ -12,7 +12,8 @@ const cx = classNames.bind(styles)
 function ChangeUsername({ email, onLogin }) {
   const [username, setUsername] = useState('')
   const [valid, setValid] = useState(false)
-  const { changeUsername, loading, LOADING_TYPE } = useAuth()
+  const { isLoggingIn } = useAuth()
+  const { changeUsername, isChangingUsername } = useUsersAPI()
 
   const handleChangeUsername = async () => {
     if (!valid) return
@@ -34,13 +35,13 @@ function ChangeUsername({ email, onLogin }) {
       <SubmitButton
         disabled={!valid}
         content={'Sign up'}
-        loading={loading === LOADING_TYPE.CHANGE_USERNAME}
+        loading={isChangingUsername}
         onClick={handleChangeUsername}
         className={cx('buttonGroup')}
       />
       <SubmitButton
         content={'Skip'}
-        loading={loading === LOADING_TYPE.LOGIN}
+        loading={isLoggingIn}
         onClick={onLogin}
         className={cx('skipButton', 'buttonGroup')}
       />

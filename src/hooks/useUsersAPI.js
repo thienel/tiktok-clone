@@ -3,7 +3,7 @@ import { userAPI, LOADING_TYPES, handleAPIError } from '~/utils/api'
 import { isValidDateString } from '~/utils/validation'
 import { useLoading } from '~/context/LoadingContext'
 
-export const useUsersAPI = () => {
+const useUsersAPI = () => {
   const { setLoading, clearLoading, isLoading } = useLoading()
 
   const checkUsername = useCallback(
@@ -129,3 +129,5 @@ export const useUsersAPI = () => {
     isSearchingUsers: isLoading(LOADING_TYPES.SEARCH_USERS),
   }
 }
+
+export default useUsersAPI

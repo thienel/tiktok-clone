@@ -4,7 +4,7 @@ import CircleButton from '~/components/CircleButton'
 import images from '~/assets/images'
 import { useEffect, useRef, useState } from 'react'
 import { useDebounce } from '~/hooks'
-import { useUsersAPI } from '~/hooks/useUsersAPI'
+import { useUsersAPI } from '~/hooks'
 
 const cx = classNames.bind(styles)
 

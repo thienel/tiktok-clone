@@ -26,7 +26,7 @@ function Login() {
   const [emailSent, setEmailSent] = useState(false)
   const [countdown, setCountdown] = useState(0)
 
-  const { login, sendEmailVerification, resetPassword, loading, LOADING_TYPE } = useAuth()
+  const { login, sendEmailVerification, resetPassword, isLoggingIn, isResettingPassword, isSendingEmail } = useAuth()
   const handleLogin = async () => {
     const result = await login(usernameOrEmail, passwordLogin)
 
@@ -90,15 +90,10 @@ function Login() {
 
   const isDisableLogin = () => {
     if (type === 'login') {
-      return !usernameOrEmail || !passwordLogin || loading === LOADING_TYPE.LOGIN
+      return !usernameOrEmail || !passwordLogin || isLoggingIn
     }
     if (type === 'reset-password') {
-      return (
-        !validFields.email ||
-        !validFields.password ||
-        !validFields.verificationCode ||
-        loading === LOADING_TYPE.RESET_PASSWORD
-      )
+      return !validFields.email || !validFields.password || !validFields.verificationCode || isResettingPassword
     }
   }
 
@@ -142,7 +137,7 @@ function Login() {
             errorCode={error}
             onSendVerification={onSendVerification}
             sendButtonActive={validFields.email}
-            loading={loading === 'SEND_EMAIL'}
+            loading={isSendingEmail}
             onResetErrorCode={() => setError('')}
             countdown={countdown}
           />
@@ -155,7 +150,7 @@ function Login() {
       )}
       <SubmitButton
         disabled={isDisableLogin()}
-        loading={loading === LOADING_TYPE.LOGIN || loading === LOADING_TYPE.RESET_PASSWORD}
+        loading={isLoggingIn || isResettingPassword}
         content={'Log in'}
         onClick={type === 'login' ? handleLogin : handleResetPassword}
       />
