@@ -19,7 +19,7 @@ function ChangeUsername({ email, onLogin }) {
     if (!valid) return
     try {
       console.log('changeUsername, email: ', email, ', username: ', username)
-      const result = await changeUsername(email, username)
+      const result = await changeUsername(email, username, 'email')
       if (result.success) {
         await onLogin()
       }

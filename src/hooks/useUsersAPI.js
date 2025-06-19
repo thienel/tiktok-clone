@@ -62,12 +62,12 @@ const useUsersAPI = () => {
   )
 
   const changeUsername = useCallback(
-    async (email, username) => {
+    async (email, username, type) => {
       try {
-        if (!email || !username) {
+        if (!email || !username || !type) {
           return {
             success: false,
-            message: 'Email and username are required',
+            message: 'Email, username, and type are required',
             errorCode: 'VALIDATION_ERROR',
           }
         }
@@ -76,7 +76,8 @@ const useUsersAPI = () => {
 
         const response = await userAPI.post('change-username', {
           username: username.trim(),
-          email: email.trim().toLowerCase(),
+          idOrEmail: email.trim().toLowerCase(),
+          type: type.trim(),
         })
 
         return { success: response.data?.isSuccess || false, data: response.data }
