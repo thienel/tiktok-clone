@@ -1,6 +1,5 @@
 
 using System.ComponentModel.DataAnnotations;
-using TikTokClone.Domain.Exceptions;
 
 namespace TikTokClone.Application.DTOs
 {
@@ -46,15 +45,16 @@ namespace TikTokClone.Application.DTOs
         public string VerificationCode { get; set; } = string.Empty;
     }
 
-    public class AuthResponseDto
+    public class AuthDetailsDto
     {
-        public bool IsSuccess { get; set; }
-        public string Message { get; set; } = string.Empty;
-        public string? ErrorCode { get; set; }
         public string? Token { get; set; }
         public string? RefreshToken { get; set; }
         public DateTime? ExpiresAt { get; set; }
         public ProfileResponseDto? User { get; set; }
+    }
+
+    public class AuthResponseDto : BaseResponseDto<AuthDetailsDto>
+    {
     }
 
     public class RefreshTokenRequestDto

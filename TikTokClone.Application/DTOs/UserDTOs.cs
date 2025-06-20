@@ -1,6 +1,4 @@
 
-using TikTokClone.Application.Constants;
-
 namespace TikTokClone.Application.DTOs
 {
     public class ProfileResponseDto
@@ -12,12 +10,8 @@ namespace TikTokClone.Application.DTOs
         public string? Bio { get; set; }
     }
 
-    public class UserResponseDto
+    public class UserResponseDto : BaseResponseDto<ProfileResponseDto>
     {
-        public bool IsSuccess { get; set; } = false;
-        public string Message { get; set; } = "Response result is missing";
-        public string ErrorCode { get; set; } = string.Empty;
-        public ProfileResponseDto? Profile { get; set; } = null;
     }
 
     public class SearchUserResponseDto
