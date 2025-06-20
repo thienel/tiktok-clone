@@ -1,3 +1,5 @@
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TikTokClone.Application.Constants;
 using TikTokClone.Application.DTOs;
@@ -130,6 +132,36 @@ namespace TikTokClone.API.Controllers
             }
 
             var result = await _userService.Search(request.Value, request.Limit);
+
+            return Ok(result);
+        }
+
+        [HttpGet("me")]
+        [Authorize]
+        [ProducesResponseType(typeof(UserResponseDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(UserResponseDto), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> Me()
+        {
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            if (userId == null)
+            {
+                _logger.LogWarning("Me endpoint called with invalid token - no user ID found");
+                return BadRequest(new UserResponseDto
+                {
+                    IsSuccess = false,
+                    Message = "Invalid token - user ID not found",
+                    ErrorCode = ErrorCodes.INVALID_TOKEN
+                });
+            }
+
+            var result = await _userService.GetProfileAsync(userId.Trim());
+
+            if (!result.IsSuccess)
+            {
+                return BadRequest(result);
+            }
 
             return Ok(result);
         }

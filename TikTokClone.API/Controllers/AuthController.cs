@@ -221,55 +221,5 @@ namespace TikTokClone.API.Controllers
             _logger.LogInformation("Confirmation email sent successfully to: {Email}", request.Email);
             return Ok(result);
         }
-
-        [HttpGet("me")]
-        [Authorize]
-        [ProducesResponseType(typeof(AuthResponseDto), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(AuthResponseDto), StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> Me()
-        {
-            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-
-            if (userId == null)
-            {
-                _logger.LogWarning("Me endpoint called with invalid token - no user ID found");
-                return BadRequest(new AuthResponseDto
-                {
-                    IsSuccess = false,
-                    Message = "Invalid token - user ID not found",
-                    ErrorCode = ErrorCodes.INVALID_TOKEN
-                });
-            }
-
-            var user = await _userRepository.GetByIdAsync(userId);
-
-            if (user == null)
-            {
-                _logger.LogWarning("User not found for ID: {UserId}", userId);
-                return BadRequest(new AuthResponseDto
-                {
-                    IsSuccess = false,
-                    Message = "User not found",
-                    ErrorCode = ErrorCodes.USER_NOT_FOUND
-                });
-            }
-
-            var userResponse = new ProfileResponseDto
-            {
-                Username = user.UserName!,
-                Name = user.Name,
-                AvatarURL = user.AvatarURL,
-                IsVerified = user.IsVerified,
-                Bio = user.Bio,
-            };
-
-            return Ok(new AuthResponseDto
-            {
-                IsSuccess = true,
-                Message = "User profile retrieved successfully",
-                User = userResponse
-            });
-        }
     }
 }

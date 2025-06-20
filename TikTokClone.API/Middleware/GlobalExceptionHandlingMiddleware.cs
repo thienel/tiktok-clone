@@ -26,7 +26,7 @@ namespace TikTokClone.API.Middleware
             {
                 _logger.LogError(exception, "An unhandled exception occurred");
 
-                var response = new AuthResponseDto
+                var response = new BaseResponseDto
                 {
                     IsSuccess = false,
                     Message = "An internal server error occurred",
