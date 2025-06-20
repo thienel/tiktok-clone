@@ -283,7 +283,6 @@ namespace TikTokClone.Application.Services
             }
         }
 
-
         public async Task<UserResponseDto> ChangeUsernameByIdAsync(string userId, string username)
         {
             if (string.IsNullOrWhiteSpace(userId))
@@ -390,14 +389,118 @@ namespace TikTokClone.Application.Services
             };
         }
 
-        public Task<UserResponseDto> VerifyUserAsync(string userId)
+        public async Task<UserResponseDto> VerifyUserAsync(string userId)
         {
-            throw new NotImplementedException();
+            if (string.IsNullOrWhiteSpace(userId))
+            {
+                return new UserResponseDto
+                {
+                    IsSuccess = false,
+                    Message = "User Id can not be null or empty",
+                    ErrorCode = ErrorCodes.INVALID_CREDENTIALS
+                };
+            }
+
+            var user = await _userRepository.GetByIdAsync(userId.Trim());
+            if (user == null)
+            {
+                return new UserResponseDto
+                {
+                    IsSuccess = false,
+                    Message = "User not found",
+                    ErrorCode = ErrorCodes.USER_NOT_FOUND
+                };
+            }
+
+            try
+            {
+                user.Verify();
+                _userRepository.Update(user);
+                await _userRepository.SaveChangesAsync();
+
+                return new UserResponseDto
+                {
+                    IsSuccess = true,
+                    Message = "Verified user successfully"
+                };
+            }
+            catch (DomainException ex)
+            {
+                var (errorCode, message) = ExceptionHandler.HandleDomainException(ex);
+                return new UserResponseDto
+                {
+                    IsSuccess = false,
+                    Message = message,
+                    ErrorCode = errorCode
+                };
+            }
+            catch (Exception ex)
+            {
+                var (errorCode, message) = ExceptionHandler.HandleGenericException(ex);
+                return new UserResponseDto
+                {
+                    IsSuccess = false,
+                    Message = message,
+                    ErrorCode = errorCode
+                };
+            }
         }
 
-        public Task<UserResponseDto> UnVerifyUserAsync(string userId)
+        public async Task<UserResponseDto> UnVerifyUserAsync(string userId)
         {
-            throw new NotImplementedException();
+            if (string.IsNullOrWhiteSpace(userId))
+            {
+                return new UserResponseDto
+                {
+                    IsSuccess = false,
+                    Message = "User Id can not be null or empty",
+                    ErrorCode = ErrorCodes.INVALID_CREDENTIALS
+                };
+            }
+
+            var user = await _userRepository.GetByIdAsync(userId.Trim());
+            if (user == null)
+            {
+                return new UserResponseDto
+                {
+                    IsSuccess = false,
+                    Message = "User not found",
+                    ErrorCode = ErrorCodes.USER_NOT_FOUND
+                };
+            }
+
+            try
+            {
+                user.UnVerify();
+                _userRepository.Update(user);
+                await _userRepository.SaveChangesAsync();
+
+                return new UserResponseDto
+                {
+                    IsSuccess = true,
+                    Message = "Unverified user successfully"
+                };
+            }
+            catch (DomainException ex)
+            {
+                var (errorCode, message) = ExceptionHandler.HandleDomainException(ex);
+                return new UserResponseDto
+                {
+                    IsSuccess = false,
+                    Message = message,
+                    ErrorCode = errorCode
+                };
+            }
+            catch (Exception ex)
+            {
+                var (errorCode, message) = ExceptionHandler.HandleGenericException(ex);
+                return new UserResponseDto
+                {
+                    IsSuccess = false,
+                    Message = message,
+                    ErrorCode = errorCode
+                };
+            }
         }
 
         public async Task<SearchUserResponseDto> Search(string value, int? limit = 10)
@@ -448,7 +551,6 @@ namespace TikTokClone.Application.Services
                 Message = "Birthdate is valid"
             };
         }
-
 
         public async Task<UserResponseDto> CheckValidUsernameAsync(string username)
         {
