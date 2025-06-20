@@ -52,7 +52,7 @@ namespace TikTokClone.Application.Services
                 {
                     IsSuccess = true,
                     Message = "User profile retrieved successfully",
-                    Profile = new ProfileResponseDto
+                    Data = new ProfileResponseDto
                     {
                         Username = user.UserName!,
                         Name = user.Name,

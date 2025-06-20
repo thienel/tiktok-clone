@@ -130,11 +130,14 @@ namespace TikTokClone.Application.Services
                 {
                     IsSuccess = true,
                     Message = "Logged in successfully",
-                    Token = token,
-                    RefreshToken = refreshToken,
-                    ExpiresAt = DateTime.UtcNow
+                    Data = new AuthDetailsDto
+                    {
+                        Token = token,
+                        RefreshToken = refreshToken,
+                        ExpiresAt = DateTime.UtcNow
                         .AddMinutes(_jwtSettings.ExpirationInMinutes),
-                    User = profileReponseDto
+                        User = profileReponseDto
+                    }
                 };
             }
             catch (Exception ex)
@@ -378,9 +381,12 @@ namespace TikTokClone.Application.Services
                 {
                     IsSuccess = true,
                     Message = "Tokens refreshed successfully",
-                    Token = newToken,
-                    RefreshToken = newRefreshToken,
-                    ExpiresAt = DateTime.UtcNow.AddMinutes(_jwtSettings.ExpirationInMinutes)
+                    Data = new AuthDetailsDto
+                    {
+                        Token = newToken,
+                        RefreshToken = newRefreshToken,
+                        ExpiresAt = DateTime.UtcNow.AddMinutes(_jwtSettings.ExpirationInMinutes)
+                    }
                 };
             }
             catch (Exception ex)
