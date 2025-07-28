@@ -2,6 +2,33 @@
 
 A modern, scalable backend API for a TikTok-like social media platform built with .NET 9, following Clean Architecture principles and best practices.
 
+## 🚧 Project Status
+
+**Current Version**: v0.5 (Foundation Phase)
+
+### ✅ **Completed Features**
+- User Authentication & Authorization (JWT-based)
+- User Registration, Login, Password Reset
+- Email Verification System
+- User Profile Management & Search
+- Clean Architecture Implementation
+- Database Structure & Migrations
+- Basic Firebase Service Configuration
+
+### 🚧 **In Development**
+- Video Upload & Management System
+- Complete Firebase/Cloud Storage Integration
+
+### ❌ **Not Yet Implemented**
+- Video Controller & Endpoints
+- Video Streaming Capabilities
+- Like/Unlike Functionality
+- Comment System
+- Testing Infrastructure
+- Push Notifications
+
+> **Note**: This project is actively under development. The core authentication and user management features are complete and functional, while video-related features are currently being implemented.
+
 ## 📋 Table of Contents
 
 - [Features](#-features)
@@ -21,36 +48,35 @@ A modern, scalable backend API for a TikTok-like social media platform built wit
 
 ## ✨ Features
 
-### 🔐 Authentication & Authorization
+### 🔐 Authentication & Authorization ✅
 - **JWT-based authentication** with refresh tokens
-- **Email verification** flow
+- **Email verification** flow with verification codes
 - **Password reset** functionality
-- **Account lockout** after failed login attempts
 - **Rate limiting** for auth endpoints
-- **Social media login** support (Google, Facebook)
+- **Account registration** and login
 
-### 👤 User Management
+### 👤 User Management ✅
 - **User registration** and profile management
-- **Avatar upload** and management
-- **Bio and profile customization**
-- **Account verification** system
-- **User search** and discovery
+- **Username validation** and availability checking
+- **Birthdate validation** for age verification
+- **User search** functionality
+- **Profile retrieval** for current user
 
-### 🎥 Video Features
-- **Video upload** and processing
-- **Video metadata** management
-- **Video streaming** support
-- **Like/Unlike** functionality
-- **Comment system**
-- **Video sharing** capabilities
+### 🎥 Video Features 🚧 (In Development)
+- **Video entity** structure defined
+- **Video service interface** created
+- **Firebase integration** for file storage (configured but not fully implemented)
+- ❌ **Video upload** endpoint (not yet implemented)
+- ❌ **Video streaming** (not yet implemented)
+- ❌ **Like/Unlike** functionality (not yet implemented)
+- ❌ **Comment system** (not yet implemented)
 
-### 🛡️ Security & Performance
+### 🛡️ Security & Performance ✅
 - **Global exception handling**
 - **Input validation** and sanitization
 - **Rate limiting** middleware
 - **CORS configuration**
-- **Request/Response logging**
-- **Health checks**
+- **Structured logging** with dependency injection
 
 ## 🏗️ Architecture
 
@@ -97,23 +123,21 @@ This project follows **Clean Architecture** principles with clear separation of 
 - **SQL Server** - Primary database
 - **Entity Framework Core** - Code-first migrations
 
-### Authentication & Security
+### Authentication & Security ✅
 - **JWT Bearer Tokens** - Authentication
-- **ASP.NET Core Identity** - User management
 - **BCrypt** - Password hashing
 - **Rate Limiting** - API protection
 
-### Cloud Services
-- **Google Cloud Storage** - File storage
-- **Firebase** - Push notifications
-- **SendGrid/SMTP** - Email services
+### Cloud Services 🚧 (Configured but Not Implemented)
+- **Firebase** - File storage service (interface and basic setup ready)
+- ❌ **Push notifications** (not implemented)
+- **SMTP** - Email services (configured for email verification)
 
-### Testing
-- **xUnit** - Testing framework
-- **Moq** - Mocking framework
-- **FluentAssertions** - Assertion library
-- **AutoFixture** - Test data generation
-- **Entity Framework InMemory** - Database testing
+### Testing ❌ (Not Implemented)
+- ❌ **xUnit** - Testing framework (not set up)
+- ❌ **Moq** - Mocking framework (not implemented)
+- ❌ **FluentAssertions** - Assertion library (not implemented)
+- ❌ **Test projects** (no test projects created yet)
 
 ### Development Tools
 - **OpenAPI/Swagger** - API documentation
@@ -210,6 +234,9 @@ The API will be available at:
 }
 ```
 
+**Note**: Firebase/Google Cloud integration is configured but not fully implemented. Video upload and cloud storage features are planned for future development.
+```
+
 ### Environment Variables
 
 For production, use environment variables:
@@ -243,10 +270,10 @@ dotnet ef migrations remove --project TikTokClone.Infrastructure --startup-proje
 
 The application uses the following main entities:
 
-- **Users** - User accounts and profiles
-- **Videos** - Video content and metadata
-- **RefreshTokens** - JWT refresh token management
-- **EmailCodes** - Email verification codes
+- **Users** ✅ - User accounts and profiles (fully implemented)
+- **RefreshTokens** ✅ - JWT refresh token management (fully implemented)
+- **EmailCodes** ✅ - Email verification codes (fully implemented)
+- **Videos** 🚧 - Video content and metadata (entity defined, implementation pending)
 
 ## 📚 API Documentation
 
@@ -255,38 +282,37 @@ The application uses the following main entities:
 When running in development mode, navigate to:
 - **Swagger UI**: `https://localhost:7001/swagger`
 
-### Authentication Endpoints
+### Authentication Endpoints ✅
 
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| POST | `/api/auth/register` | Register new user |
-| POST | `/api/auth/login` | User login |
-| POST | `/api/auth/refresh` | Refresh JWT token |
-| POST | `/api/auth/verify-email` | Verify email address |
-| POST | `/api/auth/forgot-password` | Request password reset |
-| POST | `/api/auth/reset-password` | Reset password |
-| POST | `/api/auth/logout` | User logout |
+| Method | Endpoint | Description | Status |
+|--------|----------|-------------|---------|
+| POST | `/api/auth/register` | Register new user | ✅ Implemented |
+| POST | `/api/auth/login` | User login | ✅ Implemented |
+| POST | `/api/auth/refresh` | Refresh JWT token | ✅ Implemented |
+| POST | `/api/auth/reset-password` | Reset password | ✅ Implemented |
+| POST | `/api/auth/logout` | User logout | ✅ Implemented |
+| POST | `/api/auth/send-verification-code` | Send email verification | ✅ Implemented |
 
-### User Endpoints
+### User Endpoints ✅
 
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | `/api/users/me` | Get current user profile |
-| PUT | `/api/users/me` | Update user profile |
-| POST | `/api/users/upload-avatar` | Upload user avatar |
-| GET | `/api/users/{id}` | Get user by ID |
-| GET | `/api/users/search` | Search users |
+| Method | Endpoint | Description | Status |
+|--------|----------|-------------|---------|
+| GET | `/api/users/me` | Get current user profile | ✅ Implemented |
+| POST | `/api/users/check-username` | Check username availability | ✅ Implemented |
+| POST | `/api/users/change-username` | Change username | ✅ Implemented |
+| POST | `/api/users/check-birthdate` | Validate birthdate | ✅ Implemented |
+| POST | `/api/users/search` | Search users | ✅ Implemented |
 
-### Video Endpoints
+### Video Endpoints ❌ (Not Implemented)
 
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | `/api/videos` | Get videos feed |
-| POST | `/api/videos` | Upload new video |
-| GET | `/api/videos/{id}` | Get video by ID |
-| PUT | `/api/videos/{id}` | Update video |
-| DELETE | `/api/videos/{id}` | Delete video |
-| POST | `/api/videos/{id}/like` | Like/unlike video |
+| Method | Endpoint | Description | Status |
+|--------|----------|-------------|---------|
+| GET | `/api/videos` | Get videos feed | ❌ Not implemented |
+| POST | `/api/videos` | Upload new video | ❌ Not implemented |
+| GET | `/api/videos/{id}` | Get video by ID | ❌ Not implemented |
+| PUT | `/api/videos/{id}` | Update video | ❌ Not implemented |
+| DELETE | `/api/videos/{id}` | Delete video | ❌ Not implemented |
+| POST | `/api/videos/{id}/like` | Like/unlike video | ❌ Not implemented |
 
 ## 📁 Project Structure
 
@@ -301,57 +327,25 @@ TikTokClone.Backend/
 ├── TikTokClone.Application/         # ⚙️ Application Layer
 │   ├── DTOs/                        # Data Transfer Objects
 │   ├── Interfaces/                  # Application interfaces
-│   ├── Services/                    # Application services
+│   ├── Services/                    # Application services (Auth, User)
 │   ├── Constants/                   # Application constants
 │   ├── Exceptions/                  # Application exceptions
 │   └── Mappers/                     # Object mapping
 │
 ├── TikTokClone.Domain/              # 🎯 Domain Layer
-│   ├── Entities/                    # Domain entities
+│   ├── Entities/                    # Domain entities (User, Video, etc.)
 │   ├── Events/                      # Domain events
 │   └── Exceptions/                  # Domain exceptions
 │
-├── TikTokClone.Infrastructure/      # 🔧 Infrastructure Layer
-│   ├── Data/                        # DbContext and configurations
-│   ├── Repositories/                # Data repositories
-│   ├── Services/                    # External services
-│   ├── Migrations/                  # EF Core migrations
-│   └── Settings/                    # Configuration settings
-│
-└── TikTokClone.Tests/               # 🧪 Test Layer
-    ├── Domain/                      # Domain layer tests
-    ├── Application/                 # Application layer tests
-    ├── Infrastructure/              # Infrastructure tests
-    └── API/                         # API integration tests
+└── TikTokClone.Infrastructure/      # 🔧 Infrastructure Layer
+    ├── Data/                        # DbContext and configurations
+    ├── Repositories/                # Data repositories
+    ├── Services/                    # External services (Email, Firebase, Token)
+    ├── Migrations/                  # EF Core migrations
+    └── Settings/                    # Configuration settings
+
 ```
 
-## 🧪 Testing
-
-### Running Tests
-
-```bash
-# Run all tests
-dotnet test
-
-# Run tests with coverage
-dotnet test --collect:"XPlat Code Coverage"
-
-# Run tests in watch mode
-dotnet watch test
-```
-
-### Test Structure
-
-- **Unit Tests**: Test individual components in isolation
-- **Integration Tests**: Test component interactions
-- **API Tests**: Test HTTP endpoints end-to-end
-
-### Test Categories
-
-- **Domain Tests**: Business logic validation
-- **Service Tests**: Application service testing
-- **Repository Tests**: Data access testing
-- **Controller Tests**: API endpoint testing
 
 ## 🛡️ Security
 
@@ -431,51 +425,42 @@ docker run -p 8080:8080 -e ASPNETCORE_ENVIRONMENT=Production tiktok-clone-api
 - **Testing**: Maintain high test coverage
 - **Documentation**: Update docs with changes
 
-## 🤝 Contributing
-
-1. **Fork** the repository
-2. **Create** a feature branch (`git checkout -b feature/AmazingFeature`)
-3. **Commit** your changes (`git commit -m 'Add some AmazingFeature'`)
-4. **Push** to the branch (`git push origin feature/AmazingFeature`)
-5. **Open** a Pull Request
-
-### Development Guidelines
-
-- Follow Clean Architecture principles
-- Write comprehensive tests
-- Use meaningful commit messages
-- Update documentation
-- Follow C# coding conventions
-
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## 🆘 Support
-
-If you encounter any issues or have questions:
-
-1. **Check** the [Issues](https://github.com/thienel/tiktok-clone-api/issues) page
-2. **Create** a new issue if your problem isn't already reported
-3. **Provide** detailed information about the issue
-4. **Include** steps to reproduce the problem
-
 ## 🚀 Roadmap
 
-### Current Version (v1.0)
-- ✅ User authentication and authorization
+### ✅ Current Version (v0.5) - Foundation Complete
+- ✅ User authentication and authorization (JWT)
 - ✅ Basic user profile management
-- ✅ Video upload and management
-- ✅ Like/unlike functionality
+- ✅ Email verification system
+- ✅ Password reset functionality
+- ✅ User search and validation
+- ✅ Clean Architecture implementation
+- ✅ Database structure and migrations
+- ✅ Basic Firebase service setup
 
-### Future Versions
-- 📋 **v1.1**: Comment system and replies
-- 📋 **v1.2**: Follow/unfollow functionality
-- 📋 **v1.3**: Real-time notifications
-- 📋 **v1.4**: Video recommendations algorithm
-- 📋 **v1.5**: Live streaming capability
-- 📋 **v2.0**: Advanced analytics and reporting
+### 🚧 Next Version (v0.8) - Video Infrastructure
+- 📋 Complete video upload implementation
+- 📋 Video controller and endpoints
+- 📋 Video streaming capabilities
+- 📋 File storage integration with Firebase
+- 📋 Video metadata management
+
+### 📋 Future Versions
+- **v1.0**: Core video features (upload, view, basic interactions)
+- **v1.1**: Like/unlike functionality and basic engagement
+- **v1.2**: Comment system and replies
+- **v1.3**: Follow/unfollow functionality
+- **v1.4**: Testing infrastructure and comprehensive test coverage
+- **v1.5**: Push notifications and real-time features
+- **v2.0**: Advanced features (recommendations, analytics, live streaming)
+
+### 🎯 Areas for Development
+- **Testing**: Comprehensive unit, integration, and API tests
+- **Video Features**: Complete video upload and streaming functionality
+- **Cloud Integration**: Full Firebase/cloud storage implementation
+- **Performance**: Caching, optimization, and scalability improvements
+- **Security**: Enhanced security features and audit logging
 
 ---
 
-**Built with ❤️ using .NET 9 and Clean Architecture**
+**Made with ❤️ by [thienel](https://github.com/thienel)**
+_This project is intended solely for learning and experimental purposes._
