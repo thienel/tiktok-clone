@@ -28,7 +28,15 @@
     "start": "react-app-rewired start",
     "build": "react-app-rewired build",
     "test": "react-app-rewired test",
-    "eject": "react-app-rewired eject"
+    "eject": "react-app-rewired eject",
+    "test:coverage": "react-app-rewired test --coverage --watchAll=false",
+    "test:watch": "react-app-rewired test --watch",
+    "lint": "eslint src --ext .js,.jsx",
+    "lint:fix": "eslint src --ext .js,.jsx --fix",
+    "format": "prettier --write src/**/*.{js,jsx,scss,css,md}",
+    "format:check": "prettier --check src/**/*.{js,jsx,scss,css,md}",
+    "analyze": "npm run build && npx bundle-analyzer build/static/js/*.js",
+    "clean": "rm -rf build node_modules package-lock.json && npm install"
   },
   "eslintConfig": {
     "extends": [
