@@ -1,70 +1,172 @@
-# Getting Started with Create React App
+# TikTok Clone - Frontend
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+A React.js frontend application built with modern best practices and a well-organized code structure.
 
-## Available Scripts
+## 📋 Project Status
 
-In the project directory, you can run:
+🚧 **Currently in Active Development**
 
-### `npm start`
+### ✅ Completed
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+- Authentication system (login, register, password reset)
+- State management with React Context
+- Responsive UI components and styling
+- Error handling and form validation
+- Mobile-first design
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+### ⭭️ In Progress
 
-### `npm test`
+- Video upload and playback system
+- Video feed with infinite scroll
+- Video interaction features (like, comment, share)
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+---
 
-### `npm run build`
+## 🚀 Features
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### 🔐 Authentication
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+- User registration with email verification
+- Login/logout with JWT
+- Password reset
+- Real-time username and birth date validation
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+### 🎨 UI & Design
 
-### `npm run eject`
+- Mobile-first responsive layout
+- Reusable components
+- SCSS with CSS Modules
+- Navigation sidebar
+- Authentication modals
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+### ⚙️ State Management
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+- React Context for centralized state
+- Global loading state coordination
+- Centralized error handling
+- API integration with validation
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+---
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+## 💠 Tech Stack
 
-## Learn More
+| Layer        | Stack                                                    |
+| ------------ | -------------------------------------------------------- |
+| Frontend     | React 19.1.0                                             |
+| Routing      | React Router DOM 7.6.2                                   |
+| HTTP Client  | Axios 1.9.0                                              |
+| Styling      | SCSS + CSS Modules                                       |
+| Build Tool   | React Scripts with `customize-cra` & `react-app-rewired` |
+| Testing      | React Testing Library, Jest                              |
+| Code Quality | Prettier, ESLint                                         |
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+---
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+## 🧠 Architecture Overview
 
-### Code Splitting
+### 🏗️ Clean Architecture
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+- **Component Organization**: Separation of concerns and intuitive structure
+- **Hook-Based Logic**: Custom hooks for API, auth, debounce, theme, etc.
+- **Context Providers**: Scalable global state without Redux
+- **Unified Patterns**: Consistent file naming and structure
 
-### Analyzing the Bundle Size
+### ⭭️ Advanced State & Loading Coordination
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+**Problem**: Conflicting spinners and redundant loading states in complex apps
+**Solution**: Centralized loading with `useLoading` and API-bound flags
 
-### Making a Progressive Web App
+```js
+const { isAnyAuthLoading } = useLoading()
+if (isAnyAuthLoading) return <AuthLoadingSpinner />
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+**Benefits:**
 
-### Advanced Configuration
+- ✅ No conflicting spinners
+- ✅ Clear UX feedback
+- ✅ Auto-cleanup after requests
+- ✅ Specific loading indicators per context
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+---
 
-### Deployment
+## 📦 Installation
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+### Prerequisites
 
-### `npm run build` fails to minify
+- Node.js v16+
+- npm or yarn
+- Backend API (for full functionality)
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+### Setup
+
+```bash
+git clone https://github.com/thienel/tiktok-clone-ui.git
+cd tiktok-clone-ui/frontend
+npm install
+```
+
+Create `.env` file:
+
+```env
+REACT_APP_API_BASE_URL=http://localhost:5062/api/
+REACT_APP_ENV=development
+```
+
+Run the development server:
+
+```bash
+npm start
+```
+
+App runs at [http://localhost:3000](http://localhost:3000)
+
+---
+
+## 📁 Project Structure
+
+```
+src/
+├── api/                 # API layer
+├── components/          # Reusable UI components
+├── context/             # Global state providers
+├── hooks/               # Custom React hooks
+├── utils/               # Helper and validation functions
+└── styles/              # SCSS global styles
+```
+
+---
+
+## ⛏️ Configuration
+
+Uses `customize-cra` + `react-app-rewired` for:
+
+- Path aliases (`~` = `src/`)
+- SCSS with CSS Modules
+- Custom font loading
+
+Example:
+
+```js
+import Component from '~/components/Component'
+```
+
+---
+
+## 🧚️‍♂️ Testing
+
+- Jest and React Testing Library are preconfigured
+- Supports unit and integration tests
+
+---
+
+## 🙏 Acknowledgments
+
+- TikTok for UI inspiration
+- React team for the powerful framework
+- Open source community for tools & libraries
+
+---
+
+**Made with ❤️ by [thienel](https://github.com/thienel)**
+_This project is intended solely for learning and experimental purposes._
