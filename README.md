@@ -6,7 +6,7 @@ A React.js frontend application for a TikTok-like social media platform built wi
 
 ![Main Page](./src/assets/demos/Mainpage.png)
 
-## Drak mode
+## Dark mode
 
 ![Dark mode](./src/assets/demos/Darkmode.png)
 
