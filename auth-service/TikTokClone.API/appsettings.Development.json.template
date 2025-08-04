@@ -1,0 +1,34 @@
+{
+  "Logging": {
+    "LogLevel": {
+      "Default": "Information",
+      "Microsoft.AspNetCore": "Warning",
+      "Microsoft.EntityFrameworkCore": "Information"
+    }
+  },
+  "ConnectionStrings": {
+    "DefaultConnection": "Server=(localdb)\\mssqllocaldb;Database=TikTokCloneDb;Trusted_Connection=true;MultipleActiveResultSets=true;",
+    "SqlServer": "Data Source=YOUR_SERVER;Initial Catalog=TikTokCloneDb;Integrated Security=true;TrustServerCertificate=true;"
+  },
+  "JwtSettings": {
+    "SecretKey": "your-super-secret-jwt-key-that-is-at-least-32-characters-long",
+    "Issuer": "TikTokClone.API",
+    "Audience": "TikTokClone.Client",
+    "ExpiryInMinutes": 60,
+    "RefreshTokenExpiryInDays": 7
+  },
+  "EmailSettings": {
+    "SmtpServer": "smtp.gmail.com",
+    "SmtpPort": 587,
+    "FromEmail": "your-email@gmail.com",
+    "FromName": "TikTok Clone",
+    "Username": "your-email@gmail.com",
+    "Password": "your-app-password"
+  },
+  "RateLimitSettings": {
+    "PermitLimit": 100,
+    "WindowInSeconds": 60,
+    "QueueLimit": 10
+  },
+  "AllowedHosts": "*"
+}
