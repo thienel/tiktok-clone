@@ -7,6 +7,7 @@ A backend API for a TikTok-like social media platform built with .NET 9, followi
 **Current Version**: v0.5 (Authentication & User Management Complete)
 
 ### Completed Features
+
 - JWT-based authentication and authorization
 - User registration, login, and password reset
 - Email verification system
@@ -16,14 +17,12 @@ A backend API for a TikTok-like social media platform built with .NET 9, followi
 - Global exception handling and rate limiting
 
 ### Not Yet Implemented
-- Video upload and management
-- Video streaming
-- Firebase/Cloud storage integration
+
 - Like/unlike functionality
-- Comment system
+- Comment system  
 - Testing infrastructure
 
-> **Note**: This project focuses on authentication and user management. Video functionality is planned but not implemented.
+> **Note**: This project focuses on authentication and user management. Video functionality has been removed as it will be implemented as a separate microservice.
 
 ## Table of Contents
 
@@ -39,6 +38,7 @@ A backend API for a TikTok-like social media platform built with .NET 9, followi
 ## Features
 
 ### Authentication & Authorization
+
 - JWT-based authentication with access and refresh tokens
 - User registration with email verification
 - Password reset functionality
@@ -46,6 +46,7 @@ A backend API for a TikTok-like social media platform built with .NET 9, followi
 - Secure password hashing with BCrypt
 
 ### User Management
+
 - User profile creation and management
 - Username validation and availability checking
 - Age verification through birthdate validation
@@ -53,6 +54,7 @@ A backend API for a TikTok-like social media platform built with .NET 9, followi
 - Account management endpoints
 
 ### Security & Infrastructure
+
 - Global exception handling middleware
 - Rate limiting middleware
 - CORS configuration
@@ -61,12 +63,13 @@ A backend API for a TikTok-like social media platform built with .NET 9, followi
 - Clean Architecture with clear separation of concerns
 
 ### Database & Data Access
+
 - Entity Framework Core with SQL Server
 - Code-first migrations
 - Repository pattern implementation
 - Proper entity relationships and constraints
 
-**Note**: Video functionality, Firebase integration, and cloud storage features are not implemented. The project currently provides a complete authentication and user management system.
+**Note**: Video functionality has been removed from this service and will be implemented as a separate microservice. The project currently provides a complete authentication and user management system.
 
 ## Architecture
 
@@ -96,7 +99,7 @@ This project follows Clean Architecture principles with clear separation of conc
 
 ### Layer Responsibilities
 
-- **Domain Layer**: Core business entities (User, Video, RefreshToken, EmailCode)
+- **Domain Layer**: Core business entities (User, RefreshToken, EmailCode)
 - **Application Layer**: Business logic, DTOs, and service interfaces
 - **Infrastructure Layer**: Data access, external services, and technical implementations
 - **Presentation Layer**: API controllers, middleware, and HTTP handling
@@ -104,28 +107,32 @@ This project follows Clean Architecture principles with clear separation of conc
 ## Technology Stack
 
 ### Core Framework
+
 - .NET 9 - Latest .NET framework
 - ASP.NET Core - Web API framework
 - Entity Framework Core - ORM with code-first migrations
 - ASP.NET Core Identity - Authentication framework
 
 ### Database
+
 - SQL Server - Primary database
 - Entity Framework Core - Database access and migrations
 
 ### Authentication & Security
+
 - JWT Bearer Tokens - Authentication
 - BCrypt - Password hashing
 - Rate Limiting - API protection
 - CORS - Cross-origin resource sharing
 
 ### Development Tools
+
 - OpenAPI/Swagger - API documentation
 - Serilog - Structured logging
 - AutoMapper - Object mapping
 
 ### Not Implemented
-- Firebase/Cloud Storage integration (interfaces defined but not implemented)
+
 - Testing framework (no test projects exist)
 - Push notifications
 
@@ -136,6 +143,7 @@ This project follows Clean Architecture principles with clear separation of conc
 - [Visual Studio 2022](https://visualstudio.microsoft.com/) or [VS Code](https://code.visualstudio.com/)
 
 ### Optional
+
 - [SQL Server Management Studio (SSMS)](https://docs.microsoft.com/en-us/sql/ssms/)
 - [Postman](https://www.postman.com/) for API testing
 
@@ -176,6 +184,7 @@ dotnet run
 ```
 
 The API will be available at:
+
 - HTTPS: `https://localhost:7001`
 - HTTP: `http://localhost:5001`
 - Swagger UI: `https://localhost:7001/swagger`
@@ -225,34 +234,36 @@ Access the interactive API documentation at: `https://localhost:7001/swagger`
 ### Implemented Endpoints
 
 #### Authentication
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| POST | `/api/auth/register` | Register new user |
-| POST | `/api/auth/login` | User login |
-| POST | `/api/auth/refresh` | Refresh JWT token |
-| POST | `/api/auth/reset-password` | Reset password |
-| POST | `/api/auth/logout` | User logout |
-| POST | `/api/auth/send-verification-code` | Send email verification |
+
+| Method | Endpoint                           | Description             |
+| ------ | ---------------------------------- | ----------------------- |
+| POST   | `/api/auth/register`               | Register new user       |
+| POST   | `/api/auth/login`                  | User login              |
+| POST   | `/api/auth/refresh`                | Refresh JWT token       |
+| POST   | `/api/auth/reset-password`         | Reset password          |
+| POST   | `/api/auth/logout`                 | User logout             |
+| POST   | `/api/auth/send-verification-code` | Send email verification |
 
 #### User Management
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | `/api/users/me` | Get current user profile |
-| POST | `/api/users/check-username` | Check username availability |
-| POST | `/api/users/change-username` | Change username |
-| POST | `/api/users/check-birthdate` | Validate birthdate |
-| POST | `/api/users/search` | Search users |
+
+| Method | Endpoint                     | Description                 |
+| ------ | ---------------------------- | --------------------------- |
+| GET    | `/api/users/me`              | Get current user profile    |
+| POST   | `/api/users/check-username`  | Check username availability |
+| POST   | `/api/users/change-username` | Change username             |
+| POST   | `/api/users/check-birthdate` | Validate birthdate          |
+| POST   | `/api/users/search`          | Search users                |
 
 ### Not Implemented
-- Video endpoints (upload, streaming, management)
-- Like/unlike functionality
-- Comment system
-- Follow/unfollow features
 
+- Like/unlike functionality (to be implemented in separate microservice)
+- Comment system (to be implemented in separate microservice)
+- Follow/unfollow features
 
 ## Security
 
 ### Authentication System
+
 - JWT-based authentication with access and refresh tokens
 - Email verification for account activation
 - Password reset functionality with secure tokens
@@ -260,6 +271,7 @@ Access the interactive API documentation at: `https://localhost:7001/swagger`
 - Rate limiting to prevent brute force attacks
 
 ### Security Features
+
 - Input validation and sanitization
 - CORS configuration for frontend integration
 - Global exception handling middleware
@@ -267,6 +279,7 @@ Access the interactive API documentation at: `https://localhost:7001/swagger`
 - HTTPS enforcement in production
 
 ### Best Practices
+
 - Principle of least privilege
 - Secure password policies and validation
 - Token expiration and automatic rotation
@@ -275,5 +288,5 @@ Access the interactive API documentation at: `https://localhost:7001/swagger`
 
 ---
 
-**Made by [thienel](https://github.com/thienel)**  
-*This project is for learning and experimental purposes.*
+**Made by [thienel](https://github.com/thienel)**
+_This project is for learning and experimental purposes._

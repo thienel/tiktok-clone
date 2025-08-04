@@ -192,17 +192,6 @@ namespace TikTokClone.Infrastructure.Services
         #endregion
 
         #region  Helper Methods for TikTok Clone
-        public async Task<string> UploadVideoAsync(Stream videoStream, string originalFileName)
-        {
-            var contentType = GetContentType(originalFileName);
-            if (!IsVideoFile(contentType))
-            {
-                throw new ArgumentException("File must be a video");
-            }
-
-            return await UploadFileAsync(videoStream, originalFileName, contentType);
-        }
-
         public async Task<string> UploadImageAsync(Stream imageStream, string originalFileName)
         {
             var contentType = GetContentType(originalFileName);
@@ -223,11 +212,6 @@ namespace TikTokClone.Infrastructure.Services
                 ".png" => "image/png",
                 ".gif" => "image/gif",
                 ".webp" => "image/webp",
-                ".mp4" => "video/mp4",
-                ".avi" => "video/avi",
-                ".mov" => "video/quicktime",
-                ".wmv" => "video/x-ms-wmv",
-                ".webm" => "video/webm",
                 _ => "application/octet-stream"
             };
         }
@@ -235,11 +219,6 @@ namespace TikTokClone.Infrastructure.Services
         private bool IsImageFile(string contentType)
         {
             return contentType.StartsWith("image/");
-        }
-
-        private bool IsVideoFile(string contentType)
-        {
-            return contentType.StartsWith("video/");
         }
         #endregion
 

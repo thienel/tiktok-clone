@@ -17,7 +17,6 @@ namespace TikTokClone.Application.Interfaces.Services
         Task DeleteFileAsync(string fileName);
 
         // Helper Methods for TikTok Clone
-        Task<string> UploadVideoAsync(Stream videoStream, string originalFileName);
         Task<string> UploadImageAsync(Stream imageStream, string originalFileName);
 
         // Authentication Operations

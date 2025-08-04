@@ -25,11 +25,6 @@
     "Username": "your-email@gmail.com",
     "Password": "your-app-password"
   },
-  "GoogleCloudSettings": {
-    "ProjectId": "your-firebase-project-id",
-    "ServiceAccountKeyPath": "path/to/your/firebase-service-account.json",
-    "StorageBucketName": "your-firebase-storage-bucket"
-  },
   "RateLimitSettings": {
     "PermitLimit": 100,
     "WindowInSeconds": 60,
