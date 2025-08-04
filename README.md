@@ -1,292 +1,75 @@
-# TikTok Clone - Backend API
+# TikTok Clone Backend Monorepo
 
-A backend API for a TikTok-like social media platform built with .NET 9, following Clean Architecture principles.
+This repository contains the backend services for the TikTok Clone application.
 
-## Project Status
+## Services
 
-**Current Version**: v0.5 (Authentication & User Management Complete)
+### 🔐 Auth Service
+Location: `./auth-service/`
 
-### Completed Features
+.NET Core authentication and user management service.
 
-- JWT-based authentication and authorization
-- User registration, login, and password reset
-- Email verification system
-- User profile management and search
-- Clean Architecture implementation
-- Database structure with Entity Framework migrations
-- Global exception handling and rate limiting
-
-### Not Yet Implemented
-
-- Like/unlike functionality
-- Comment system  
-- Testing infrastructure
-
-> **Note**: This project focuses on authentication and user management. Video functionality has been removed as it will be implemented as a separate microservice.
-
-## Table of Contents
-
-- [Features](#features)
-- [Architecture](#architecture)
-- [Technology Stack](#technology-stack)
-- [Prerequisites](#prerequisites)
-- [Getting Started](#getting-started)
-- [Configuration](#configuration)
-- [API Documentation](#api-documentation)
-- [Security](#security)
-
-## Features
-
-### Authentication & Authorization
-
-- JWT-based authentication with access and refresh tokens
-- User registration with email verification
+**Features:**
+- User registration and authentication
+- JWT token management
+- Email verification
 - Password reset functionality
-- Rate limiting for security
-- Secure password hashing with BCrypt
 
-### User Management
+**Tech Stack:**
+- .NET 8
+- Entity Framework Core
+- SQL Server
+- JWT Authentication
 
-- User profile creation and management
-- Username validation and availability checking
-- Age verification through birthdate validation
-- User search functionality
-- Account management endpoints
+### 🎥 Video Service
+Location: `./video-service/`
 
-### Security & Infrastructure
+Go-based video processing and management service.
 
-- Global exception handling middleware
-- Rate limiting middleware
-- CORS configuration
-- Input validation and sanitization
-- Structured logging with dependency injection
-- Clean Architecture with clear separation of concerns
+**Features:**
+- Video upload and processing
+- Video metadata management
+- Video streaming
+- Video recommendations
 
-### Database & Data Access
-
-- Entity Framework Core with SQL Server
-- Code-first migrations
-- Repository pattern implementation
-- Proper entity relationships and constraints
-
-**Note**: Video functionality has been removed from this service and will be implemented as a separate microservice. The project currently provides a complete authentication and user management system.
-
-## Architecture
-
-This project follows Clean Architecture principles with clear separation of concerns:
-
-```
-┌─────────────────────┐
-│   Presentation      │  ← Controllers, Middleware
-│   (TikTokClone.API) │
-└─────────────────────┘
-           │
-┌─────────────────────┐
-│    Application      │  ← Services, DTOs, Interfaces
-│(TikTokClone.App)    │
-└─────────────────────┘
-           │
-┌─────────────────────┐
-│     Domain          │  ← Entities, Domain Logic
-│(TikTokClone.Domain) │
-└─────────────────────┘
-           │
-┌─────────────────────┐
-│  Infrastructure     │  ← Data Access, External Services
-│(TikTokClone.Infra)  │
-└─────────────────────┘
-```
-
-### Layer Responsibilities
-
-- **Domain Layer**: Core business entities (User, RefreshToken, EmailCode)
-- **Application Layer**: Business logic, DTOs, and service interfaces
-- **Infrastructure Layer**: Data access, external services, and technical implementations
-- **Presentation Layer**: API controllers, middleware, and HTTP handling
-
-## Technology Stack
-
-### Core Framework
-
-- .NET 9 - Latest .NET framework
-- ASP.NET Core - Web API framework
-- Entity Framework Core - ORM with code-first migrations
-- ASP.NET Core Identity - Authentication framework
-
-### Database
-
-- SQL Server - Primary database
-- Entity Framework Core - Database access and migrations
-
-### Authentication & Security
-
-- JWT Bearer Tokens - Authentication
-- BCrypt - Password hashing
-- Rate Limiting - API protection
-- CORS - Cross-origin resource sharing
-
-### Development Tools
-
-- OpenAPI/Swagger - API documentation
-- Serilog - Structured logging
-- AutoMapper - Object mapping
-
-### Not Implemented
-
-- Testing framework (no test projects exist)
-- Push notifications
-
-## Prerequisites
-
-- [.NET 9 SDK](https://dotnet.microsoft.com/download/dotnet/9.0)
-- [SQL Server](https://www.microsoft.com/en-us/sql-server/sql-server-downloads) (LocalDB for development)
-- [Visual Studio 2022](https://visualstudio.microsoft.com/) or [VS Code](https://code.visualstudio.com/)
-
-### Optional
-
-- [SQL Server Management Studio (SSMS)](https://docs.microsoft.com/en-us/sql/ssms/)
-- [Postman](https://www.postman.com/) for API testing
+**Tech Stack:**
+- Go
+- gRPC
+- Protocol Buffers
 
 ## Getting Started
 
-### 1. Clone the Repository
+### Prerequisites
+- .NET 8 SDK
+- Go 1.21+
+- Docker (optional)
 
+### Running the Services
+
+#### Auth Service
 ```bash
-git clone https://github.com/thienel/tiktok-clone-api.git
-cd tiktok-clone-api/backend
-```
-
-### 2. Restore Dependencies
-
-```bash
+cd auth-service
 dotnet restore
-```
-
-### 3. Configure Settings
-
-Copy the template and update with your settings:
-
-```bash
-cp TikTokClone.API/appsettings.Development.json.template TikTokClone.API/appsettings.Development.json
-```
-
-### 4. Set Up Database
-
-```bash
-dotnet ef database update --project TikTokClone.Infrastructure --startup-project TikTokClone.API
-```
-
-### 5. Run the Application
-
-```bash
-cd TikTokClone.API
 dotnet run
 ```
 
-The API will be available at:
-
-- HTTPS: `https://localhost:7001`
-- HTTP: `http://localhost:5001`
-- Swagger UI: `https://localhost:7001/swagger`
-
-## Configuration
-
-### Required Settings
-
-Update `appsettings.Development.json`:
-
-```json
-{
-  "ConnectionStrings": {
-    "DefaultConnection": "Server=(localdb)\\mssqllocaldb;Database=TikTokCloneDb;Trusted_Connection=true;"
-  },
-  "JwtSettings": {
-    "SecretKey": "your-secret-key-32-characters-minimum",
-    "Issuer": "TikTokClone.API",
-    "Audience": "TikTokClone.Client",
-    "ExpiryInMinutes": 60,
-    "RefreshTokenExpiryInDays": 7
-  },
-  "EmailSettings": {
-    "SmtpServer": "smtp.gmail.com",
-    "SmtpPort": 587,
-    "FromEmail": "your-email@gmail.com",
-    "Username": "your-email@gmail.com",
-    "Password": "your-app-password"
-  }
-}
-```
-
-### Environment Variables (Production)
-
+#### Video Service
 ```bash
-export ConnectionStrings__DefaultConnection="your-production-connection-string"
-export JwtSettings__SecretKey="your-production-jwt-secret"
-export EmailSettings__Password="your-email-password"
+cd video-service
+go mod tidy
+go run cmd/main.go
 ```
 
-## API Documentation
+## Development
 
-### Swagger/OpenAPI
+Each service maintains its own development workflow while being part of the monorepo structure.
 
-Access the interactive API documentation at: `https://localhost:7001/swagger`
+## Architecture
 
-### Implemented Endpoints
-
-#### Authentication
-
-| Method | Endpoint                           | Description             |
-| ------ | ---------------------------------- | ----------------------- |
-| POST   | `/api/auth/register`               | Register new user       |
-| POST   | `/api/auth/login`                  | User login              |
-| POST   | `/api/auth/refresh`                | Refresh JWT token       |
-| POST   | `/api/auth/reset-password`         | Reset password          |
-| POST   | `/api/auth/logout`                 | User logout             |
-| POST   | `/api/auth/send-verification-code` | Send email verification |
-
-#### User Management
-
-| Method | Endpoint                     | Description                 |
-| ------ | ---------------------------- | --------------------------- |
-| GET    | `/api/users/me`              | Get current user profile    |
-| POST   | `/api/users/check-username`  | Check username availability |
-| POST   | `/api/users/change-username` | Change username             |
-| POST   | `/api/users/check-birthdate` | Validate birthdate          |
-| POST   | `/api/users/search`          | Search users                |
-
-### Not Implemented
-
-- Like/unlike functionality (to be implemented in separate microservice)
-- Comment system (to be implemented in separate microservice)
-- Follow/unfollow features
-
-## Security
-
-### Authentication System
-
-- JWT-based authentication with access and refresh tokens
-- Email verification for account activation
-- Password reset functionality with secure tokens
-- BCrypt password hashing with salt
-- Rate limiting to prevent brute force attacks
-
-### Security Features
-
-- Input validation and sanitization
-- CORS configuration for frontend integration
-- Global exception handling middleware
-- Secure token storage and rotation
-- HTTPS enforcement in production
-
-### Best Practices
-
-- Principle of least privilege
-- Secure password policies and validation
-- Token expiration and automatic rotation
-- Comprehensive error handling without information leakage
-- Structured logging for security monitoring
-
----
-
-**Made by [thienel](https://github.com/thienel)**
-_This project is for learning and experimental purposes._
+```
+backend/
+├── auth-service/          # .NET authentication service
+├── video-service/         # Go video processing service
+├── docker-compose.yml     # Multi-service deployment
+└── README.md             # This file
+```
