@@ -1,0 +1,71 @@
+version: '3.8'
+
+services:
+  auth-service:
+    build:
+      context: ./auth-service
+      dockerfile: Dockerfile
+    ports:
+      - "5000:5000"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:5000
+    depends_on:
+      - auth-db
+    networks:
+      - tiktok-network
+
+  video-service:
+    build:
+      context: ./video-service
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      - GO_ENV=development
+      - PORT=8080
+    depends_on:
+      - video-db
+    networks:
+      - tiktok-network
+
+  auth-db:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=YourStrong!Passw0rd
+      - MSSQL_PID=Express
+    ports:
+      - "1433:1433"
+    volumes:
+      - auth_data:/var/opt/mssql
+    networks:
+      - tiktok-network
+
+  video-db:
+    image: postgres:15-alpine
+    environment:
+      - POSTGRES_DB=videodb
+      - POSTGRES_USER=videouser
+      - POSTGRES_PASSWORD=videopass
+    ports:
+      - "5432:5432"
+    volumes:
+      - video_data:/var/lib/postgresql/data
+    networks:
+      - tiktok-network
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    networks:
+      - tiktok-network
+
+volumes:
+  auth_data:
+  video_data:
+
+networks:
+  tiktok-network:
+    driver: bridge
