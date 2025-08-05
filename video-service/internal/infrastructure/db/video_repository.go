@@ -19,7 +19,8 @@ func NewVideoRepository(db *gorm.DB) domain.VideoRepository {
 
 func (repository *videoRepository) Create(ctx context.Context, video *domain.Video) error {
 	video.ID = uuid.New()
-	return repository.db.WithContext(ctx).Create(video).Error
+	video.CreatedAt = time.Now()
+	return repository.db.WithContext(ctx).Create(&video).Error
 }
 
 func (repository *videoRepository) GetByID(ctx context.Context, id uuid.UUID) (
@@ -73,5 +74,5 @@ func (repository *videoRepository) Update(ctx context.Context, video *domain.Vid
 }
 
 func (repository *videoRepository) Delete(ctx context.Context, id uuid.UUID) error {
-	return repository.db.WithContext(ctx).Delete(domain.Video{}, id).Error
+	return repository.db.WithContext(ctx).Delete(&domain.Video{}, id).Error
 }
