@@ -105,14 +105,6 @@ message UnlikeVideoResponse {
     int64 like_count = 2;
 }
 
-message IncrementViewCountRequest {
-    string video_id = 1;
-}
-
-message IncrementViewCountResponse {
-    int64 view_count = 1;
-}
-
 message CheckUserLikedVideoRequest {
     string user_id = 1;
     string video_id = 2;
@@ -130,6 +122,17 @@ message GetVideoLikeCountResponse {
     int64 like_count = 1;
 }
 
+message CreateViewRequest{
+    string user_id = 1;
+    string video_id = 2;
+    int32 watch_time = 3;
+}
+
+message CreateViewResponse{
+    bool success = 1;
+    int64 total_views = 2;
+}
+
 service VideoService {
     rpc CreateVideo(CreateVideoRequest) returns (CreateVideoResponse);
     rpc GetVideo(GetVideoRequest) returns (GetVideoResponse);
@@ -139,7 +142,7 @@ service VideoService {
     rpc DeleteVideo(DeleteVideoRequest) returns (DeleteVideoResponse);
     rpc LikeVideo(LikeVideoRequest) returns (LikeVideoResponse);
     rpc UnlikeVideo(UnlikeVideoRequest) returns (UnlikeVideoResponse);
-    rpc IncrementViewCount(IncrementViewCountRequest) returns (IncrementViewCountResponse);
     rpc CheckUserLikedVideo(CheckUserLikedVideoRequest) returns (CheckUserLikedVideoResponse);
     rpc GetVideoLikeCount(GetVideoLikeCountRequest) returns (GetVideoLikeCountResponse);
+    rpc CreateView(CreateViewRequest) returns (CreateViewResponse);
 }

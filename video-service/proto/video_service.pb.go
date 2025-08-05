@@ -1018,94 +1018,6 @@ func (x *UnlikeVideoResponse) GetLikeCount() int64 {
 	return 0
 }
 
-type IncrementViewCountRequest struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	VideoId       string                 `protobuf:"bytes,1,opt,name=video_id,json=videoId,proto3" json:"video_id,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *IncrementViewCountRequest) Reset() {
-	*x = IncrementViewCountRequest{}
-	mi := &file_proto_video_service_proto_msgTypes[17]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *IncrementViewCountRequest) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*IncrementViewCountRequest) ProtoMessage() {}
-
-func (x *IncrementViewCountRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_video_service_proto_msgTypes[17]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use IncrementViewCountRequest.ProtoReflect.Descriptor instead.
-func (*IncrementViewCountRequest) Descriptor() ([]byte, []int) {
-	return file_proto_video_service_proto_rawDescGZIP(), []int{17}
-}
-
-func (x *IncrementViewCountRequest) GetVideoId() string {
-	if x != nil {
-		return x.VideoId
-	}
-	return ""
-}
-
-type IncrementViewCountResponse struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	ViewCount     int64                  `protobuf:"varint,1,opt,name=view_count,json=viewCount,proto3" json:"view_count,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *IncrementViewCountResponse) Reset() {
-	*x = IncrementViewCountResponse{}
-	mi := &file_proto_video_service_proto_msgTypes[18]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *IncrementViewCountResponse) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*IncrementViewCountResponse) ProtoMessage() {}
-
-func (x *IncrementViewCountResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_video_service_proto_msgTypes[18]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use IncrementViewCountResponse.ProtoReflect.Descriptor instead.
-func (*IncrementViewCountResponse) Descriptor() ([]byte, []int) {
-	return file_proto_video_service_proto_rawDescGZIP(), []int{18}
-}
-
-func (x *IncrementViewCountResponse) GetViewCount() int64 {
-	if x != nil {
-		return x.ViewCount
-	}
-	return 0
-}
-
 type CheckUserLikedVideoRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	UserId        string                 `protobuf:"bytes,1,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
@@ -1116,7 +1028,7 @@ type CheckUserLikedVideoRequest struct {
 
 func (x *CheckUserLikedVideoRequest) Reset() {
 	*x = CheckUserLikedVideoRequest{}
-	mi := &file_proto_video_service_proto_msgTypes[19]
+	mi := &file_proto_video_service_proto_msgTypes[17]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1128,7 +1040,7 @@ func (x *CheckUserLikedVideoRequest) String() string {
 func (*CheckUserLikedVideoRequest) ProtoMessage() {}
 
 func (x *CheckUserLikedVideoRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_video_service_proto_msgTypes[19]
+	mi := &file_proto_video_service_proto_msgTypes[17]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1141,7 +1053,7 @@ func (x *CheckUserLikedVideoRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CheckUserLikedVideoRequest.ProtoReflect.Descriptor instead.
 func (*CheckUserLikedVideoRequest) Descriptor() ([]byte, []int) {
-	return file_proto_video_service_proto_rawDescGZIP(), []int{19}
+	return file_proto_video_service_proto_rawDescGZIP(), []int{17}
 }
 
 func (x *CheckUserLikedVideoRequest) GetUserId() string {
@@ -1167,7 +1079,7 @@ type CheckUserLikedVideoResponse struct {
 
 func (x *CheckUserLikedVideoResponse) Reset() {
 	*x = CheckUserLikedVideoResponse{}
-	mi := &file_proto_video_service_proto_msgTypes[20]
+	mi := &file_proto_video_service_proto_msgTypes[18]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1179,7 +1091,7 @@ func (x *CheckUserLikedVideoResponse) String() string {
 func (*CheckUserLikedVideoResponse) ProtoMessage() {}
 
 func (x *CheckUserLikedVideoResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_video_service_proto_msgTypes[20]
+	mi := &file_proto_video_service_proto_msgTypes[18]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1192,7 +1104,7 @@ func (x *CheckUserLikedVideoResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CheckUserLikedVideoResponse.ProtoReflect.Descriptor instead.
 func (*CheckUserLikedVideoResponse) Descriptor() ([]byte, []int) {
-	return file_proto_video_service_proto_rawDescGZIP(), []int{20}
+	return file_proto_video_service_proto_rawDescGZIP(), []int{18}
 }
 
 func (x *CheckUserLikedVideoResponse) GetIsLiked() bool {
@@ -1211,7 +1123,7 @@ type GetVideoLikeCountRequest struct {
 
 func (x *GetVideoLikeCountRequest) Reset() {
 	*x = GetVideoLikeCountRequest{}
-	mi := &file_proto_video_service_proto_msgTypes[21]
+	mi := &file_proto_video_service_proto_msgTypes[19]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1223,7 +1135,7 @@ func (x *GetVideoLikeCountRequest) String() string {
 func (*GetVideoLikeCountRequest) ProtoMessage() {}
 
 func (x *GetVideoLikeCountRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_video_service_proto_msgTypes[21]
+	mi := &file_proto_video_service_proto_msgTypes[19]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1236,7 +1148,7 @@ func (x *GetVideoLikeCountRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetVideoLikeCountRequest.ProtoReflect.Descriptor instead.
 func (*GetVideoLikeCountRequest) Descriptor() ([]byte, []int) {
-	return file_proto_video_service_proto_rawDescGZIP(), []int{21}
+	return file_proto_video_service_proto_rawDescGZIP(), []int{19}
 }
 
 func (x *GetVideoLikeCountRequest) GetVideoId() string {
@@ -1255,7 +1167,7 @@ type GetVideoLikeCountResponse struct {
 
 func (x *GetVideoLikeCountResponse) Reset() {
 	*x = GetVideoLikeCountResponse{}
-	mi := &file_proto_video_service_proto_msgTypes[22]
+	mi := &file_proto_video_service_proto_msgTypes[20]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1267,7 +1179,7 @@ func (x *GetVideoLikeCountResponse) String() string {
 func (*GetVideoLikeCountResponse) ProtoMessage() {}
 
 func (x *GetVideoLikeCountResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_video_service_proto_msgTypes[22]
+	mi := &file_proto_video_service_proto_msgTypes[20]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1280,12 +1192,124 @@ func (x *GetVideoLikeCountResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetVideoLikeCountResponse.ProtoReflect.Descriptor instead.
 func (*GetVideoLikeCountResponse) Descriptor() ([]byte, []int) {
-	return file_proto_video_service_proto_rawDescGZIP(), []int{22}
+	return file_proto_video_service_proto_rawDescGZIP(), []int{20}
 }
 
 func (x *GetVideoLikeCountResponse) GetLikeCount() int64 {
 	if x != nil {
 		return x.LikeCount
+	}
+	return 0
+}
+
+type CreateViewRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	UserId        string                 `protobuf:"bytes,1,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
+	VideoId       string                 `protobuf:"bytes,2,opt,name=video_id,json=videoId,proto3" json:"video_id,omitempty"`
+	WatchTime     int32                  `protobuf:"varint,3,opt,name=watch_time,json=watchTime,proto3" json:"watch_time,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *CreateViewRequest) Reset() {
+	*x = CreateViewRequest{}
+	mi := &file_proto_video_service_proto_msgTypes[21]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *CreateViewRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CreateViewRequest) ProtoMessage() {}
+
+func (x *CreateViewRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_video_service_proto_msgTypes[21]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CreateViewRequest.ProtoReflect.Descriptor instead.
+func (*CreateViewRequest) Descriptor() ([]byte, []int) {
+	return file_proto_video_service_proto_rawDescGZIP(), []int{21}
+}
+
+func (x *CreateViewRequest) GetUserId() string {
+	if x != nil {
+		return x.UserId
+	}
+	return ""
+}
+
+func (x *CreateViewRequest) GetVideoId() string {
+	if x != nil {
+		return x.VideoId
+	}
+	return ""
+}
+
+func (x *CreateViewRequest) GetWatchTime() int32 {
+	if x != nil {
+		return x.WatchTime
+	}
+	return 0
+}
+
+type CreateViewResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Success       bool                   `protobuf:"varint,1,opt,name=success,proto3" json:"success,omitempty"`
+	TotalViews    int64                  `protobuf:"varint,2,opt,name=total_views,json=totalViews,proto3" json:"total_views,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *CreateViewResponse) Reset() {
+	*x = CreateViewResponse{}
+	mi := &file_proto_video_service_proto_msgTypes[22]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *CreateViewResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CreateViewResponse) ProtoMessage() {}
+
+func (x *CreateViewResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_video_service_proto_msgTypes[22]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CreateViewResponse.ProtoReflect.Descriptor instead.
+func (*CreateViewResponse) Descriptor() ([]byte, []int) {
+	return file_proto_video_service_proto_rawDescGZIP(), []int{22}
+}
+
+func (x *CreateViewResponse) GetSuccess() bool {
+	if x != nil {
+		return x.Success
+	}
+	return false
+}
+
+func (x *CreateViewResponse) GetTotalViews() int64 {
+	if x != nil {
+		return x.TotalViews
 	}
 	return 0
 }
@@ -1367,12 +1391,7 @@ const file_proto_video_service_proto_rawDesc = "" +
 	"\x13UnlikeVideoResponse\x12\x18\n" +
 	"\asuccess\x18\x01 \x01(\bR\asuccess\x12\x1d\n" +
 	"\n" +
-	"like_count\x18\x02 \x01(\x03R\tlikeCount\"6\n" +
-	"\x19IncrementViewCountRequest\x12\x19\n" +
-	"\bvideo_id\x18\x01 \x01(\tR\avideoId\";\n" +
-	"\x1aIncrementViewCountResponse\x12\x1d\n" +
-	"\n" +
-	"view_count\x18\x01 \x01(\x03R\tviewCount\"P\n" +
+	"like_count\x18\x02 \x01(\x03R\tlikeCount\"P\n" +
 	"\x1aCheckUserLikedVideoRequest\x12\x17\n" +
 	"\auser_id\x18\x01 \x01(\tR\x06userId\x12\x19\n" +
 	"\bvideo_id\x18\x02 \x01(\tR\avideoId\"8\n" +
@@ -1382,7 +1401,16 @@ const file_proto_video_service_proto_rawDesc = "" +
 	"\bvideo_id\x18\x01 \x01(\tR\avideoId\":\n" +
 	"\x19GetVideoLikeCountResponse\x12\x1d\n" +
 	"\n" +
-	"like_count\x18\x01 \x01(\x03R\tlikeCount2\xc9\x06\n" +
+	"like_count\x18\x01 \x01(\x03R\tlikeCount\"f\n" +
+	"\x11CreateViewRequest\x12\x17\n" +
+	"\auser_id\x18\x01 \x01(\tR\x06userId\x12\x19\n" +
+	"\bvideo_id\x18\x02 \x01(\tR\avideoId\x12\x1d\n" +
+	"\n" +
+	"watch_time\x18\x03 \x01(\x05R\twatchTime\"O\n" +
+	"\x12CreateViewResponse\x12\x18\n" +
+	"\asuccess\x18\x01 \x01(\bR\asuccess\x12\x1f\n" +
+	"\vtotal_views\x18\x02 \x01(\x03R\n" +
+	"totalViews2\xb1\x06\n" +
 	"\fVideoService\x12D\n" +
 	"\vCreateVideo\x12\x19.video.CreateVideoRequest\x1a\x1a.video.CreateVideoResponse\x12;\n" +
 	"\bGetVideo\x12\x16.video.GetVideoRequest\x1a\x17.video.GetVideoResponse\x12A\n" +
@@ -1392,10 +1420,11 @@ const file_proto_video_service_proto_rawDesc = "" +
 	"\vUpdateVideo\x12\x19.video.UpdateVideoRequest\x1a\x1a.video.UpdateVideoResponse\x12D\n" +
 	"\vDeleteVideo\x12\x19.video.DeleteVideoRequest\x1a\x1a.video.DeleteVideoResponse\x12>\n" +
 	"\tLikeVideo\x12\x17.video.LikeVideoRequest\x1a\x18.video.LikeVideoResponse\x12D\n" +
-	"\vUnlikeVideo\x12\x19.video.UnlikeVideoRequest\x1a\x1a.video.UnlikeVideoResponse\x12Y\n" +
-	"\x12IncrementViewCount\x12 .video.IncrementViewCountRequest\x1a!.video.IncrementViewCountResponse\x12\\\n" +
+	"\vUnlikeVideo\x12\x19.video.UnlikeVideoRequest\x1a\x1a.video.UnlikeVideoResponse\x12\\\n" +
 	"\x13CheckUserLikedVideo\x12!.video.CheckUserLikedVideoRequest\x1a\".video.CheckUserLikedVideoResponse\x12V\n" +
-	"\x11GetVideoLikeCount\x12\x1f.video.GetVideoLikeCountRequest\x1a .video.GetVideoLikeCountResponseB\x1bZ\x19video-service/proto/videob\x06proto3"
+	"\x11GetVideoLikeCount\x12\x1f.video.GetVideoLikeCountRequest\x1a .video.GetVideoLikeCountResponse\x12A\n" +
+	"\n" +
+	"CreateView\x12\x18.video.CreateViewRequest\x1a\x19.video.CreateViewResponseB\x1bZ\x19video-service/proto/videob\x06proto3"
 
 var (
 	file_proto_video_service_proto_rawDescOnce sync.Once
@@ -1428,12 +1457,12 @@ var file_proto_video_service_proto_goTypes = []any{
 	(*LikeVideoResponse)(nil),           // 14: video.LikeVideoResponse
 	(*UnlikeVideoRequest)(nil),          // 15: video.UnlikeVideoRequest
 	(*UnlikeVideoResponse)(nil),         // 16: video.UnlikeVideoResponse
-	(*IncrementViewCountRequest)(nil),   // 17: video.IncrementViewCountRequest
-	(*IncrementViewCountResponse)(nil),  // 18: video.IncrementViewCountResponse
-	(*CheckUserLikedVideoRequest)(nil),  // 19: video.CheckUserLikedVideoRequest
-	(*CheckUserLikedVideoResponse)(nil), // 20: video.CheckUserLikedVideoResponse
-	(*GetVideoLikeCountRequest)(nil),    // 21: video.GetVideoLikeCountRequest
-	(*GetVideoLikeCountResponse)(nil),   // 22: video.GetVideoLikeCountResponse
+	(*CheckUserLikedVideoRequest)(nil),  // 17: video.CheckUserLikedVideoRequest
+	(*CheckUserLikedVideoResponse)(nil), // 18: video.CheckUserLikedVideoResponse
+	(*GetVideoLikeCountRequest)(nil),    // 19: video.GetVideoLikeCountRequest
+	(*GetVideoLikeCountResponse)(nil),   // 20: video.GetVideoLikeCountResponse
+	(*CreateViewRequest)(nil),           // 21: video.CreateViewRequest
+	(*CreateViewResponse)(nil),          // 22: video.CreateViewResponse
 	(*timestamppb.Timestamp)(nil),       // 23: google.protobuf.Timestamp
 }
 var file_proto_video_service_proto_depIdxs = []int32{
@@ -1452,9 +1481,9 @@ var file_proto_video_service_proto_depIdxs = []int32{
 	11, // 12: video.VideoService.DeleteVideo:input_type -> video.DeleteVideoRequest
 	13, // 13: video.VideoService.LikeVideo:input_type -> video.LikeVideoRequest
 	15, // 14: video.VideoService.UnlikeVideo:input_type -> video.UnlikeVideoRequest
-	17, // 15: video.VideoService.IncrementViewCount:input_type -> video.IncrementViewCountRequest
-	19, // 16: video.VideoService.CheckUserLikedVideo:input_type -> video.CheckUserLikedVideoRequest
-	21, // 17: video.VideoService.GetVideoLikeCount:input_type -> video.GetVideoLikeCountRequest
+	17, // 15: video.VideoService.CheckUserLikedVideo:input_type -> video.CheckUserLikedVideoRequest
+	19, // 16: video.VideoService.GetVideoLikeCount:input_type -> video.GetVideoLikeCountRequest
+	21, // 17: video.VideoService.CreateView:input_type -> video.CreateViewRequest
 	2,  // 18: video.VideoService.CreateVideo:output_type -> video.CreateVideoResponse
 	4,  // 19: video.VideoService.GetVideo:output_type -> video.GetVideoResponse
 	6,  // 20: video.VideoService.ListVideos:output_type -> video.ListVideosResponse
@@ -1463,9 +1492,9 @@ var file_proto_video_service_proto_depIdxs = []int32{
 	12, // 23: video.VideoService.DeleteVideo:output_type -> video.DeleteVideoResponse
 	14, // 24: video.VideoService.LikeVideo:output_type -> video.LikeVideoResponse
 	16, // 25: video.VideoService.UnlikeVideo:output_type -> video.UnlikeVideoResponse
-	18, // 26: video.VideoService.IncrementViewCount:output_type -> video.IncrementViewCountResponse
-	20, // 27: video.VideoService.CheckUserLikedVideo:output_type -> video.CheckUserLikedVideoResponse
-	22, // 28: video.VideoService.GetVideoLikeCount:output_type -> video.GetVideoLikeCountResponse
+	18, // 26: video.VideoService.CheckUserLikedVideo:output_type -> video.CheckUserLikedVideoResponse
+	20, // 27: video.VideoService.GetVideoLikeCount:output_type -> video.GetVideoLikeCountResponse
+	22, // 28: video.VideoService.CreateView:output_type -> video.CreateViewResponse
 	18, // [18:29] is the sub-list for method output_type
 	7,  // [7:18] is the sub-list for method input_type
 	7,  // [7:7] is the sub-list for extension type_name

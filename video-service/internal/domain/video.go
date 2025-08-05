@@ -30,7 +30,6 @@ type VideoRepository interface {
 	GetPublicVideos(ctx context.Context, limit, offset int) ([]*Video, error)
 	Update(ctx context.Context, video *Video) error
 	Delete(ctx context.Context, id uuid.UUID) error
-	IncrementViewCount(ctx context.Context, id uuid.UUID) error
 }
 
 type UserVideoLike struct {
@@ -42,6 +41,21 @@ type UserVideoLike struct {
 
 type UserVideoLikeRepository interface {
 	Create(ctx context.Context, like *UserVideoLike) error
+	Delete(ctx context.Context, userID, videoID uuid.UUID) error
+	Exists(ctx context.Context, userID, videoID uuid.UUID) (bool, error)
+	CountByVideoID(ctx context.Context, videoID uuid.UUID) (int64, error)
+}
+
+type UserVideoView struct {
+	ID        uuid.UUID `json:"id" gorm:"type:uuid;primary_key"`
+	UserID    uuid.UUID `json:"user_id" gorm:"type:uuid;not null"`
+	VideoID   uuid.UUID `json:"video_id" gorm:"type:uuid;not null"`
+	WatchTime int       `json:"watch_time" gorm:"default:0"`
+	CreatedAt time.Time `json:"created_at"`
+}
+
+type UserVideoViewRepository interface {
+	Create(ctx context.Context, view *UserVideoView) error
 	Delete(ctx context.Context, userID, videoID uuid.UUID) error
 	Exists(ctx context.Context, userID, videoID uuid.UUID) (bool, error)
 	CountByVideoID(ctx context.Context, videoID uuid.UUID) (int64, error)

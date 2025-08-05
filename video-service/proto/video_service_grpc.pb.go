@@ -27,9 +27,9 @@ const (
 	VideoService_DeleteVideo_FullMethodName         = "/video.VideoService/DeleteVideo"
 	VideoService_LikeVideo_FullMethodName           = "/video.VideoService/LikeVideo"
 	VideoService_UnlikeVideo_FullMethodName         = "/video.VideoService/UnlikeVideo"
-	VideoService_IncrementViewCount_FullMethodName  = "/video.VideoService/IncrementViewCount"
 	VideoService_CheckUserLikedVideo_FullMethodName = "/video.VideoService/CheckUserLikedVideo"
 	VideoService_GetVideoLikeCount_FullMethodName   = "/video.VideoService/GetVideoLikeCount"
+	VideoService_CreateView_FullMethodName          = "/video.VideoService/CreateView"
 )
 
 // VideoServiceClient is the client API for VideoService service.
@@ -44,9 +44,9 @@ type VideoServiceClient interface {
 	DeleteVideo(ctx context.Context, in *DeleteVideoRequest, opts ...grpc.CallOption) (*DeleteVideoResponse, error)
 	LikeVideo(ctx context.Context, in *LikeVideoRequest, opts ...grpc.CallOption) (*LikeVideoResponse, error)
 	UnlikeVideo(ctx context.Context, in *UnlikeVideoRequest, opts ...grpc.CallOption) (*UnlikeVideoResponse, error)
-	IncrementViewCount(ctx context.Context, in *IncrementViewCountRequest, opts ...grpc.CallOption) (*IncrementViewCountResponse, error)
 	CheckUserLikedVideo(ctx context.Context, in *CheckUserLikedVideoRequest, opts ...grpc.CallOption) (*CheckUserLikedVideoResponse, error)
 	GetVideoLikeCount(ctx context.Context, in *GetVideoLikeCountRequest, opts ...grpc.CallOption) (*GetVideoLikeCountResponse, error)
+	CreateView(ctx context.Context, in *CreateViewRequest, opts ...grpc.CallOption) (*CreateViewResponse, error)
 }
 
 type videoServiceClient struct {
@@ -137,16 +137,6 @@ func (c *videoServiceClient) UnlikeVideo(ctx context.Context, in *UnlikeVideoReq
 	return out, nil
 }
 
-func (c *videoServiceClient) IncrementViewCount(ctx context.Context, in *IncrementViewCountRequest, opts ...grpc.CallOption) (*IncrementViewCountResponse, error) {
-	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(IncrementViewCountResponse)
-	err := c.cc.Invoke(ctx, VideoService_IncrementViewCount_FullMethodName, in, out, cOpts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
 func (c *videoServiceClient) CheckUserLikedVideo(ctx context.Context, in *CheckUserLikedVideoRequest, opts ...grpc.CallOption) (*CheckUserLikedVideoResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(CheckUserLikedVideoResponse)
@@ -167,6 +157,16 @@ func (c *videoServiceClient) GetVideoLikeCount(ctx context.Context, in *GetVideo
 	return out, nil
 }
 
+func (c *videoServiceClient) CreateView(ctx context.Context, in *CreateViewRequest, opts ...grpc.CallOption) (*CreateViewResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(CreateViewResponse)
+	err := c.cc.Invoke(ctx, VideoService_CreateView_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // VideoServiceServer is the server API for VideoService service.
 // All implementations must embed UnimplementedVideoServiceServer
 // for forward compatibility.
@@ -179,9 +179,9 @@ type VideoServiceServer interface {
 	DeleteVideo(context.Context, *DeleteVideoRequest) (*DeleteVideoResponse, error)
 	LikeVideo(context.Context, *LikeVideoRequest) (*LikeVideoResponse, error)
 	UnlikeVideo(context.Context, *UnlikeVideoRequest) (*UnlikeVideoResponse, error)
-	IncrementViewCount(context.Context, *IncrementViewCountRequest) (*IncrementViewCountResponse, error)
 	CheckUserLikedVideo(context.Context, *CheckUserLikedVideoRequest) (*CheckUserLikedVideoResponse, error)
 	GetVideoLikeCount(context.Context, *GetVideoLikeCountRequest) (*GetVideoLikeCountResponse, error)
+	CreateView(context.Context, *CreateViewRequest) (*CreateViewResponse, error)
 	mustEmbedUnimplementedVideoServiceServer()
 }
 
@@ -216,14 +216,14 @@ func (UnimplementedVideoServiceServer) LikeVideo(context.Context, *LikeVideoRequ
 func (UnimplementedVideoServiceServer) UnlikeVideo(context.Context, *UnlikeVideoRequest) (*UnlikeVideoResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UnlikeVideo not implemented")
 }
-func (UnimplementedVideoServiceServer) IncrementViewCount(context.Context, *IncrementViewCountRequest) (*IncrementViewCountResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method IncrementViewCount not implemented")
-}
 func (UnimplementedVideoServiceServer) CheckUserLikedVideo(context.Context, *CheckUserLikedVideoRequest) (*CheckUserLikedVideoResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CheckUserLikedVideo not implemented")
 }
 func (UnimplementedVideoServiceServer) GetVideoLikeCount(context.Context, *GetVideoLikeCountRequest) (*GetVideoLikeCountResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetVideoLikeCount not implemented")
+}
+func (UnimplementedVideoServiceServer) CreateView(context.Context, *CreateViewRequest) (*CreateViewResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateView not implemented")
 }
 func (UnimplementedVideoServiceServer) mustEmbedUnimplementedVideoServiceServer() {}
 func (UnimplementedVideoServiceServer) testEmbeddedByValue()                      {}
@@ -390,24 +390,6 @@ func _VideoService_UnlikeVideo_Handler(srv interface{}, ctx context.Context, dec
 	return interceptor(ctx, in, info, handler)
 }
 
-func _VideoService_IncrementViewCount_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(IncrementViewCountRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(VideoServiceServer).IncrementViewCount(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: VideoService_IncrementViewCount_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(VideoServiceServer).IncrementViewCount(ctx, req.(*IncrementViewCountRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
 func _VideoService_CheckUserLikedVideo_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(CheckUserLikedVideoRequest)
 	if err := dec(in); err != nil {
@@ -440,6 +422,24 @@ func _VideoService_GetVideoLikeCount_Handler(srv interface{}, ctx context.Contex
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(VideoServiceServer).GetVideoLikeCount(ctx, req.(*GetVideoLikeCountRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _VideoService_CreateView_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateViewRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(VideoServiceServer).CreateView(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: VideoService_CreateView_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(VideoServiceServer).CreateView(ctx, req.(*CreateViewRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -484,16 +484,16 @@ var VideoService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _VideoService_UnlikeVideo_Handler,
 		},
 		{
-			MethodName: "IncrementViewCount",
-			Handler:    _VideoService_IncrementViewCount_Handler,
-		},
-		{
 			MethodName: "CheckUserLikedVideo",
 			Handler:    _VideoService_CheckUserLikedVideo_Handler,
 		},
 		{
 			MethodName: "GetVideoLikeCount",
 			Handler:    _VideoService_GetVideoLikeCount_Handler,
+		},
+		{
+			MethodName: "CreateView",
+			Handler:    _VideoService_CreateView_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
