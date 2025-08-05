@@ -96,7 +96,12 @@ func (usecase *videoUseCase) ListVideos(ctx context.Context, limit, offset int) 
 		return nil, 0, err
 	}
 
-	return videos, 0, nil
+	totalCount, err := usecase.videoRepo.CountPublicVideos(ctx)
+	if err != nil {
+		return nil, 0, err
+	}
+
+	return videos, totalCount, nil
 }
 
 func (usecase *videoUseCase) GetVideosByUser(ctx context.Context, userID string,
@@ -111,7 +116,12 @@ func (usecase *videoUseCase) GetVideosByUser(ctx context.Context, userID string,
 		return nil, 0, err
 	}
 
-	return videos, 0, nil
+	totalCount, err := usecase.videoRepo.CountByUserID(ctx, uuidParsed)
+	if err != nil {
+		return nil, 0, err
+	}
+
+	return videos, totalCount, nil
 }
 
 type UpdateVideoRequest struct {
@@ -160,18 +170,98 @@ func (usecase *videoUseCase) DeleteVideo(ctx context.Context, id string) error {
 
 func (usecase *videoUseCase) LikeVideo(ctx context.Context, userID, videoID string) (
 	int64, error) {
+	userUUID, err := uuid.Parse(userID)
+	if err != nil {
+		return 0, err
+	}
+	videoUUID, err := uuid.Parse(videoID)
+	if err != nil {
+		return 0, err
+	}
 
-	return 0, nil
+	exists, err := usecase.likeRepo.Exists(ctx, userUUID, videoUUID)
+	if err != nil {
+		return 0, err
+	}
+	if exists {
+		count, err := usecase.likeRepo.CountByVideoID(ctx, videoUUID)
+		if err != nil {
+			return 0, err
+		}
+		return count, nil
+	}
+
+	like := &domain.UserVideoLike{
+		UserID:  userUUID,
+		VideoID: videoUUID,
+	}
+
+	err = usecase.likeRepo.Create(ctx, like)
+	if err != nil {
+		return 0, err
+	}
+
+	count, err := usecase.likeRepo.CountByVideoID(ctx, videoUUID)
+	if err != nil {
+		return 0, err
+	}
+
+	return count, nil
 }
 
 func (usecase *videoUseCase) UnlikeVideo(ctx context.Context, userID, videoID string) (
 	int64, error) {
 
-	return 0, nil
+	userUUID, err := uuid.Parse(userID)
+	if err != nil {
+		return 0, err
+	}
+
+	videoUUID, err := uuid.Parse(videoID)
+	if err != nil {
+		return 0, err
+	}
+
+	err = usecase.likeRepo.Delete(ctx, userUUID, videoUUID)
+	if err != nil {
+		return 0, err
+	}
+
+	count, err := usecase.likeRepo.CountByVideoID(ctx, videoUUID)
+	if err != nil {
+		return 0, err
+	}
+
+	return count, nil
 }
 
 func (usecase *videoUseCase) CreateView(ctx context.Context, userID, videoID string,
 	watchTime int) (int64, error) {
 
-	return 0, nil
+	userUUID, err := uuid.Parse(userID)
+	if err != nil {
+		return 0, err
+	}
+	videoUUID, err := uuid.Parse(videoID)
+	if err != nil {
+		return 0, err
+	}
+
+	view := &domain.UserVideoView{
+		UserID:    userUUID,
+		VideoID:   videoUUID,
+		WatchTime: watchTime,
+	}
+
+	err = usecase.viewRepo.Create(ctx, view)
+	if err != nil {
+		return 0, err
+	}
+
+	count, err := usecase.viewRepo.CountByVideoID(ctx, videoUUID)
+	if err != nil {
+		return 0, err
+	}
+
+	return count, nil
 }
