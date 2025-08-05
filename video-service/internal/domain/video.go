@@ -18,7 +18,7 @@ type Video struct {
 	ViewCount    int64     `json:"view_count" gorm:"default:0"`
 	LikeCount    int64     `json:"like_count" gorm:"default:0"`
 	ShareCount   int64     `json:"share_count" gorm:"default:0"`
-	IsPublic     bool      `json:"is_public" gorm:"default:true"`
+	IsPublic     bool      `json:"is_public"`
 	CreatedAt    time.Time `json:"created_at"`
 	UpdatedAt    time.Time `json:"updated_at"`
 }
@@ -27,7 +27,9 @@ type VideoRepository interface {
 	Create(ctx context.Context, video *Video) error
 	GetByID(ctx context.Context, id uuid.UUID) (*Video, error)
 	GetByUserID(ctx context.Context, userID uuid.UUID, limit, offset int) ([]*Video, error)
+	CountByUserID(ctx context.Context, userID uuid.UUID) (int64, error)
 	GetPublicVideos(ctx context.Context, limit, offset int) ([]*Video, error)
+	CountPublicVideos(ctx context.Context) (int64, error)
 	Update(ctx context.Context, video *Video) error
 	Delete(ctx context.Context, id uuid.UUID) error
 }

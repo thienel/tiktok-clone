@@ -76,3 +76,21 @@ func (repository *videoRepository) Update(ctx context.Context, video *domain.Vid
 func (repository *videoRepository) Delete(ctx context.Context, id uuid.UUID) error {
 	return repository.db.WithContext(ctx).Delete(&domain.Video{}, id).Error
 }
+
+func (repository *videoRepository) CountPublicVideos(ctx context.Context) (int64, error) {
+	var count int64
+	err := repository.db.WithContext(ctx).
+		Model(&domain.Video{}).
+		Where("is_public = ?", true).
+		Count(&count).Error
+	return count, err
+}
+
+func (repository *videoRepository) CountByUserID(ctx context.Context, userID uuid.UUID) (int64, error) {
+	var count int64
+	err := repository.db.WithContext(ctx).
+		Model(&domain.Video{}).
+		Where("user_id = ?", userID).
+		Count(&count).Error
+	return count, err
+}
