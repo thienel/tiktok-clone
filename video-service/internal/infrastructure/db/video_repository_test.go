@@ -24,25 +24,7 @@ func createTestVideo() *domain.Video {
 	}
 }
 
-func setupTestDB(t *testing.T) (*gorm.DB, func()) {
-	t.Helper()
-	if testing.Short() {
-		t.Skip("skipping database test in short mode")
-	}
-
-	cfg := getTestConfig()
-	db, err := NewConnection(cfg)
-	require.NoError(t, err)
-
-	sqlDB, err := db.DB()
-	require.NoError(t, err)
-
-	return db, func() {
-		sqlDB.Close()
-	}
-}
-
-func TestCreate(t *testing.T) {
+func TestVideoCreate(t *testing.T) {
 	db, cleanDb := setupTestDB(t)
 	defer cleanDb()
 
@@ -55,7 +37,7 @@ func TestCreate(t *testing.T) {
 	assert.NotEqual(t, uuid.Nil, video.ID)
 }
 
-func TestGetByID_Success(t *testing.T) {
+func TestVideoGetByID_Success(t *testing.T) {
 	db, cleanDb := setupTestDB(t)
 	defer cleanDb()
 
@@ -71,7 +53,7 @@ func TestGetByID_Success(t *testing.T) {
 	assert.Equal(t, video.UserID, found.UserID)
 }
 
-func TestGetByID_NotFound(t *testing.T) {
+func TestVideoGetByID_NotFound(t *testing.T) {
 	db, cleanDb := setupTestDB(t)
 	defer cleanDb()
 
@@ -85,7 +67,7 @@ func TestGetByID_NotFound(t *testing.T) {
 	assert.Equal(t, gorm.ErrRecordNotFound, err)
 }
 
-func TestGetByUserID(t *testing.T) {
+func TestVideoGetByUserID(t *testing.T) {
 	db, cleanDb := setupTestDB(t)
 	defer cleanDb()
 
@@ -109,7 +91,7 @@ func TestGetByUserID(t *testing.T) {
 	assert.Len(t, videos2, 2)
 }
 
-func TestGetPublicVideos(t *testing.T) {
+func TestVideoGetPublicVideos(t *testing.T) {
 	db, cleanDb := setupTestDB(t)
 	defer cleanDb()
 
@@ -133,7 +115,7 @@ func TestGetPublicVideos(t *testing.T) {
 	}
 }
 
-func TestUpdate(t *testing.T) {
+func TestVideoUpdate(t *testing.T) {
 	db, cleanDb := setupTestDB(t)
 	defer cleanDb()
 
@@ -158,7 +140,7 @@ func TestUpdate(t *testing.T) {
 	assert.True(t, updated.UpdatedAt.After(updated.CreatedAt))
 }
 
-func TestDelete(t *testing.T) {
+func TestVideoDelete(t *testing.T) {
 	db, cleanDb := setupTestDB(t)
 	defer cleanDb()
 

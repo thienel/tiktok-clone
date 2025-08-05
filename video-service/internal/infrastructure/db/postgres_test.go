@@ -9,16 +9,6 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func getTestConfig() *config.DatabaseConfig {
-	return &config.DatabaseConfig{
-		Host:     "localhost",
-		Port:     "5432",
-		User:     "video_user",
-		Password: "password",
-		DBName:   "video_service_test",
-		SSLMode:  "disable",
-	}
-}
 func TestNewConnection_Success(t *testing.T) {
 	if testing.Short() {
 		t.Skip("skipping database test in short mode")
