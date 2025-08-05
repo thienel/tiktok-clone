@@ -48,3 +48,4 @@ temp/
 docker-compose.override.yml
 
 # Service-specific ignores are handled in their respective directories
+**/.envrc
