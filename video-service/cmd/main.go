@@ -16,6 +16,7 @@ import (
 
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/reflection"
 )
 
 func main() {
@@ -102,6 +103,10 @@ func main() {
 	videoHandler := grpcHandler.NewVideoHandler(videoUseCase)
 
 	pb.RegisterVideoServiceServer(s, videoHandler)
+
+	reflection.Register(s)
+
+	logger.Info("gRPC reflection enabled for development")
 
 	_, cancel := context.WithCancel(context.Background())
 	defer cancel()
