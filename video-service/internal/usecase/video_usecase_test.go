@@ -585,3 +585,153 @@ func TestDeleteVideo_RepositoryError(t *testing.T) {
 	assert.Contains(t, err.Error(), "database error")
 	mockVideoRepository.AssertExpectations(t)
 }
+
+func TestLikeVideo_Success(t *testing.T) {
+	usecase, _, mockLikeRepository, _ := createTestVideoUseCase()
+
+	userID := uuid.New().String()
+	videoID := uuid.New().String()
+
+	userUUID, _ := uuid.Parse(userID)
+	videoUUID, _ := uuid.Parse(videoID)
+
+	mockLikeRepository.On("Exists", mock.Anything, userUUID, videoUUID).
+		Return(false, nil)
+	mockLikeRepository.On("Create", mock.Anything, mock.AnythingOfType("*domain.UserVideoLike")).
+		Return(nil)
+	mockLikeRepository.On("CountByVideoID", mock.Anything, videoUUID).
+		Return(int64(1), nil)
+
+	likeCount, err := usecase.LikeVideo(context.Background(), userID, videoID)
+
+	assert.NoError(t, err)
+	assert.Equal(t, int64(1), likeCount)
+	mockLikeRepository.AssertExpectations(t)
+}
+
+func TestLikeVideo_InvalidUserID(t *testing.T) {
+	usecase, _, _, _ := createTestVideoUseCase()
+
+	likeCount, err := usecase.LikeVideo(context.Background(), "invalid-uuid", uuid.New().String())
+
+	assert.Error(t, err)
+	assert.Equal(t, int64(0), likeCount)
+}
+
+func TestLikeVideo_InvalidVideoID(t *testing.T) {
+	usecase, _, _, _ := createTestVideoUseCase()
+
+	likeCount, err := usecase.LikeVideo(context.Background(), uuid.New().String(), "invalid-uuid")
+
+	assert.Error(t, err)
+	assert.Equal(t, int64(0), likeCount)
+}
+
+func TestLikeVideo_AlreadyLiked(t *testing.T) {
+	usecase, _, mockLikeRepository, _ := createTestVideoUseCase()
+
+	userID := uuid.New().String()
+	videoID := uuid.New().String()
+
+	userUUID, _ := uuid.Parse(userID)
+	videoUUID, _ := uuid.Parse(videoID)
+
+	mockLikeRepository.On("Exists", mock.Anything, userUUID, videoUUID).
+		Return(true, nil)
+	mockLikeRepository.On("CountByVideoID", mock.Anything, videoUUID).
+		Return(int64(5), nil)
+
+	likeCount, err := usecase.LikeVideo(context.Background(), userID, videoID)
+
+	assert.NoError(t, err)
+	assert.Equal(t, int64(5), likeCount)
+	mockLikeRepository.AssertExpectations(t)
+}
+
+func TestLikeVideo_ExistsCountError(t *testing.T) {
+	usecase, _, mockLikeRepository, _ := createTestVideoUseCase()
+
+	userID := uuid.New().String()
+	videoID := uuid.New().String()
+
+	userUUID, _ := uuid.Parse(userID)
+	videoUUID, _ := uuid.Parse(videoID)
+
+	mockLikeRepository.On("Exists", mock.Anything, userUUID, videoUUID).
+		Return(true, nil)
+	mockLikeRepository.On("CountByVideoID", mock.Anything, videoUUID).
+		Return(int64(0), errors.New("database error"))
+
+	likeCount, err := usecase.LikeVideo(context.Background(), userID, videoID)
+
+	assert.Equal(t, int64(0), likeCount)
+	assert.Error(t, err)
+	assert.Contains(t, err.Error(), "database error")
+	mockLikeRepository.AssertExpectations(t)
+}
+
+func TestLikeVideo_ExistsError(t *testing.T) {
+	usecase, _, mockLikeRepository, _ := createTestVideoUseCase()
+
+	userID := uuid.New().String()
+	videoID := uuid.New().String()
+
+	userUUID, _ := uuid.Parse(userID)
+	videoUUID, _ := uuid.Parse(videoID)
+
+	mockLikeRepository.On("Exists", mock.Anything, userUUID, videoUUID).
+		Return(false, errors.New("database error"))
+
+	likeCount, err := usecase.LikeVideo(context.Background(), userID, videoID)
+
+	assert.Error(t, err)
+	assert.Equal(t, int64(0), likeCount)
+	assert.Contains(t, err.Error(), "database error")
+	mockLikeRepository.AssertExpectations(t)
+}
+
+func TestLikeVideo_CreateError(t *testing.T) {
+	usecase, _, mockLikeRepository, _ := createTestVideoUseCase()
+
+	userID := uuid.New().String()
+	videoID := uuid.New().String()
+
+	userUUID, _ := uuid.Parse(userID)
+	videoUUID, _ := uuid.Parse(videoID)
+
+	mockLikeRepository.On("Exists", mock.Anything, userUUID, videoUUID).
+		Return(false, nil)
+	mockLikeRepository.On("Create", mock.Anything, mock.AnythingOfType("*domain.UserVideoLike")).
+		Return(errors.New("database error"))
+
+	likeCount, err := usecase.LikeVideo(context.Background(), userID, videoID)
+
+	assert.Error(t, err)
+	assert.Equal(t, int64(0), likeCount)
+	assert.Contains(t, err.Error(), "database error")
+	mockLikeRepository.AssertExpectations(t)
+}
+
+func TestLikeVideo_CountError(t *testing.T) {
+	usecase, _, mockLikeRepository, _ := createTestVideoUseCase()
+
+	userID := uuid.New().String()
+	videoID := uuid.New().String()
+
+	userUUID, _ := uuid.Parse(userID)
+	videoUUID, _ := uuid.Parse(videoID)
+
+	mockLikeRepository.On("Exists", mock.Anything, userUUID, videoUUID).
+		Return(false, nil)
+	mockLikeRepository.On("Create", mock.Anything, mock.AnythingOfType("*domain.UserVideoLike")).
+		Return(nil)
+	mockLikeRepository.On("CountByVideoID", mock.Anything, videoUUID).
+		Return(int64(0), errors.New("database error"))
+
+	likeCount, err := usecase.LikeVideo(context.Background(), userID, videoID)
+
+	assert.Error(t, err)
+	assert.Equal(t, int64(0), likeCount)
+	assert.Contains(t, err.Error(), "database error")
+	mockLikeRepository.AssertExpectations(t)
+}
