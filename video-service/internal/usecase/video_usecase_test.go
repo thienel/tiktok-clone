@@ -322,3 +322,200 @@ func TestListVideos_CountPublicVideosError(t *testing.T) {
 	assert.Contains(t, err.Error(), "database error")
 	mockVideoRepository.AssertExpectations(t)
 }
+
+func TestGetVideosByUser_Success(t *testing.T) {
+	usecase, mockVideoRepository, _, _ := createTestVideoUseCase()
+
+	limit, offset := 10, 0
+	userID := uuid.New()
+	expectedTotalCount := int64(100)
+	expectedVideos := []*domain.Video{
+		createTestVideo(),
+		createTestVideo(),
+		createTestVideo(),
+	}
+	expectedVideos[0].Title = "Video 1"
+	expectedVideos[0].UserID = userID
+	expectedVideos[1].Title = "Video 2"
+	expectedVideos[1].UserID = userID
+	expectedVideos[2].Title = "Video 3"
+	expectedVideos[2].UserID = userID
+
+	mockVideoRepository.On("GetByUserID", mock.Anything, userID, limit, offset).
+		Return(expectedVideos, nil)
+	mockVideoRepository.On("CountByUserID", mock.Anything, userID).
+		Return(expectedTotalCount, nil)
+
+	videos, totalCount, err := usecase.GetVideosByUser(context.Background(), userID.String(), limit, offset)
+
+	require.NoError(t, err)
+	assert.Equal(t, expectedVideos, videos)
+	assert.Equal(t, expectedTotalCount, totalCount)
+	assert.Len(t, videos, 3)
+	for _, video := range videos {
+		assert.Equal(t, userID, video.UserID)
+	}
+	mockVideoRepository.AssertExpectations(t)
+}
+
+func TestGetVideosByUser_InvalidUserID(t *testing.T) {
+	usecase, _, _, _ := createTestVideoUseCase()
+
+	videos, totalCount, err := usecase.GetVideosByUser(context.Background(), "Invalid UserID", 10, 0)
+
+	assert.Nil(t, videos)
+	assert.Equal(t, int64(0), totalCount)
+	assert.Error(t, err)
+}
+
+func TestGetVideosByUser_GetByUserIDError(t *testing.T) {
+	usecase, mockVideoRepository, _, _ := createTestVideoUseCase()
+
+	mockVideoRepository.On("GetByUserID", mock.Anything, mock.Anything, mock.Anything, mock.Anything).
+		Return(nil, errors.New("database error"))
+
+	videos, totalCount, err := usecase.GetVideosByUser(context.Background(), uuid.NewString(), 10, 0)
+
+	assert.Nil(t, videos)
+	assert.Equal(t, int64(0), totalCount)
+	assert.Error(t, err)
+	assert.Contains(t, err.Error(), "database error")
+	mockVideoRepository.AssertExpectations(t)
+}
+
+func TestGetVideosByUser_CountByUserIDError(t *testing.T) {
+	usecase, mockVideoRepository, _, _ := createTestVideoUseCase()
+
+	userID := uuid.New()
+	expectedVideos := []*domain.Video{createTestVideo()}
+	expectedVideos[0].UserID = userID
+
+	mockVideoRepository.On("GetByUserID", mock.Anything, userID, 10, 0).
+		Return(expectedVideos, nil)
+
+	mockVideoRepository.On("CountByUserID", mock.Anything, userID).
+		Return(int64(0), errors.New("database error"))
+
+	videos, totalCount, err := usecase.GetVideosByUser(context.Background(), userID.String(), 10, 0)
+
+	assert.Nil(t, videos)
+	assert.Equal(t, int64(0), totalCount)
+	assert.Error(t, err)
+	assert.Contains(t, err.Error(), "database error")
+	mockVideoRepository.AssertExpectations(t)
+}
+
+func createTestUpdateVideoRequest() *UpdateVideoRequest {
+	return &UpdateVideoRequest{
+		ID:           uuid.NewString(),
+		Title:        "Test Update Video",
+		Description:  "Test Update Description",
+		ThumbnailURL: "https://update.exmple.com/thumb.jpg",
+		IsPublic:     false,
+	}
+}
+
+func TestUpdatevideo_Success(t *testing.T) {
+	usecase, mockVideoRepository, _, _ := createTestVideoUseCase()
+
+	originalVideo := createTestVideo()
+	req := createTestUpdateVideoRequest()
+	req.ID = originalVideo.ID.String()
+
+	originalTime := originalVideo.UpdatedAt
+
+	mockVideoRepository.On("GetByID", mock.Anything, originalVideo.ID).
+		Return(originalVideo, nil)
+	mockVideoRepository.On("Update", mock.Anything, mock.AnythingOfType("*domain.Video")).
+		Return(nil)
+
+	updatedVideo, err := usecase.UpdateVideo(context.Background(), req)
+
+	require.NoError(t, err)
+	assert.NotNil(t, updatedVideo)
+
+	assert.Equal(t, req.Title, updatedVideo.Title)
+	assert.Equal(t, req.Description, updatedVideo.Description)
+	assert.Equal(t, req.ThumbnailURL, updatedVideo.ThumbnailURL)
+	assert.Equal(t, req.IsPublic, updatedVideo.IsPublic)
+	assert.True(t, updatedVideo.UpdatedAt.After(originalTime))
+	assert.WithinDuration(t, time.Now(), updatedVideo.UpdatedAt, time.Second)
+	assert.Equal(t, originalVideo.ID, updatedVideo.ID)
+	assert.Equal(t, originalVideo.UserID, updatedVideo.UserID)
+	assert.Equal(t, originalVideo.VideoURL, updatedVideo.VideoURL)
+	assert.Equal(t, originalVideo.Duration, updatedVideo.Duration)
+	assert.Equal(t, originalVideo.CreatedAt, updatedVideo.CreatedAt)
+
+	mockVideoRepository.AssertExpectations(t)
+}
+
+func TestUpdatevideo_InvalidID(t *testing.T) {
+	usecase, _, _, _ := createTestVideoUseCase()
+
+	req := createTestUpdateVideoRequest()
+	req.ID = "Invalid ID"
+
+	video, err := usecase.UpdateVideo(context.Background(), req)
+
+	assert.Nil(t, video)
+	assert.Error(t, err)
+}
+
+func TestUpdatevideo_NotFound(t *testing.T) {
+	usecase, mockVideoRepository, _, _ := createTestVideoUseCase()
+
+	videoID := uuid.New()
+	req := createTestUpdateVideoRequest()
+	req.ID = videoID.String()
+
+	mockVideoRepository.On("GetByID", mock.Anything, videoID).
+		Return(nil, gorm.ErrRecordNotFound)
+
+	video, err := usecase.UpdateVideo(context.Background(), req)
+
+	assert.Nil(t, video)
+	assert.Error(t, err)
+	assert.ErrorIs(t, err, gorm.ErrRecordNotFound)
+
+	mockVideoRepository.AssertExpectations(t)
+}
+
+func TestUpdatevideo_GetByIDError(t *testing.T) {
+	usecase, mockVideoRepository, _, _ := createTestVideoUseCase()
+
+	videoID := uuid.New()
+	req := createTestUpdateVideoRequest()
+	req.ID = videoID.String()
+
+	mockVideoRepository.On("GetByID", mock.Anything, videoID).
+		Return(nil, errors.New("database error"))
+
+	video, err := usecase.UpdateVideo(context.Background(), req)
+
+	assert.Nil(t, video)
+	assert.Error(t, err)
+	assert.Contains(t, err.Error(), "database error")
+
+	mockVideoRepository.AssertExpectations(t)
+}
+
+func TestUpdatevideo_UpdateError(t *testing.T) {
+	usecase, mockVideoRepository, _, _ := createTestVideoUseCase()
+
+	originalVideo := createTestVideo()
+	req := createTestUpdateVideoRequest()
+	req.ID = originalVideo.ID.String()
+
+	mockVideoRepository.On("GetByID", mock.Anything, originalVideo.ID).
+		Return(originalVideo, nil)
+	mockVideoRepository.On("Update", mock.Anything, mock.AnythingOfType("*domain.Video")).
+		Return(errors.New("database error"))
+
+	video, err := usecase.UpdateVideo(context.Background(), req)
+
+	assert.Nil(t, video)
+	assert.Error(t, err)
+	assert.Contains(t, err.Error(), "database error")
+
+	mockVideoRepository.AssertExpectations(t)
+}
