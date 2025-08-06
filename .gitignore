@@ -49,3 +49,4 @@ docker-compose.override.yml
 
 # Service-specific ignores are handled in their respective directories
 **/.envrc
+video-service/coverage.out
