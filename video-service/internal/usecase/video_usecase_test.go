@@ -856,3 +856,82 @@ func TestUnlikeVideo_CountError(t *testing.T) {
 	assert.Contains(t, err.Error(), "database error")
 	mockLikeRepository.AssertExpectations(t)
 }
+
+func TestCreateView_Success(t *testing.T) {
+	usecase, _, _, mockViewRepository := createTestVideoUseCase()
+
+	userID := uuid.New().String()
+	videoID := uuid.New().String()
+	watchTime := 30
+
+	videoUUID, _ := uuid.Parse(videoID)
+
+	mockViewRepository.On("Create", mock.Anything, mock.AnythingOfType("*domain.UserVideoView")).
+		Return(nil)
+	mockViewRepository.On("CountByVideoID", mock.Anything, videoUUID).
+		Return(int64(1), nil)
+
+	viewCount, err := usecase.CreateView(context.Background(), userID, videoID, watchTime)
+
+	assert.NoError(t, err)
+	assert.Equal(t, int64(1), viewCount)
+	mockViewRepository.AssertExpectations(t)
+}
+
+func TestCreateView_InvalidUserID(t *testing.T) {
+	usecase, _, _, _ := createTestVideoUseCase()
+
+	viewCount, err := usecase.CreateView(context.Background(), "invalid-uuid", uuid.New().String(), 30)
+
+	assert.Error(t, err)
+	assert.Equal(t, int64(0), viewCount)
+}
+
+func TestCreateView_InvalidVideoID(t *testing.T) {
+	usecase, _, _, _ := createTestVideoUseCase()
+
+	viewCount, err := usecase.CreateView(context.Background(), uuid.New().String(), "invalid-uuid", 30)
+
+	assert.Error(t, err)
+	assert.Equal(t, int64(0), viewCount)
+}
+
+func TestCreateView_CreateError(t *testing.T) {
+	usecase, _, _, mockViewRepository := createTestVideoUseCase()
+
+	userID := uuid.New().String()
+	videoID := uuid.New().String()
+	watchTime := 30
+
+	mockViewRepository.On("Create", mock.Anything, mock.AnythingOfType("*domain.UserVideoView")).
+		Return(errors.New("database error"))
+
+	viewCount, err := usecase.CreateView(context.Background(), userID, videoID, watchTime)
+
+	assert.Error(t, err)
+	assert.Equal(t, int64(0), viewCount)
+	assert.Contains(t, err.Error(), "database error")
+	mockViewRepository.AssertExpectations(t)
+}
+
+func TestCreateView_CountError(t *testing.T) {
+	usecase, _, _, mockViewRepository := createTestVideoUseCase()
+
+	userID := uuid.New().String()
+	videoID := uuid.New().String()
+	watchTime := 30
+
+	videoUUID, _ := uuid.Parse(videoID)
+
+	mockViewRepository.On("Create", mock.Anything, mock.AnythingOfType("*domain.UserVideoView")).
+		Return(nil)
+	mockViewRepository.On("CountByVideoID", mock.Anything, videoUUID).
+		Return(int64(0), errors.New("database error"))
+
+	viewCount, err := usecase.CreateView(context.Background(), userID, videoID, watchTime)
+
+	assert.Error(t, err)
+	assert.Equal(t, int64(0), viewCount)
+	assert.Contains(t, err.Error(), "database error")
+	mockViewRepository.AssertExpectations(t)
+}
