@@ -154,6 +154,20 @@ func createTestVideoUseCase() (*videoUseCase, *MockVideoRepository,
 	return usecase, mockVideoRepository, mockLikeRepository, mockViewRepository
 }
 
+func TestNewVideoUseCase(t *testing.T) {
+	_, mockVideoRepository, mockLikeRepository, mockViewRepository := createTestVideoUseCase()
+
+	usecase := NewVideoUseCase(mockVideoRepository, mockLikeRepository, mockViewRepository)
+
+	assert.NotNil(t, usecase)
+	concreteUseCase, ok := usecase.(*videoUseCase)
+
+	assert.True(t, ok, "usecase should be of type *videoUseCase")
+	assert.Equal(t, mockVideoRepository, concreteUseCase.videoRepo)
+	assert.Equal(t, mockLikeRepository, concreteUseCase.likeRepo)
+	assert.Equal(t, mockViewRepository, concreteUseCase.viewRepo)
+}
+
 func createTestVideo() *domain.Video {
 	return &domain.Video{
 		ID:           uuid.New(),
@@ -517,5 +531,57 @@ func TestUpdatevideo_UpdateError(t *testing.T) {
 	assert.Error(t, err)
 	assert.Contains(t, err.Error(), "database error")
 
+	mockVideoRepository.AssertExpectations(t)
+}
+
+func TestDeleteVideo_Success(t *testing.T) {
+	usecase, mockVideoRepository, _, _ := createTestVideoUseCase()
+
+	videoID := uuid.New()
+
+	mockVideoRepository.On("Delete", mock.Anything, videoID).
+		Return(nil)
+
+	err := usecase.DeleteVideo(context.Background(), videoID.String())
+
+	assert.NoError(t, err)
+	mockVideoRepository.AssertExpectations(t)
+}
+
+func TestDeleteVideo_InvalidID(t *testing.T) {
+	usecase, _, _, _ := createTestVideoUseCase()
+
+	err := usecase.DeleteVideo(context.Background(), "Invalid ID")
+
+	assert.Error(t, err)
+}
+
+func TestDeleteVideo_NotFound(t *testing.T) {
+	usecase, mockVideoRepository, _, _ := createTestVideoUseCase()
+
+	videoID := uuid.New()
+
+	mockVideoRepository.On("Delete", mock.Anything, videoID).
+		Return(gorm.ErrRecordNotFound)
+
+	err := usecase.DeleteVideo(context.Background(), videoID.String())
+
+	assert.Error(t, err)
+	assert.ErrorIs(t, err, gorm.ErrRecordNotFound)
+	mockVideoRepository.AssertExpectations(t)
+}
+
+func TestDeleteVideo_RepositoryError(t *testing.T) {
+	usecase, mockVideoRepository, _, _ := createTestVideoUseCase()
+
+	videoID := uuid.New()
+
+	mockVideoRepository.On("Delete", mock.Anything, videoID).
+		Return(errors.New("database error"))
+
+	err := usecase.DeleteVideo(context.Background(), videoID.String())
+
+	assert.Error(t, err)
+	assert.Contains(t, err.Error(), "database error")
 	mockVideoRepository.AssertExpectations(t)
 }
