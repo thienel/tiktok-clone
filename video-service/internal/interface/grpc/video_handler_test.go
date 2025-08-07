@@ -16,6 +16,7 @@ import (
 	"github.com/stretchr/testify/require"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
+	"gorm.io/gorm"
 )
 
 type MockVideoUseCase struct {
@@ -243,6 +244,70 @@ func TestCreateVideo_UseCaseError(t *testing.T) {
 	require.Error(t, err)
 	require.Nil(t, resp)
 	assert.Contains(t, err.Error(), "usecase error")
+
+	mockUseCase.AssertExpectations(t)
+}
+
+func TestGetVideo_Success(t *testing.T) {
+	handler, mockUseCase := createTestVideoHandler()
+	expectedVideo := createTestDomainVideo()
+	videoID := expectedVideo.ID.String()
+
+	mockUseCase.On("GetVideo", mock.Anything, videoID).Return(expectedVideo, nil)
+
+	req := &pb.GetVideoRequest{Id: videoID}
+	resp, err := handler.GetVideo(context.Background(), req)
+
+	require.NoError(t, err)
+	require.NotNil(t, resp)
+	assert.Equal(t, videoID, resp.Video.Id)
+	assert.Equal(t, expectedVideo.Title, resp.Video.Title)
+	assert.Equal(t, expectedVideo.UserID.String(), resp.Video.UserId)
+	assert.Equal(t, expectedVideo.Description, resp.Video.Description)
+	assert.Equal(t, expectedVideo.VideoURL, resp.Video.VideoUrl)
+	assert.Equal(t, expectedVideo.ThumbnailURL, resp.Video.ThumbnailUrl)
+	assert.Equal(t, int32(expectedVideo.Duration), resp.Video.Duration)
+	assert.Equal(t, expectedVideo.IsPublic, resp.Video.IsPublic)
+
+	mockUseCase.AssertExpectations(t)
+}
+
+func TestGetVideo_NotFound(t *testing.T) {
+	handler, mockUseCase := createTestVideoHandler()
+	videoID := uuid.New().String()
+
+	mockUseCase.On("GetVideo", mock.Anything, videoID).Return(nil, gorm.ErrRecordNotFound)
+
+	req := &pb.GetVideoRequest{Id: videoID}
+	resp, err := handler.GetVideo(context.Background(), req)
+
+	assert.Error(t, err)
+	assert.Nil(t, resp)
+
+	st, ok := status.FromError(err)
+	require.True(t, ok)
+	assert.Equal(t, codes.NotFound, st.Code())
+	assert.Equal(t, "video not found", st.Message())
+
+	mockUseCase.AssertExpectations(t)
+}
+
+func TestGetVideo_UseCaseError(t *testing.T) {
+	handler, mockUseCase := createTestVideoHandler()
+	videoID := uuid.New().String()
+
+	mockUseCase.On("GetVideo", mock.Anything, videoID).Return(nil, errors.New("database connection error"))
+
+	req := &pb.GetVideoRequest{Id: videoID}
+	resp, err := handler.GetVideo(context.Background(), req)
+
+	assert.Error(t, err)
+	assert.Nil(t, resp)
+
+	st, ok := status.FromError(err)
+	require.True(t, ok)
+	assert.Equal(t, codes.Internal, st.Code())
+	assert.Contains(t, st.Message(), "database connection error")
 
 	mockUseCase.AssertExpectations(t)
 }
