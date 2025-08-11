@@ -44,6 +44,15 @@ func domainVideoToProto(video *domain.Video) *pb.Video {
 	}
 }
 
+func listVideosToProto(videos []*domain.Video) []*pb.Video {
+	protoVideos := make([]*pb.Video, len(videos))
+	for i, video := range videos {
+		protoVideos[i] = domainVideoToProto(video)
+	}
+
+	return protoVideos
+}
+
 func protoCreateRequestToUseCase(req *pb.CreateVideoRequest) *usecase.CreateVideoRequest {
 	return &usecase.CreateVideoRequest{
 		UserID:       req.UserId,
@@ -139,5 +148,31 @@ func (h *VideoHandler) GetVideo(ctx context.Context, req *pb.GetVideoRequest) (*
 
 	return &pb.GetVideoResponse{
 		Video: domainVideoToProto(video),
+	}, nil
+}
+
+func (h *VideoHandler) ListVideos(ctx context.Context, req *pb.ListVideosRequest) (*pb.ListVideosResponse, error) {
+	logger.Info("ListVideos request received",
+		zap.Int32("limit", req.Limit),
+		zap.Int32("offset", req.Offset),
+	)
+
+	videos, total, err := h.videoUseCase.ListVideos(ctx, int(req.Limit), int(req.Offset))
+	if err != nil {
+		logger.Error("Failed to list videos",
+			zap.Error(err),
+		)
+
+		return nil, status.Errorf(codes.Internal, "failed to list videos: %v", err)
+	}
+
+	logger.Info("Videos retrieved successfully",
+		zap.Any("videos", videos),
+		zap.Int64("total", total),
+	)
+
+	return &pb.ListVideosResponse{
+		Videos: listVideosToProto(videos),
+		Total:  total,
 	}, nil
 }
