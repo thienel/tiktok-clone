@@ -311,3 +311,59 @@ func TestGetVideo_UseCaseError(t *testing.T) {
 
 	mockUseCase.AssertExpectations(t)
 }
+
+func TestListVideos_Success(t *testing.T) {
+	handler, mockUseCase := createTestVideoHandler()
+
+	limit := 5
+	offset := 5
+	domainVideos := []*domain.Video{
+		createTestDomainVideo(),
+		createTestDomainVideo(),
+		createTestDomainVideo(),
+	}
+	mockUseCase.On("ListVideos", mock.Anything, limit, offset).Return(
+		domainVideos, int64(10), nil)
+
+	req := &pb.ListVideosRequest{Limit: int32(limit), Offset: int32(offset)}
+	resp, err := handler.ListVideos(context.Background(), req)
+
+	assert.NoError(t, err)
+	assert.NotNil(t, resp)
+	assert.Len(t, resp.Videos, len(domainVideos))
+	for i, video := range resp.Videos {
+		assert.Equal(t, domainVideos[i].ID.String(), video.Id)
+		assert.Equal(t, domainVideos[i].Title, video.Title)
+		assert.Equal(t, domainVideos[i].UserID.String(), video.UserId)
+		assert.Equal(t, domainVideos[i].Description, video.Description)
+		assert.Equal(t, domainVideos[i].VideoURL, video.VideoUrl)
+		assert.Equal(t, domainVideos[i].ThumbnailURL, video.ThumbnailUrl)
+		assert.Equal(t, int32(domainVideos[i].Duration), video.Duration)
+		assert.Equal(t, domainVideos[i].IsPublic, video.IsPublic)
+	}
+	assert.Equal(t, int64(10), resp.Total)
+
+	mockUseCase.AssertExpectations(t)
+}
+
+func TestListVideos_UseCaseError(t *testing.T) {
+	handler, mockUseCase := createTestVideoHandler()
+
+	limit := 5
+	offset := 5
+	mockUseCase.On("ListVideos", mock.Anything, limit, offset).Return(
+		nil, int64(0), errors.New("database connection error"))
+
+	req := &pb.ListVideosRequest{Limit: int32(limit), Offset: int32(offset)}
+	resp, err := handler.ListVideos(context.Background(), req)
+
+	assert.Error(t, err)
+	assert.Nil(t, resp)
+
+	st, ok := status.FromError(err)
+	require.True(t, ok)
+	assert.Equal(t, codes.Internal, st.Code())
+	assert.Contains(t, st.Message(), "database connection error")
+
+	mockUseCase.AssertExpectations(t)
+}
