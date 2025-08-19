@@ -268,7 +268,6 @@ func (usecase *videoUseCase) CreateView(ctx context.Context, userID, videoID str
 	return count, nil
 }
 
-// CheckUserLikedVideo checks if a user has liked a specific video
 func (usecase *videoUseCase) CheckUserLikedVideo(ctx context.Context, userID, videoID string) (bool, error) {
 	userUUID, err := uuid.Parse(userID)
 	if err != nil {
@@ -288,7 +287,6 @@ func (usecase *videoUseCase) CheckUserLikedVideo(ctx context.Context, userID, vi
 	return exists, nil
 }
 
-// GetVideoLikeCount gets the total like count for a video
 func (usecase *videoUseCase) GetVideoLikeCount(ctx context.Context, videoID string) (int64, error) {
 	videoUUID, err := uuid.Parse(videoID)
 	if err != nil {
