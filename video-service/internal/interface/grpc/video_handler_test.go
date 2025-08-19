@@ -83,6 +83,16 @@ func (m *MockVideoUseCase) CreateView(ctx context.Context, userID, videoID strin
 	return args.Get(0).(int64), args.Error(1)
 }
 
+func (m *MockVideoUseCase) CheckUserLikedVideo(ctx context.Context, userID, videoID string) (bool, error) {
+	args := m.Called(ctx, userID, videoID)
+	return args.Get(0).(bool), args.Error(1)
+}
+
+func (m *MockVideoUseCase) GetVideoLikeCount(ctx context.Context, videoID string) (int64, error) {
+	args := m.Called(ctx, videoID)
+	return args.Get(0).(int64), args.Error(1)
+}
+
 func createTestVideoHandler() (*VideoHandler, *MockVideoUseCase) {
 	logConfig := logger.NewDevelopmentConfig()
 	logger.Init(*logConfig)
@@ -1069,6 +1079,163 @@ func TestCreateView_UseCaseError(t *testing.T) {
 	require.True(t, ok)
 	assert.Equal(t, codes.Internal, st.Code())
 	assert.Equal(t, "Failed to create view", st.Message())
+
+	mockUseCase.AssertExpectations(t)
+}
+
+func TestCheckUserLikedVideo_Success(t *testing.T) {
+	handler, mockUseCase := createTestVideoHandler()
+	userID := uuid.New().String()
+	videoID := uuid.New().String()
+
+	mockUseCase.On("CheckUserLikedVideo", mock.Anything, userID, videoID).Return(true, nil)
+
+	req := &pb.CheckUserLikedVideoRequest{
+		UserId:  userID,
+		VideoId: videoID,
+	}
+	resp, err := handler.CheckUserLikedVideo(context.Background(), req)
+
+	require.NoError(t, err)
+	require.NotNil(t, resp)
+	assert.True(t, resp.IsLiked)
+
+	mockUseCase.AssertExpectations(t)
+}
+
+func TestCheckUserLikedVideo_EmptyUserID(t *testing.T) {
+	handler, _ := createTestVideoHandler()
+	videoID := uuid.New().String()
+
+	req := &pb.CheckUserLikedVideoRequest{
+		UserId:  "",
+		VideoId: videoID,
+	}
+	resp, err := handler.CheckUserLikedVideo(context.Background(), req)
+
+	assert.Error(t, err)
+	assert.Nil(t, resp)
+
+	st, ok := status.FromError(err)
+	require.True(t, ok)
+	assert.Equal(t, codes.InvalidArgument, st.Code())
+	assert.Equal(t, "user_id is required", st.Message())
+}
+
+func TestCheckUserLikedVideo_EmptyVideoID(t *testing.T) {
+	handler, _ := createTestVideoHandler()
+	userID := uuid.New().String()
+
+	req := &pb.CheckUserLikedVideoRequest{
+		UserId:  userID,
+		VideoId: "",
+	}
+	resp, err := handler.CheckUserLikedVideo(context.Background(), req)
+
+	assert.Error(t, err)
+	assert.Nil(t, resp)
+
+	st, ok := status.FromError(err)
+	require.True(t, ok)
+	assert.Equal(t, codes.InvalidArgument, st.Code())
+	assert.Equal(t, "video_id is required", st.Message())
+}
+
+func TestCheckUserLikedVideo_UseCaseError(t *testing.T) {
+	handler, mockUseCase := createTestVideoHandler()
+	userID := uuid.New().String()
+	videoID := uuid.New().String()
+
+	mockUseCase.On("CheckUserLikedVideo", mock.Anything, userID, videoID).Return(false, errors.New("database error"))
+
+	req := &pb.CheckUserLikedVideoRequest{
+		UserId:  userID,
+		VideoId: videoID,
+	}
+	resp, err := handler.CheckUserLikedVideo(context.Background(), req)
+
+	assert.Error(t, err)
+	assert.Nil(t, resp)
+
+	st, ok := status.FromError(err)
+	require.True(t, ok)
+	assert.Equal(t, codes.Internal, st.Code())
+	assert.Equal(t, "Failed to check user liked video", st.Message())
+
+	mockUseCase.AssertExpectations(t)
+}
+
+func TestGetVideoLikeCount_Success(t *testing.T) {
+	handler, mockUseCase := createTestVideoHandler()
+	videoID := uuid.New().String()
+	expectedCount := int64(42)
+
+	mockUseCase.On("GetVideoLikeCount", mock.Anything, videoID).Return(expectedCount, nil)
+
+	req := &pb.GetVideoLikeCountRequest{
+		VideoId: videoID,
+	}
+	resp, err := handler.GetVideoLikeCount(context.Background(), req)
+
+	require.NoError(t, err)
+	require.NotNil(t, resp)
+	assert.Equal(t, expectedCount, resp.LikeCount)
+
+	mockUseCase.AssertExpectations(t)
+}
+
+func TestGetVideoLikeCount_EmptyVideoID(t *testing.T) {
+	handler, _ := createTestVideoHandler()
+
+	req := &pb.GetVideoLikeCountRequest{
+		VideoId: "",
+	}
+	resp, err := handler.GetVideoLikeCount(context.Background(), req)
+
+	assert.Error(t, err)
+	assert.Nil(t, resp)
+
+	st, ok := status.FromError(err)
+	require.True(t, ok)
+	assert.Equal(t, codes.InvalidArgument, st.Code())
+	assert.Equal(t, "video_id is required", st.Message())
+}
+
+func TestGetVideoLikeCount_InvalidVideoID(t *testing.T) {
+	handler, _ := createTestVideoHandler()
+
+	req := &pb.GetVideoLikeCountRequest{
+		VideoId: "invalid-uuid",
+	}
+	resp, err := handler.GetVideoLikeCount(context.Background(), req)
+
+	assert.Error(t, err)
+	assert.Nil(t, resp)
+
+	st, ok := status.FromError(err)
+	require.True(t, ok)
+	assert.Equal(t, codes.InvalidArgument, st.Code())
+	assert.Equal(t, "video_id must be a valid UUID", st.Message())
+}
+
+func TestGetVideoLikeCount_UseCaseError(t *testing.T) {
+	handler, mockUseCase := createTestVideoHandler()
+	videoID := uuid.New().String()
+
+	mockUseCase.On("GetVideoLikeCount", mock.Anything, videoID).Return(int64(0), errors.New("database error"))
+
+	req := &pb.GetVideoLikeCountRequest{
+		VideoId: videoID,
+	}
+	resp, err := handler.GetVideoLikeCount(context.Background(), req)
+
+	assert.Error(t, err)
+	assert.Nil(t, resp)
+
+	st, ok := status.FromError(err)
+	require.True(t, ok)
+	assert.Equal(t, codes.Internal, st.Code())
+	assert.Equal(t, "Failed to get video like count", st.Message())
 
 	mockUseCase.AssertExpectations(t)
 }
