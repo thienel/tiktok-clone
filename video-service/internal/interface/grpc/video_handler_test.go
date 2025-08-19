@@ -49,11 +49,17 @@ func (m *MockVideoUseCase) ListVideos(ctx context.Context, limit, offset int) ([
 
 func (m *MockVideoUseCase) GetVideosByUser(ctx context.Context, userID string, limit, offset int) ([]*domain.Video, int64, error) {
 	args := m.Called(ctx, userID, limit, offset)
+	if args.Get(0) == nil {
+		return nil, 0, args.Error(2)
+	}
 	return args.Get(0).([]*domain.Video), args.Get(1).(int64), args.Error(2)
 }
 
 func (m *MockVideoUseCase) UpdateVideo(ctx context.Context, req *usecase.UpdateVideoRequest) (*domain.Video, error) {
 	args := m.Called(ctx, req)
+	if args.Get(0) == nil {
+		return nil, args.Error(1)
+	}
 	return args.Get(0).(*domain.Video), args.Error(1)
 }
 
@@ -364,6 +370,221 @@ func TestListVideos_UseCaseError(t *testing.T) {
 	require.True(t, ok)
 	assert.Equal(t, codes.Internal, st.Code())
 	assert.Contains(t, st.Message(), "database connection error")
+
+	mockUseCase.AssertExpectations(t)
+}
+
+func TestGetVideosByUser_Success(t *testing.T) {
+	handler, mockUseCase := createTestVideoHandler()
+	userID := uuid.New().String()
+	limit := 10
+	offset := 0
+
+	domainVideos := []*domain.Video{
+		createTestDomainVideo(),
+		createTestDomainVideo(),
+	}
+	total := int64(15)
+
+	mockUseCase.On("GetVideosByUser", mock.Anything, userID, limit, offset).Return(domainVideos, total, nil)
+
+	req := &pb.GetVideosByUserRequest{
+		UserId: userID,
+		Limit:  int32(limit),
+		Offset: int32(offset),
+	}
+	resp, err := handler.GetVideosByUser(context.Background(), req)
+
+	require.NoError(t, err)
+	require.NotNil(t, resp)
+	assert.Len(t, resp.Videos, len(domainVideos))
+	assert.Equal(t, total, resp.Total)
+
+	for i, video := range resp.Videos {
+		assert.Equal(t, domainVideos[i].ID.String(), video.Id)
+		assert.Equal(t, domainVideos[i].Title, video.Title)
+		assert.Equal(t, domainVideos[i].UserID.String(), video.UserId)
+	}
+
+	mockUseCase.AssertExpectations(t)
+}
+
+func TestGetVideosByUser_InvalidUserID(t *testing.T) {
+	handler, _ := createTestVideoHandler()
+
+	req := &pb.GetVideosByUserRequest{
+		UserId: "invalid-uuid",
+		Limit:  10,
+		Offset: 0,
+	}
+	resp, err := handler.GetVideosByUser(context.Background(), req)
+
+	assert.Error(t, err)
+	assert.Nil(t, resp)
+
+	st, ok := status.FromError(err)
+	require.True(t, ok)
+	assert.Equal(t, codes.InvalidArgument, st.Code())
+	assert.Equal(t, "user_id must be a valid UUID", st.Message())
+}
+
+func TestGetVideosByUser_EmptyUserID(t *testing.T) {
+	handler, _ := createTestVideoHandler()
+
+	req := &pb.GetVideosByUserRequest{
+		UserId: "",
+		Limit:  10,
+		Offset: 0,
+	}
+	resp, err := handler.GetVideosByUser(context.Background(), req)
+
+	assert.Error(t, err)
+	assert.Nil(t, resp)
+
+	st, ok := status.FromError(err)
+	require.True(t, ok)
+	assert.Equal(t, codes.InvalidArgument, st.Code())
+	assert.Equal(t, "user_id is required", st.Message())
+}
+
+func TestGetVideosByUser_UseCaseError(t *testing.T) {
+	handler, mockUseCase := createTestVideoHandler()
+	userID := uuid.New().String()
+	limit := 10
+	offset := 0
+
+	mockUseCase.On("GetVideosByUser", mock.Anything, userID, limit, offset).Return(nil, int64(0), errors.New("database error"))
+
+	req := &pb.GetVideosByUserRequest{
+		UserId: userID,
+		Limit:  int32(limit),
+		Offset: int32(offset),
+	}
+	resp, err := handler.GetVideosByUser(context.Background(), req)
+
+	assert.Error(t, err)
+	assert.Nil(t, resp)
+
+	st, ok := status.FromError(err)
+	require.True(t, ok)
+	assert.Equal(t, codes.Internal, st.Code())
+	assert.Equal(t, "Failed to get videos", st.Message())
+
+	mockUseCase.AssertExpectations(t)
+}
+
+func TestUpdateVideo_Success(t *testing.T) {
+	handler, mockUseCase := createTestVideoHandler()
+	videoID := uuid.New().String()
+	expectedVideo := createTestDomainVideo()
+
+	mockUseCase.On("UpdateVideo", mock.Anything, mock.MatchedBy(func(req *usecase.UpdateVideoRequest) bool {
+		return req.ID == videoID &&
+			req.Title == "Updated Title" &&
+			req.Description == "Updated Description" &&
+			req.ThumbnailURL == "https://example.com/new-thumb.jpg" &&
+			req.IsPublic == false
+	})).Return(expectedVideo, nil)
+
+	req := &pb.UpdateVideoRequest{
+		Id:           videoID,
+		Title:        "Updated Title",
+		Description:  "Updated Description",
+		ThumbnailUrl: "https://example.com/new-thumb.jpg",
+		IsPublic:     false,
+	}
+	resp, err := handler.UpdateVideo(context.Background(), req)
+
+	require.NoError(t, err)
+	require.NotNil(t, resp)
+	assert.Equal(t, expectedVideo.ID.String(), resp.Video.Id)
+	assert.Equal(t, expectedVideo.Title, resp.Video.Title)
+
+	mockUseCase.AssertExpectations(t)
+}
+
+func TestUpdateVideo_InvalidVideoID(t *testing.T) {
+	handler, _ := createTestVideoHandler()
+
+	req := &pb.UpdateVideoRequest{
+		Id:          "invalid-uuid",
+		Title:       "Updated Title",
+		Description: "Updated Description",
+		IsPublic:    true,
+	}
+	resp, err := handler.UpdateVideo(context.Background(), req)
+
+	assert.Error(t, err)
+	assert.Nil(t, resp)
+
+	st, ok := status.FromError(err)
+	require.True(t, ok)
+	assert.Equal(t, codes.InvalidArgument, st.Code())
+	assert.Equal(t, "id must be a valid UUID", st.Message())
+}
+
+func TestUpdateVideo_EmptyVideoID(t *testing.T) {
+	handler, _ := createTestVideoHandler()
+
+	req := &pb.UpdateVideoRequest{
+		Id:          "",
+		Title:       "Updated Title",
+		Description: "Updated Description",
+		IsPublic:    true,
+	}
+	resp, err := handler.UpdateVideo(context.Background(), req)
+
+	assert.Error(t, err)
+	assert.Nil(t, resp)
+
+	st, ok := status.FromError(err)
+	require.True(t, ok)
+	assert.Equal(t, codes.InvalidArgument, st.Code())
+	assert.Equal(t, "id is required", st.Message())
+}
+
+func TestUpdateVideo_EmptyTitle(t *testing.T) {
+	handler, _ := createTestVideoHandler()
+	videoID := uuid.New().String()
+
+	req := &pb.UpdateVideoRequest{
+		Id:          videoID,
+		Title:       "",
+		Description: "Updated Description",
+		IsPublic:    true,
+	}
+	resp, err := handler.UpdateVideo(context.Background(), req)
+
+	assert.Error(t, err)
+	assert.Nil(t, resp)
+
+	st, ok := status.FromError(err)
+	require.True(t, ok)
+	assert.Equal(t, codes.InvalidArgument, st.Code())
+	assert.Equal(t, "title is required", st.Message())
+}
+
+func TestUpdateVideo_UseCaseError(t *testing.T) {
+	handler, mockUseCase := createTestVideoHandler()
+	videoID := uuid.New().String()
+
+	mockUseCase.On("UpdateVideo", mock.Anything, mock.AnythingOfType("*usecase.UpdateVideoRequest")).Return(nil, errors.New("database error"))
+
+	req := &pb.UpdateVideoRequest{
+		Id:          videoID,
+		Title:       "Updated Title",
+		Description: "Updated Description",
+		IsPublic:    true,
+	}
+	resp, err := handler.UpdateVideo(context.Background(), req)
+
+	assert.Error(t, err)
+	assert.Nil(t, resp)
+
+	st, ok := status.FromError(err)
+	require.True(t, ok)
+	assert.Equal(t, codes.Internal, st.Code())
+	assert.Equal(t, "Failed to update video", st.Message())
 
 	mockUseCase.AssertExpectations(t)
 }
