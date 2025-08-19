@@ -18,6 +18,8 @@ type VideoUseCase interface {
 	LikeVideo(ctx context.Context, userID, videoID string) (int64, error)
 	UnlikeVideo(ctx context.Context, userID, videoID string) (int64, error)
 	CreateView(ctx context.Context, userID, videoID string, watchTime int) (int64, error)
+	CheckUserLikedVideo(ctx context.Context, userID, videoID string) (bool, error)
+	GetVideoLikeCount(ctx context.Context, videoID string) (int64, error)
 }
 
 type videoUseCase struct {
@@ -259,6 +261,41 @@ func (usecase *videoUseCase) CreateView(ctx context.Context, userID, videoID str
 	}
 
 	count, err := usecase.viewRepo.CountByVideoID(ctx, videoUUID)
+	if err != nil {
+		return 0, err
+	}
+
+	return count, nil
+}
+
+// CheckUserLikedVideo checks if a user has liked a specific video
+func (usecase *videoUseCase) CheckUserLikedVideo(ctx context.Context, userID, videoID string) (bool, error) {
+	userUUID, err := uuid.Parse(userID)
+	if err != nil {
+		return false, err
+	}
+
+	videoUUID, err := uuid.Parse(videoID)
+	if err != nil {
+		return false, err
+	}
+
+	exists, err := usecase.likeRepo.Exists(ctx, userUUID, videoUUID)
+	if err != nil {
+		return false, err
+	}
+
+	return exists, nil
+}
+
+// GetVideoLikeCount gets the total like count for a video
+func (usecase *videoUseCase) GetVideoLikeCount(ctx context.Context, videoID string) (int64, error) {
+	videoUUID, err := uuid.Parse(videoID)
+	if err != nil {
+		return 0, err
+	}
+
+	count, err := usecase.likeRepo.CountByVideoID(ctx, videoUUID)
 	if err != nil {
 		return 0, err
 	}
