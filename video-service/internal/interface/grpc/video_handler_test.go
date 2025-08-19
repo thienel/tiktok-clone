@@ -898,3 +898,177 @@ func TestUnlikeVideo_UseCaseError(t *testing.T) {
 
 	mockUseCase.AssertExpectations(t)
 }
+
+func TestCreateView_Success(t *testing.T) {
+	handler, mockUseCase := createTestVideoHandler()
+	userID := uuid.New().String()
+	videoID := uuid.New().String()
+	watchTime := int32(120)
+	expectedTotalViews := int64(50)
+
+	mockUseCase.On("CreateView", mock.Anything, userID, videoID, int(watchTime)).Return(expectedTotalViews, nil)
+
+	req := &pb.CreateViewRequest{
+		UserId:    userID,
+		VideoId:   videoID,
+		WatchTime: watchTime,
+	}
+	resp, err := handler.CreateView(context.Background(), req)
+
+	require.NoError(t, err)
+	require.NotNil(t, resp)
+	assert.True(t, resp.Success)
+	assert.Equal(t, expectedTotalViews, resp.TotalViews)
+
+	mockUseCase.AssertExpectations(t)
+}
+
+func TestCreateView_InvalidUserID(t *testing.T) {
+	handler, _ := createTestVideoHandler()
+	videoID := uuid.New().String()
+
+	req := &pb.CreateViewRequest{
+		UserId:    "invalid-uuid",
+		VideoId:   videoID,
+		WatchTime: 120,
+	}
+	resp, err := handler.CreateView(context.Background(), req)
+
+	assert.Error(t, err)
+	assert.Nil(t, resp)
+
+	st, ok := status.FromError(err)
+	require.True(t, ok)
+	assert.Equal(t, codes.InvalidArgument, st.Code())
+	assert.Equal(t, "user_id must be a valid UUID", st.Message())
+}
+
+func TestCreateView_InvalidVideoID(t *testing.T) {
+	handler, _ := createTestVideoHandler()
+	userID := uuid.New().String()
+
+	req := &pb.CreateViewRequest{
+		UserId:    userID,
+		VideoId:   "invalid-uuid",
+		WatchTime: 120,
+	}
+	resp, err := handler.CreateView(context.Background(), req)
+
+	assert.Error(t, err)
+	assert.Nil(t, resp)
+
+	st, ok := status.FromError(err)
+	require.True(t, ok)
+	assert.Equal(t, codes.InvalidArgument, st.Code())
+	assert.Equal(t, "video_id must be a valid UUID", st.Message())
+}
+
+func TestCreateView_EmptyUserID(t *testing.T) {
+	handler, _ := createTestVideoHandler()
+	videoID := uuid.New().String()
+
+	req := &pb.CreateViewRequest{
+		UserId:    "",
+		VideoId:   videoID,
+		WatchTime: 120,
+	}
+	resp, err := handler.CreateView(context.Background(), req)
+
+	assert.Error(t, err)
+	assert.Nil(t, resp)
+
+	st, ok := status.FromError(err)
+	require.True(t, ok)
+	assert.Equal(t, codes.InvalidArgument, st.Code())
+	assert.Equal(t, "user_id is required", st.Message())
+}
+
+func TestCreateView_EmptyVideoID(t *testing.T) {
+	handler, _ := createTestVideoHandler()
+	userID := uuid.New().String()
+
+	req := &pb.CreateViewRequest{
+		UserId:    userID,
+		VideoId:   "",
+		WatchTime: 120,
+	}
+	resp, err := handler.CreateView(context.Background(), req)
+
+	assert.Error(t, err)
+	assert.Nil(t, resp)
+
+	st, ok := status.FromError(err)
+	require.True(t, ok)
+	assert.Equal(t, codes.InvalidArgument, st.Code())
+	assert.Equal(t, "video_id is required", st.Message())
+}
+
+func TestCreateView_NegativeWatchTime(t *testing.T) {
+	handler, _ := createTestVideoHandler()
+	userID := uuid.New().String()
+	videoID := uuid.New().String()
+
+	req := &pb.CreateViewRequest{
+		UserId:    userID,
+		VideoId:   videoID,
+		WatchTime: -10,
+	}
+	resp, err := handler.CreateView(context.Background(), req)
+
+	assert.Error(t, err)
+	assert.Nil(t, resp)
+
+	st, ok := status.FromError(err)
+	require.True(t, ok)
+	assert.Equal(t, codes.InvalidArgument, st.Code())
+	assert.Equal(t, "watch_time must be non-negative", st.Message())
+}
+
+func TestCreateView_ZeroWatchTime(t *testing.T) {
+	handler, mockUseCase := createTestVideoHandler()
+	userID := uuid.New().String()
+	videoID := uuid.New().String()
+	expectedTotalViews := int64(25)
+
+	mockUseCase.On("CreateView", mock.Anything, userID, videoID, 0).Return(expectedTotalViews, nil)
+
+	req := &pb.CreateViewRequest{
+		UserId:    userID,
+		VideoId:   videoID,
+		WatchTime: 0,
+	}
+	resp, err := handler.CreateView(context.Background(), req)
+
+	require.NoError(t, err)
+	require.NotNil(t, resp)
+	assert.True(t, resp.Success)
+	assert.Equal(t, expectedTotalViews, resp.TotalViews)
+
+	mockUseCase.AssertExpectations(t)
+}
+
+func TestCreateView_UseCaseError(t *testing.T) {
+	handler, mockUseCase := createTestVideoHandler()
+	userID := uuid.New().String()
+	videoID := uuid.New().String()
+	watchTime := int32(120)
+
+	mockUseCase.On("CreateView", mock.Anything, userID, videoID, int(watchTime)).Return(int64(0), errors.New("database error"))
+
+	req := &pb.CreateViewRequest{
+		UserId:    userID,
+		VideoId:   videoID,
+		WatchTime: watchTime,
+	}
+	resp, err := handler.CreateView(context.Background(), req)
+
+	assert.Error(t, err)
+	assert.Nil(t, resp)
+
+	st, ok := status.FromError(err)
+	require.True(t, ok)
+	assert.Equal(t, codes.Internal, st.Code())
+	assert.Equal(t, "Failed to create view", st.Message())
+
+	mockUseCase.AssertExpectations(t)
+}
