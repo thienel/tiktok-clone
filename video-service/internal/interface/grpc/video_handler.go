@@ -365,3 +365,57 @@ func (h *VideoHandler) CreateView(ctx context.Context, req *pb.CreateViewRequest
 
 	return &pb.CreateViewResponse{Success: true, TotalViews: totalViews}, nil
 }
+
+func (h *VideoHandler) CheckUserLikedVideo(ctx context.Context, req *pb.CheckUserLikedVideoRequest) (*pb.CheckUserLikedVideoResponse, error) {
+	logger.Info("CheckUserLikedVideo request received",
+		zap.String("user_id", req.UserId),
+		zap.String("video_id", req.VideoId))
+
+	if err := validateUserVideoRequest(req.UserId, req.VideoId); err != nil {
+		logger.Error("Invalid CheckUserLikedVideo request", zap.Error(err))
+		return nil, err
+	}
+
+	isLiked, err := h.videoUseCase.CheckUserLikedVideo(ctx, req.UserId, req.VideoId)
+	if err != nil {
+		logger.Error("Failed to check if user liked video", zap.Error(err),
+			zap.String("user_id", req.UserId),
+			zap.String("video_id", req.VideoId))
+		return nil, status.Error(codes.Internal, "Failed to check user liked video")
+	}
+
+	logger.Info("CheckUserLikedVideo request completed successfully",
+		zap.String("user_id", req.UserId),
+		zap.String("video_id", req.VideoId),
+		zap.Bool("is_liked", isLiked))
+
+	return &pb.CheckUserLikedVideoResponse{IsLiked: isLiked}, nil
+}
+
+func (h *VideoHandler) GetVideoLikeCount(ctx context.Context, req *pb.GetVideoLikeCountRequest) (*pb.GetVideoLikeCountResponse, error) {
+	logger.Info("GetVideoLikeCount request received",
+		zap.String("video_id", req.VideoId))
+
+	if req.VideoId == "" {
+		logger.Error("Empty video_id in GetVideoLikeCount request")
+		return nil, status.Error(codes.InvalidArgument, "video_id is required")
+	}
+
+	if err := validateUUID(req.VideoId, "video_id"); err != nil {
+		logger.Error("Invalid GetVideoLikeCount request", zap.Error(err))
+		return nil, err
+	}
+
+	likeCount, err := h.videoUseCase.GetVideoLikeCount(ctx, req.VideoId)
+	if err != nil {
+		logger.Error("Failed to get video like count", zap.Error(err),
+			zap.String("video_id", req.VideoId))
+		return nil, status.Error(codes.Internal, "Failed to get video like count")
+	}
+
+	logger.Info("GetVideoLikeCount request completed successfully",
+		zap.String("video_id", req.VideoId),
+		zap.Int64("like_count", likeCount))
+
+	return &pb.GetVideoLikeCountResponse{LikeCount: likeCount}, nil
+}
