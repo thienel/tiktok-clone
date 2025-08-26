@@ -48,7 +48,7 @@ namespace AuthService.Infrastructure
                 .AddDefaultTokenProviders();
 
             var jwtSettings = new JwtSettings();
-            configuration.GetSection("Jwt").Bind(jwtSettings);
+            configuration.GetSection("JwtSettings").Bind(jwtSettings);
             services.AddSingleton<IJwtSettings>(jwtSettings);
 
             var key = Encoding.UTF8.GetBytes(jwtSettings.SecretKey);
