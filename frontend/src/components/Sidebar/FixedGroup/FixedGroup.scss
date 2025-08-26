@@ -1,0 +1,96 @@
+.GroupWrapper {
+  width: var(--width-sidebar-content);
+  display: flex;
+  flex-direction: column;
+  padding-top: 1.25rem;
+  padding-bottom: 0.5rem;
+  gap: 1rem;
+  margin-left: var(--padding-sidebar);
+  margin-right: var(--padding-sidebar);
+  align-items: flex-start;
+
+  --height-logo: 29px;
+}
+
+.GroupWrapper.isCollapsed {
+  width: var(--width-sidebar-content-collapse);
+
+  .LogoWrapper {
+    padding-inline-start: 0px;
+    a {
+      justify-content: center;
+    }
+  }
+
+  .LogoFull {
+    display: none;
+  }
+  .Logo {
+    display: block;
+  }
+
+  .SearchWrapper {
+    width: var(--width-sidebar-content-collapse);
+  }
+
+  .SearchContent span {
+    display: none;
+  }
+}
+
+.LogoWrapper {
+  display: flex;
+  padding-left: 7px;
+  width: 100%;
+  justify-content: start;
+  height: 42px;
+  cursor: pointer;
+  color: var(--color-opposite);
+
+  a {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    color: currentColor;
+    margin: 0px auto;
+  }
+}
+
+.LogoFull {
+  height: var(--height-logo);
+  display: block;
+}
+
+.Logo {
+  height: var(--height-logo);
+  display: none;
+}
+
+.SearchWrapper {
+  width: var(--width-sidebar-content);
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+
+  transition: width 0.4s ease;
+}
+
+.SearchContent {
+  display: flex;
+  align-items: center;
+}
+
+.SearchIconWrapper {
+  margin: 0px 0.6rem;
+  width: 1.2rem;
+  height: 1.2rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: var(--color-opposite);
+  font-size: 32px;
+}
+
+.input {
+  color: var(--color-opposite) !important;
+}

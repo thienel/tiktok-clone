@@ -1,0 +1,24 @@
+.wrapper {
+  height: 1.75rem;
+  width: 1.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--color-neutral-3);
+  color: var(--color-opposite);
+  border-radius: 999px;
+
+  &:hover {
+    background-color: var(--color-neutral-2);
+  }
+}
+
+.small {
+  height: 1.5rem;
+  width: 1.5rem;
+}
+
+.large {
+  height: 2.5rem;
+  width: 2.5rem;
+}

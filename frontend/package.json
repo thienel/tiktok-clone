@@ -1,0 +1,59 @@
+{
+  "name": "tiktok-clone-ui",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "@testing-library/dom": "^10.4.0",
+    "@testing-library/jest-dom": "^6.6.3",
+    "@testing-library/react": "^16.3.0",
+    "@testing-library/user-event": "^13.5.0",
+    "axios": "^1.9.0",
+    "classnames": "^2.5.1",
+    "normalize.css": "^8.0.1",
+    "prop-types": "^15.8.1",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
+    "react-router-dom": "^7.6.2",
+    "react-scripts": "5.0.1",
+    "web-vitals": "^2.1.4"
+  },
+  "devDependencies": {
+    "babel-plugin-module-resolver": "^5.0.2",
+    "customize-cra": "^1.0.0",
+    "prettier": "^3.5.3",
+    "react-app-rewired": "^2.2.1",
+    "sass": "^1.88.0"
+  },
+  "scripts": {
+    "start": "react-app-rewired start",
+    "build": "react-app-rewired build",
+    "test": "react-app-rewired test",
+    "eject": "react-app-rewired eject",
+    "test:coverage": "react-app-rewired test --coverage --watchAll=false",
+    "test:watch": "react-app-rewired test --watch",
+    "lint": "eslint src --ext .js,.jsx",
+    "lint:fix": "eslint src --ext .js,.jsx --fix",
+    "format": "prettier --write src/**/*.{js,jsx,scss,css,md}",
+    "format:check": "prettier --check src/**/*.{js,jsx,scss,css,md}",
+    "analyze": "npm run build && npx bundle-analyzer build/static/js/*.js",
+    "clean": "rm -rf build node_modules package-lock.json && npm install"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
+}

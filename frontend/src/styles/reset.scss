@@ -1,0 +1,59 @@
+@import 'normalize.css';
+:root {
+  button,
+  input,
+  [tabindex] {
+    outline: none;
+    border: none;
+  }
+
+  a[href] {
+    text-decoration: none;
+  }
+
+  button,
+  span,
+  div {
+    font-family: var(--font-paragraph);
+  }
+}
+
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+  font-synthesis: none !important;
+  -webkit-font-smoothing: subpixel-antialiased;
+  -webkit-text-stroke: 1px transparent;
+}
+
+body {
+  font-family: var(--font-paragraph);
+  font-size: 1.6rem;
+  line-height: 1.5;
+  text-rendering: optimizeSpeed;
+  min-height: 100vh;
+  direction: ltr;
+  background-color: var(--color-bg);
+  color: var(--color-opposite);
+
+  transition: color 0.3s ease-in;
+}
+
+.loadingIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: 1s linear 0s infinite normal none running loading-animation;
+  margin-left: 4px;
+  color: inherit;
+}
+
+@keyframes loading-animation {
+  0% {
+    transform: rotate(0);
+  }
+  100% {
+    transform: rotate(1turn);
+  }
+}

@@ -1,0 +1,66 @@
+.SubNavWrapper.isCollapsed {
+  display: none;
+}
+
+.SubNavWrapper {
+  width: var(--width-sidebar-content);
+  padding: 0px 0.25rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 12px;
+}
+
+.FooterWrapper {
+  width: 100%;
+  border-top: 1px solid var(--color-neutral-2);
+  padding-top: 1rem;
+
+  h4 {
+    font-size: 15px;
+    line-height: 22px;
+    cursor: pointer;
+    font-weight: 700;
+    color: var(--color-footer);
+    margin-top: 5px;
+    margin-bottom: 0px;
+  }
+
+  h4.isFocused {
+    color: var(--color-opposite);
+  }
+
+  div:first-child h4 {
+    margin-top: 0px;
+  }
+
+  span {
+    color: var(--color-footer);
+    font-weight: 600;
+    font-size: 12px;
+    line-height: 1rem;
+    display: block;
+    margin-top: 5px;
+  }
+}
+
+.LinkWrapper {
+  display: flex;
+  flex-wrap: wrap;
+  margin-top: 0.25rem;
+  margin-bottom: 0.25rem;
+
+  a {
+    color: var(--color-footer) !important;
+    font-size: 12px;
+    font-weight: 400;
+    margin-bottom: 7px;
+    margin-right: 6px;
+    line-height: 16px;
+    cursor: pointer;
+
+    &:hover {
+      text-decoration: underline !important;
+    }
+  }
+}

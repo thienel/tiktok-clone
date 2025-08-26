@@ -1,0 +1,12 @@
+.skipButton {
+  background-color: transparent !important;
+  color: var(--color-opposite) !important;
+
+  &:hover {
+    background-color: var(--color-bg-grey) !important;
+  }
+}
+
+.buttonGroup {
+  margin-top: 0px !important;
+}

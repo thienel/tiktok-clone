@@ -1,0 +1,40 @@
+.wrapper {
+  background-color: transparent;
+  input, .warningIcon{
+    background-color: var(--color-neutral-3);
+  }
+}
+
+.sendcodebutton {
+  background-color: transparent;
+  cursor: not-allowed;
+  font-weight: 600;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 0px 4px 4px 0px;
+  color: var(--color-placeholder);
+  border-left: 2px solid var(--color-popup-border) !important;
+  font-size: 16px;
+  padding: 0px 16px;
+  height: 44px;
+  white-space: nowrap;
+  background-color: var(--color-popup-bg-disabled) !important;
+
+  div {
+    display: none;
+  }
+}
+
+.sendcodebutton.active {
+  cursor: pointer;
+  color: var(--color-opposite);
+}
+
+.loading {
+  cursor: not-allowed;
+  color: var(--color-placeholder) !important;
+  div {
+    display: flex;
+  }
+}

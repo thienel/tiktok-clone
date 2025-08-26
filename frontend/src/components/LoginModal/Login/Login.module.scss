@@ -1,0 +1,12 @@
+.spanLink {
+  width: 100%;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 18px;
+  cursor: pointer;
+  margin-bottom: 12px;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}

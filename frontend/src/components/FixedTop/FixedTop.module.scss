@@ -1,0 +1,72 @@
+@media screen and (max-width: 1199px) {
+  .action > span {
+    display: none;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .wrapper {
+    display: none;
+  }
+}
+
+.wrapper {
+  position: absolute;
+  top: 30px;
+  right: 1.5rem;
+}
+
+.actionBar {
+  box-shadow: rgba(0, 0, 0, 0.07) 0px 2px 10px 0px;
+  height: 3rem;
+  padding: 0.5rem;
+  border-radius: 999px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: var(--color-overlay);
+}
+
+.action {
+  height: 2rem;
+  background: none transparent;
+  border-radius: 999px;
+  padding: 0px 0.5rem;
+  display: flex;
+  align-items: center;
+  font-size: 12px;
+  font-weight: 700;
+  display: flex;
+  gap: 0.25rem;
+  color: var(--color-opposite);
+  cursor: pointer;
+
+  &:hover {
+    background-color: var(--color-neutral-4);
+  }
+}
+
+.divider {
+  width: 1px;
+  height: 1.25rem;
+  margin: 0px 0.5rem;
+  background-color: var(--color-border);
+}
+
+.login {
+  width: 4.72rem;
+  height: 2rem;
+  background-color: var(--color-primary);
+  color: var(--color-white);
+  border-radius: 999px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  letter-spacing: 0.15px;
+  font-size: 15px;
+  cursor: pointer;
+
+  &:hover {
+    background-color: var(--color-primary-hover);
+  }
+}
