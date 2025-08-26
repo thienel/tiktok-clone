@@ -1,75 +1,91 @@
-# TikTok Clone Backend Monorepo
+# TikTok Clone
 
-This repository contains the backend services for the TikTok Clone application.
+A full-stack TikTok clone application with microservices architecture.
 
-## Services
+## Project Structure
 
-### 🔐 Auth Service
-Location: `./auth-service/`
+```
+├── backend/                 # Backend services
+│   ├── auth-service/        # C# .NET authentication service
+│   └── video-service/       # Go video management service
+└── frontend/                # React frontend application
+```
 
-.NET Core authentication and user management service.
+## Backend Services
 
-**Features:**
-- User registration and authentication
-- JWT token management
-- Email verification
-- Password reset functionality
+### Auth Service (C# .NET)
+- **Technology**: ASP.NET Core, Entity Framework Core
+- **Database**: PostgreSQL
+- **Features**: User authentication, JWT tokens, email verification
+- **Location**: `backend/auth-service/`
 
-**Tech Stack:**
-- .NET 8
-- Entity Framework Core
-- SQL Server
-- JWT Authentication
+### Video Service (Go)
+- **Technology**: Go, gRPC, PostgreSQL
+- **Features**: Video upload, likes, views, comments
+- **Location**: `backend/video-service/`
 
-### 🎥 Video Service
-Location: `./video-service/`
+## Frontend Application
 
-Go-based video processing and management service.
-
-**Features:**
-- Video upload and processing
-- Video metadata management
-- Video streaming
-- Video recommendations
-
-**Tech Stack:**
-- Go
-- gRPC
-- Protocol Buffers
+### React App
+- **Technology**: React, JavaScript, CSS
+- **Features**: Video feed, user profiles, authentication UI
+- **Location**: `frontend/`
 
 ## Getting Started
 
 ### Prerequisites
-- .NET 8 SDK
-- Go 1.21+
+- .NET 6.0 or later
+- Go 1.19 or later
+- Node.js 16 or later
+- PostgreSQL
 - Docker (optional)
 
-### Running the Services
+### Backend Setup
 
 #### Auth Service
 ```bash
-cd auth-service
+cd backend/auth-service
 dotnet restore
-dotnet run
+dotnet run --project TikTokClone.API
 ```
 
 #### Video Service
 ```bash
-cd video-service
+cd backend/video-service
 go mod tidy
 go run cmd/main.go
 ```
 
+### Frontend Setup
+```bash
+cd frontend
+npm install
+npm start
+```
+
+## Repository History
+
+This repository was created by merging two separate repositories:
+- **Backend**: https://github.com/thienel/tiktok-clone-api
+- **Frontend**: https://github.com/thienel/tiktok-clone-ui
+
+All commit histories from both original repositories have been preserved in this merged repository.
+
 ## Development
 
-Each service maintains its own development workflow while being part of the monorepo structure.
+Each service can be developed and deployed independently:
+- Auth Service runs on port 5000
+- Video Service runs on port 8080  
+- Frontend runs on port 3000
 
-## Architecture
+## Contributing
 
-```
-backend/
-├── auth-service/          # .NET authentication service
-├── video-service/         # Go video processing service
-├── docker-compose.yml     # Multi-service deployment
-└── README.md             # This file
-```
+1. Fork the repository
+2. Create a feature branch
+3. Commit your changes
+4. Push to the branch
+5. Open a Pull Request
+
+## License
+
+This project is licensed under the MIT License.
