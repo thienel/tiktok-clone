@@ -63,29 +63,9 @@ npm install
 npm start
 ```
 
-## Repository History
-
-This repository was created by merging two separate repositories:
-- **Backend**: https://github.com/thienel/tiktok-clone-api
-- **Frontend**: https://github.com/thienel/tiktok-clone-ui
-
-All commit histories from both original repositories have been preserved in this merged repository.
-
 ## Development
 
 Each service can be developed and deployed independently:
 - Auth Service runs on port 5000
 - Video Service runs on port 8080  
 - Frontend runs on port 3000
-
-## Contributing
-
-1. Fork the repository
-2. Create a feature branch
-3. Commit your changes
-4. Push to the branch
-5. Open a Pull Request
-
-## License
-
-This project is licensed under the MIT License.
