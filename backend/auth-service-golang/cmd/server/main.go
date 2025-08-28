@@ -12,7 +12,7 @@ import (
 )
 
 func main() {
-	godotenv.Load(".env")
+	_ = godotenv.Load(".env")
 	cfg := config.Load()
 	log := logger.New(cfg.LogLevel)
 
@@ -21,7 +21,12 @@ func main() {
 		log.Error("Failed to connect to database", "error", err)
 		os.Exit(1)
 	}
-	defer db.Close()
+	defer func(db *database.Database) {
+		err := db.Close()
+		if err != nil {
+			log.Error("Failed to close database connection", "error", err)
+		}
+	}(db)
 
 	r := gin.Default()
 	r.GET("/health", func(c *gin.Context) {
