@@ -1,8 +1,9 @@
-package errors
+package apperrors
 
 import "errors"
 
 var (
+	ErrDuplicateKey       = errors.New("duplicate key")
 	ErrUserNotFound       = errors.New("user not found")
 	ErrInvalidCredentials = errors.New("invalid credentials")
 	ErrEmailAlreadyExists = errors.New("email already exists")
