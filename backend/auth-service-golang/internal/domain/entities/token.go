@@ -1,8 +1,8 @@
 package entities
 
 import (
+	"auth-service/internal/errors/apperrors"
 	"database/sql/driver"
-	"fmt"
 	"time"
 
 	"github.com/google/uuid"
@@ -73,7 +73,7 @@ func (tt *TokenType) Scan(value any) error {
 		*tt = TokenType(s)
 		return nil
 	default:
-		return fmt.Errorf("cannot scan %T into TokenType", value)
+		return apperrors.ErrScanValue
 	}
 }
 

@@ -1,8 +1,8 @@
 package entities
 
 import (
+	"auth-service/internal/errors/apperrors"
 	"database/sql/driver"
-	"fmt"
 	"strings"
 	"time"
 
@@ -87,6 +87,6 @@ func (us *UserStatus) Scan(value any) error {
 		*us = UserStatus(s)
 		return nil
 	default:
-		return fmt.Errorf("user: cannot scan value of type %T", value)
+		return apperrors.ErrScanValue
 	}
 }

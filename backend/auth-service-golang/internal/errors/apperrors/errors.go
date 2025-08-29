@@ -3,6 +3,7 @@ package apperrors
 import "errors"
 
 var (
+	ErrScanValue          = errors.New("scan value error")
 	ErrDuplicateKey       = errors.New("duplicate key")
 	ErrUserNotFound       = errors.New("user not found")
 	ErrInvalidCredentials = errors.New("invalid credentials")
