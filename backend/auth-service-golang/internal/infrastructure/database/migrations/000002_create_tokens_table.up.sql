@@ -7,7 +7,6 @@ CREATE TABLE tokens (
     type VARCHAR(20) NOT NULL,
     expiry_at TIMESTAMP NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT NULL,
     revoked_at TIMESTAMP DEFAULT NULL,
     deleted_at TIMESTAMP DEFAULT NULL
 );
