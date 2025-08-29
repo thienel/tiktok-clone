@@ -1,6 +1,8 @@
 package entities
 
 import (
+	"database/sql/driver"
+	"fmt"
 	"strings"
 	"time"
 
@@ -74,4 +76,25 @@ func (user *User) SoftDelete() {
 	user.DeletedAt = &now
 	user.Status = UserStatusDeleted
 	user.UpdatedAt = now
+}
+
+func (us UserStatus) Value() (driver.Value, error) {
+	return string(us), nil
+}
+
+func (us *UserStatus) Scan(value any) error {
+	if us == nil {
+		return nil
+	}
+
+	switch s := value.(type) {
+	case string:
+		*us = UserStatus(s)
+		return nil
+	case []byte:
+		*us = UserStatus(s)
+		return nil
+	default:
+		return fmt.Errorf("user: cannot scan value of type %T", value)
+	}
 }
