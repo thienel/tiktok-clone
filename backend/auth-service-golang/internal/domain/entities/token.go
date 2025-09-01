@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/google/uuid"
+	"gorm.io/gorm"
 )
 
 type TokenType string
@@ -16,44 +17,13 @@ const (
 )
 
 type Token struct {
-	ID        uuid.UUID  `json:"id" db:"id" validate:"required"`
-	UserID    uuid.UUID  `json:"user_id" db:"user_id" validate:"required"`
-	Token     string     `json:"token" db:"token" validate:"required,min=32"`
-	Type      TokenType  `json:"type" db:"type" validate:"required,oneof=access refresh"`
-	ExpiryAt  time.Time  `json:"expiry_at" db:"expiry_at"`
-	CreatedAt time.Time  `json:"created_at" db:"created_at"`
-	RevokedAt *time.Time `json:"revoked_at,omitempty" db:"revoked_at"`
-	DeletedAt *time.Time `json:"deleted_at,omitempty" db:"deleted_at"`
-}
-
-func (token *Token) IsExpired() bool {
-	return time.Now().After(token.ExpiryAt)
-}
-
-func (token *Token) IsRevoked() bool {
-	return token.RevokedAt != nil
-}
-
-func (token *Token) IsDeleted() bool {
-	return token.DeletedAt != nil
-}
-
-func (token *Token) IsValid() bool {
-	return !token.IsExpired() && !token.IsRevoked() && !token.IsDeleted()
-}
-
-func (token *Token) Revoke() {
-	if !token.IsRevoked() {
-		now := time.Now()
-		token.RevokedAt = &now
-	}
-}
-
-func (token *Token) Delete() {
-	if !token.IsDeleted() {
-		now := time.Now()
-		token.DeletedAt = &now
-	}
+	ID        uuid.UUID      `json:"id" validate:"required" gorm:"primaryKey;default:uuid_generate_v4()"`
+	UserID    uuid.UUID      `json:"user_id" validate:"required" gorm:"index"`
+	Token     string         `json:"token" validate:"required,min=32" gorm:"index;type:text"`
+	Type      TokenType      `json:"type" validate:"required,oneof=access refresh"`
+	ExpiryAt  time.Time      `json:"expiry_at"`
+	CreatedAt time.Time      `json:"created_at" gorm:"default:CURRENT_TIMESTAMP"`
+	DeletedAt gorm.DeletedAt `json:"-"`
 }
 
 func (tt TokenType) Value() (driver.Value, error) {
@@ -93,8 +63,6 @@ func NewToken(params TokenCreationParams) *Token {
 		Type:      params.Type,
 		ExpiryAt:  now.Add(params.TTL),
 		CreatedAt: now,
-		RevokedAt: nil,
-		DeletedAt: nil,
 	}
 }
 
