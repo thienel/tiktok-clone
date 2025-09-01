@@ -21,10 +21,10 @@ const (
 
 type User struct {
 	ID           uuid.UUID      `json:"id" validate:"required" gorm:"primaryKey"`
-	Username     string         `json:"username" validate:"required,min=2,max=24"`
-	Email        string         `json:"email" validate:"required,email"`
-	PasswordHash string         `json:"-" validate:"required"`
-	Status       UserStatus     `json:"status" validate:"required,oneof=active inactive suspended pending"`
+	Username     string         `json:"username" validate:"required,min=2,max=24" gorm:"uniqueIndex;size:24"`
+	Email        string         `json:"email" validate:"required,email,max=100" gorm:"uniqueIndex;size:100"`
+	PasswordHash string         `json:"-" validate:"required" gorm:"size:255"`
+	Status       UserStatus     `json:"status" validate:"required,oneof=active inactive suspended pending" gorm:"default:pending"`
 	CreatedAt    time.Time      `json:"created_at" gorm:"autoCreateTime"`
 	UpdatedAt    time.Time      `json:"updated_at" gorm:"autoUpdateTime"`
 	DeletedAt    gorm.DeletedAt `json:"deleted_at" gorm:"index"`
@@ -32,26 +32,37 @@ type User struct {
 }
 
 type PublicUser struct {
-	ID        uuid.UUID  `json:"id"  validate:"required"`
-	Username  string     `json:"username"  validate:"required,min=2,max=24"`
-	Email     string     `json:"email"  validate:"required,email"`
-	Status    UserStatus `json:"status"  validate:"required,oneof=active inactive suspended pending"`
+	ID        uuid.UUID  `json:"id" validate:"required"`
+	Username  string     `json:"username" validate:"required,min=2,max=24"`
+	Email     string     `json:"email" validate:"required,email,max=100"`
+	Status    UserStatus `json:"status" validate:"required,oneof=active inactive suspended pending"`
 	CreatedAt time.Time  `json:"created_at"`
 	UpdatedAt time.Time  `json:"updated_at"`
 }
 
 type UserCreateRequest struct {
-	Username string `json:"username"  validate:"required,min=2,max=24"`
-	Email    string `json:"email"  validate:"required,email"`
-	Password string `json:"password"  validate:"required,min=8"`
+	Username string `json:"username" validate:"required,min=2,max=24"`
+	Email    string `json:"email" validate:"required,email,max=100"`
+	Password string `json:"password" validate:"required,min=8,max=128"`
+}
+
+type UserUpdateRequest struct {
+	Username *string     `json:"username,omitempty" validate:"omitempty,min=2,max=24"`
+	Email    *string     `json:"email,omitempty" validate:"omitempty,email,max=100"`
+	Status   *UserStatus `json:"status,omitempty" validate:"omitempty,oneof=active inactive suspended pending"`
+}
+
+type UserLoginRequest struct {
+	Username string `json:"username" validate:"required"`
+	Password string `json:"password" validate:"required"`
 }
 
 func NewUser(request UserCreateRequest, hashedPassword string) *User {
 	now := time.Now()
 	return &User{
 		ID:           uuid.New(),
-		Username:     request.Username,
-		Email:        strings.ToLower(request.Email),
+		Username:     strings.TrimSpace(request.Username),
+		Email:        strings.ToLower(strings.TrimSpace(request.Email)),
 		PasswordHash: hashedPassword,
 		Status:       UserStatusPending,
 		CreatedAt:    now,
@@ -70,12 +81,32 @@ func (user *User) ToPublicUser() *PublicUser {
 	}
 }
 
+func (user *User) IsActive() bool {
+	return user.Status == UserStatusActive && user.DeletedAt.Time.IsZero()
+}
+
+func (user *User) CanLogin() bool {
+	return user.Status == UserStatusActive || user.Status == UserStatusPending
+}
+
+func (user *User) Activate() {
+	user.Status = UserStatusActive
+}
+
+func (user *User) Suspend() {
+	user.Status = UserStatusSuspended
+}
+
+func (user *User) Deactivate() {
+	user.Status = UserStatusInactive
+}
+
 func (us UserStatus) Value() (driver.Value, error) {
 	return string(us), nil
 }
 
 func (us *UserStatus) Scan(value any) error {
-	if us == nil {
+	if value == nil {
 		return nil
 	}
 
@@ -88,5 +119,14 @@ func (us *UserStatus) Scan(value any) error {
 		return nil
 	default:
 		return apperrors.ErrScanValue
+	}
+}
+
+func (us UserStatus) IsValid() bool {
+	switch us {
+	case UserStatusActive, UserStatusInactive, UserStatusSuspended, UserStatusPending:
+		return true
+	default:
+		return false
 	}
 }
