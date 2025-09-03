@@ -3,11 +3,19 @@ package entities
 import (
 	"auth-service/internal/errors/apperrors"
 	"database/sql/driver"
+	"os"
 	"time"
 
+	"github.com/golang-jwt/jwt/v5"
 	"github.com/google/uuid"
 	"gorm.io/gorm"
 )
+
+type CustomClaims struct {
+	Username  string    `json:"username"`
+	TokenType TokenType `json:"token_type"`
+	jwt.RegisteredClaims
+}
 
 type TokenType string
 
@@ -17,12 +25,12 @@ const (
 )
 
 type Token struct {
-	ID        uuid.UUID      `json:"id" validate:"required" gorm:"primaryKey;default:uuid_generate_v4()"`
+	ID        uuid.UUID      `json:"id" validate:"required" gorm:"primaryKey"`
 	UserID    uuid.UUID      `json:"user_id" validate:"required" gorm:"index"`
 	Token     string         `json:"token" validate:"required,min=32" gorm:"index;type:text"`
 	Type      TokenType      `json:"type" validate:"required,oneof=access refresh"`
 	ExpiryAt  time.Time      `json:"expiry_at"`
-	CreatedAt time.Time      `json:"created_at" gorm:"default:CURRENT_TIMESTAMP"`
+	CreatedAt time.Time      `json:"created_at" gorm:"autoCreateTime"`
 	DeletedAt gorm.DeletedAt `json:"-"`
 }
 
