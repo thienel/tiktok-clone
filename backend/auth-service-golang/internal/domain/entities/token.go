@@ -165,3 +165,15 @@ func VerifyJWT(tokenStr string) (*CustomClaims, error) {
 	}
 	return nil, apperrors.ErrInvalidToken
 }
+
+func (t *Token) IsExpired() bool {
+	return time.Now().UTC().After(t.ExpiryAt)
+}
+
+func (t *Token) IsActive() bool {
+	return !t.IsExpired() && t.DeletedAt.Time.IsZero()
+}
+
+func (t *Token) GetClaims() (*CustomClaims, error) {
+	return VerifyJWT(t.Token)
+}
