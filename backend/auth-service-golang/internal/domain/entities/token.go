@@ -1,9 +1,14 @@
 package entities
 
 import (
+	"auth-service/internal/config"
 	"auth-service/internal/errors/apperrors"
+	"crypto/rsa"
 	"database/sql/driver"
+	"errors"
+	"fmt"
 	"os"
+	"sync"
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
@@ -11,8 +16,15 @@ import (
 	"gorm.io/gorm"
 )
 
+var (
+	publicKey  *rsa.PublicKey
+	privateKey *rsa.PrivateKey
+	keyOnce    sync.Once
+	keyErr     error
+)
+
 type CustomClaims struct {
-	Username  string    `json:"username"`
+	UserID    string    `json:"user_id"`
 	TokenType TokenType `json:"token_type"`
 	jwt.RegisteredClaims
 }
@@ -80,6 +92,34 @@ func NewToken(params TokenCreationParams) (*Token, error) {
 	}, nil
 }
 
+func initRSAKeys(cfg config.Config) error {
+	keyOnce.Do(func() {
+		publicKeyData, err := os.ReadFile(cfg.PublicKeyPath)
+		if err != nil {
+			keyErr = fmt.Errorf("failed to read public key: %w", err)
+			return
+		}
+		privateKeyData, err := os.ReadFile(cfg.PrivateKeyPath)
+		if err != nil {
+			keyErr = fmt.Errorf("failed to read private key: %w", err)
+			return
+		}
+
+		publicKey, err = jwt.ParseRSAPublicKeyFromPEM(publicKeyData)
+		if err != nil {
+			keyErr = fmt.Errorf("failed to parse public key: %w", err)
+			return
+		}
+		privateKey, err = jwt.ParseRSAPrivateKeyFromPEM(privateKeyData)
+		if err != nil {
+			keyErr = fmt.Errorf("failed to parse private key: %w", err)
+			return
+		}
+	})
+
+	return keyErr
+}
+
 func generateJWTWithRSA(userID uuid.UUID, tokenType TokenType, expiryAt time.Time) (string, error) {
 	now := time.Now().UTC()
 	claims := CustomClaims{
@@ -95,36 +135,29 @@ func generateJWTWithRSA(userID uuid.UUID, tokenType TokenType, expiryAt time.Tim
 		},
 	}
 
-	privateKeyData, err := os.ReadFile(os.Getenv("PRIVATE_KEY_PATH"))
-	if err != nil {
-		return "", err
-	}
-
-	privateKey, err := jwt.ParseRSAPrivateKeyFromPEM(privateKeyData)
-	if err != nil {
-		return "", err
-	}
-
 	token := jwt.NewWithClaims(jwt.SigningMethodRS256, claims)
 	return token.SignedString(privateKey)
 }
 
 func VerifyJWT(tokenStr string) (*CustomClaims, error) {
-	publicKeyData, err := os.ReadFile(os.Getenv("PUBLIC_KEY_PATH"))
-	if err != nil {
-		return nil, err
-	}
-
-	publicKey, err := jwt.ParseRSAPublicKeyFromPEM(publicKeyData)
-	if err != nil {
-		return nil, err
-	}
-
 	token, err := jwt.ParseWithClaims(tokenStr, &CustomClaims{}, func(token *jwt.Token) (any, error) {
+		if _, ok := token.Method.(*jwt.SigningMethodRSA); !ok {
+			return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
+		}
 		return publicKey, nil
 	})
+
 	if err != nil {
-		return nil, err
+		switch {
+		case errors.Is(err, jwt.ErrTokenExpired):
+			return nil, apperrors.ErrTokenExpired
+		default:
+			return nil, apperrors.ErrInvalidToken
+		}
+	}
+
+	if token == nil {
+		return nil, apperrors.ErrInvalidToken
 	}
 
 	if claims, ok := token.Claims.(*CustomClaims); ok && token.Valid {
