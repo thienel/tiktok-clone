@@ -61,20 +61,74 @@ type TokenCreationParams struct {
 	TTL    time.Duration
 }
 
-func NewToken(params TokenCreationParams) *Token {
-	now := time.Now()
+func NewToken(params TokenCreationParams) (*Token, error) {
+	userID := params.UserID
+	tokenType := params.Type
+	expiryAt := time.Now().UTC().Add(params.TTL)
+
+	token, err := generateJWTWithRSA(userID, tokenType, expiryAt)
+	if err != nil {
+		return nil, err
+	}
 
 	return &Token{
-		ID:        uuid.New(),
-		UserID:    params.UserID,
-		Token:     generateSecureToken(),
-		Type:      params.Type,
-		ExpiryAt:  now.Add(params.TTL),
-		CreatedAt: now,
-	}
+		ID:       uuid.New(),
+		UserID:   userID,
+		Token:    token,
+		Type:     tokenType,
+		ExpiryAt: expiryAt,
+	}, nil
 }
 
-func generateSecureToken() string {
-	//TODO
-	return ""
+func generateJWTWithRSA(userID uuid.UUID, tokenType TokenType, expiryAt time.Time) (string, error) {
+	now := time.Now().UTC()
+	claims := CustomClaims{
+		userID.String(),
+		tokenType,
+		jwt.RegisteredClaims{
+			ID:        uuid.New().String(),
+			IssuedAt:  jwt.NewNumericDate(now),
+			NotBefore: jwt.NewNumericDate(now),
+			ExpiresAt: jwt.NewNumericDate(expiryAt),
+			Issuer:    "auth-service",
+			Subject:   userID.String(),
+		},
+	}
+
+	privateKeyData, err := os.ReadFile(os.Getenv("PRIVATE_KEY_PATH"))
+	if err != nil {
+		return "", err
+	}
+
+	privateKey, err := jwt.ParseRSAPrivateKeyFromPEM(privateKeyData)
+	if err != nil {
+		return "", err
+	}
+
+	token := jwt.NewWithClaims(jwt.SigningMethodRS256, claims)
+	return token.SignedString(privateKey)
+}
+
+func VerifyJWT(tokenStr string) (*CustomClaims, error) {
+	publicKeyData, err := os.ReadFile(os.Getenv("PUBLIC_KEY_PATH"))
+	if err != nil {
+		return nil, err
+	}
+
+	publicKey, err := jwt.ParseRSAPublicKeyFromPEM(publicKeyData)
+	if err != nil {
+		return nil, err
+	}
+
+	token, err := jwt.ParseWithClaims(tokenStr, &CustomClaims{}, func(token *jwt.Token) (any, error) {
+		return publicKey, nil
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	if claims, ok := token.Claims.(*CustomClaims); ok && token.Valid {
+		return claims, nil
+	}
+	return nil, apperrors.ErrInvalidToken
 }
