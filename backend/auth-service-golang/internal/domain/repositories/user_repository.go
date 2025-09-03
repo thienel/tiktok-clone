@@ -42,7 +42,7 @@ func (u *userRepository) FindByID(ctx context.Context, id uuid.UUID) (*entities.
 	var user entities.User
 	if err := u.db.WithContext(ctx).Where("id = ?", id).First(&user).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return nil, apperrors.ErrUserNotFound
+			return nil, apperrors.ErrNotFound
 		}
 		return nil, err
 	}
@@ -53,7 +53,7 @@ func (u *userRepository) FindByEmail(ctx context.Context, email string) (*entiti
 	var user entities.User
 	if err := u.db.WithContext(ctx).Where("email = ?", email).First(&user).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return nil, apperrors.ErrUserNotFound
+			return nil, apperrors.ErrNotFound
 		}
 		return nil, err
 	}
@@ -64,7 +64,7 @@ func (u *userRepository) FindByUsername(ctx context.Context, username string) (*
 	var user entities.User
 	if err := u.db.WithContext(ctx).Where("username = ?", username).First(&user).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return nil, apperrors.ErrUserNotFound
+			return nil, apperrors.ErrNotFound
 		}
 		return nil, err
 	}
