@@ -1,9 +1,11 @@
 package main
 
 import (
+	"auth-service/internal/application"
 	"auth-service/internal/config"
 	"auth-service/internal/crypto"
 	"auth-service/internal/infrastructure/database"
+	"auth-service/internal/interfaces/api"
 	"auth-service/pkg/logger"
 	"context"
 	"errors"
@@ -13,9 +15,10 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
 )
+
+var app *application.App
 
 func main() {
 	_ = godotenv.Load(".env")
@@ -40,27 +43,13 @@ func main() {
 		}
 	}(db)
 
-	r := gin.Default()
-	r.Use(gin.Recovery())
-	r.Use(gin.Logger())
-	r.GET("/health", func(c *gin.Context) {
-		err := db.DB.Ping()
-		if err != nil {
-			c.JSON(http.StatusInternalServerError, gin.H{
-				"status":  "unhealthy",
-				"service": "auth-service",
-				"db":      "down",
-			})
-			return
-		}
+	app = &application.App{
+		Cfg: cfg,
+		DB:  db,
+		Log: log,
+	}
 
-		c.JSON(http.StatusOK, gin.H{
-			"status":  "healthy",
-			"service": "auth-service",
-			"db":      "up",
-		})
-	})
-
+	r := api.NewRouter(app)
 	log.Info("Server starting on port " + cfg.Port)
 	srv := &http.Server{
 		Addr:    ":" + cfg.Port,
