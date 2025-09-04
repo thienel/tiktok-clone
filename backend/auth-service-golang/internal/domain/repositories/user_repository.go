@@ -72,7 +72,7 @@ func (u *userRepository) FindByUsername(ctx context.Context, username string) (*
 }
 
 func (u *userRepository) Update(ctx context.Context, user *entities.User) error {
-	if err := u.db.WithContext(ctx).Model(user).Select("username", "email", "status").
+	if err := u.db.WithContext(ctx).Model(user).Select("username", "email", "status", "password_hash").
 		Updates(user).Error; err != nil {
 		return err
 	}
