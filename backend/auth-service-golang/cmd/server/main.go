@@ -3,9 +3,9 @@ package main
 import (
 	"auth-service/internal/application"
 	"auth-service/internal/config"
-	"auth-service/internal/crypto"
 	"auth-service/internal/infrastructure/database"
 	"auth-service/internal/interfaces/api"
+	"auth-service/internal/security"
 	"auth-service/pkg/logger"
 	"context"
 	"errors"
@@ -25,7 +25,7 @@ func main() {
 	cfg := config.Load()
 	log := logger.New(cfg.LogLevel)
 
-	err := crypto.InitRSAKeys(cfg.PublicKeyPath, cfg.PrivateKeyPath)
+	err := security.InitRSAKeys(cfg.PublicKeyPath, cfg.PrivateKeyPath)
 	if err != nil {
 		log.Error("Failed to initialize RSA keys", "error", err)
 		os.Exit(1)
