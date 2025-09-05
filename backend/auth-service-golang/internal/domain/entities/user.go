@@ -3,6 +3,8 @@ package entities
 import (
 	"auth-service/internal/errors/apperrors"
 	"database/sql/driver"
+	"net/mail"
+	"regexp"
 	"strings"
 	"time"
 
@@ -42,6 +44,17 @@ func NewUser(username, email, passwordHash string) *User {
 		CreatedAt:    now,
 		UpdatedAt:    now,
 	}
+}
+
+func IsValidEmail(email string) bool {
+	_, err := mail.ParseAddress(email)
+	return err == nil
+}
+
+func IsValidUserName(username string) bool {
+	pattern := `^[A-Za-z0-9._]{2,24}$`
+	re := regexp.MustCompile(pattern)
+	return re.MatchString(username)
 }
 
 func (user *User) IsActive() bool {
