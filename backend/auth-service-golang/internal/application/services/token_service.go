@@ -66,14 +66,14 @@ func (t *tokenService) GenerateAccessToken(ctx context.Context, userID uuid.UUID
 
 	select {
 	case <-ctx.Done():
-		return "", ctx.Err()
+		return "", apperrors.ErrRequestTimeout(ctx.Err())
 	default:
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodRS256, claims)
 	signedToken, err := token.SignedString(t.privateKey)
 	if err != nil {
-		return "", fmt.Errorf("failed to sign token: %w", err)
+		return "", apperrors.ErrFailedSignAccessToken(err)
 	}
 
 	return signedToken, nil
@@ -82,19 +82,19 @@ func (t *tokenService) GenerateAccessToken(ctx context.Context, userID uuid.UUID
 func (t *tokenService) GenerateRefreshToken(ctx context.Context, userID uuid.UUID) (string, error) {
 	select {
 	case <-ctx.Done():
-		return "", ctx.Err()
+		return "", apperrors.ErrRequestTimeout(ctx.Err())
 	default:
 	}
 
-	bytes := make([]byte, 32) // 256 bits entropy
+	bytes := make([]byte, 32)
 	if _, err := rand.Read(bytes); err != nil {
-		return "", fmt.Errorf("failed to generate random bytes: %w", err)
+		return "", apperrors.ErrFailedGenerateRefreshToken(err)
 	}
 
 	rawToken := base64.URLEncoding.WithPadding(base64.NoPadding).EncodeToString(bytes)
-	hashedToken, err := t.hashToken(rawToken)
+	hashedToken, err := hashToken(rawToken)
 	if err != nil {
-		return "", fmt.Errorf("failed to hash token: %w", err)
+		return "", apperrors.ErrFailedGenerateRefreshToken(err)
 	}
 
 	if err := t.repoRefreshToken.RevokeAllByUserID(ctx, userID); err != nil {
@@ -108,7 +108,7 @@ func (t *tokenService) GenerateRefreshToken(ctx context.Context, userID uuid.UUI
 	}
 
 	if err := t.repoRefreshToken.Create(ctx, rfToken); err != nil {
-		return "", fmt.Errorf("failed to save refresh token: %w", err)
+		return "", apperrors.ErrFailedGenerateRefreshToken(err)
 	}
 
 	return rawToken, nil
@@ -122,7 +122,7 @@ type CustomClaims struct {
 func (t *tokenService) ValidateAccessToken(ctx context.Context, tokenStr string) (*CustomClaims, error) {
 	select {
 	case <-ctx.Done():
-		return nil, ctx.Err()
+		return nil, apperrors.ErrRequestTimeout(ctx.Err())
 	default:
 	}
 
@@ -136,27 +136,27 @@ func (t *tokenService) ValidateAccessToken(ctx context.Context, tokenStr string)
 	if err != nil {
 		switch {
 		case errors.Is(err, jwt.ErrTokenExpired):
-			return nil, apperrors.ErrTokenExpired
+			return nil, apperrors.ErrExpiredAccessToken
 		case errors.Is(err, jwt.ErrTokenNotValidYet):
-			return nil, apperrors.ErrInvalidToken
+			return nil, apperrors.ErrInvalidAccessToken
 		case errors.Is(err, jwt.ErrTokenMalformed):
-			return nil, apperrors.ErrInvalidToken
+			return nil, apperrors.ErrInvalidAccessToken
 		default:
-			return nil, apperrors.ErrInvalidToken
+			return nil, apperrors.ErrInvalidAccessToken
 		}
 	}
 
 	if token == nil || !token.Valid {
-		return nil, apperrors.ErrInvalidToken
+		return nil, apperrors.ErrInvalidAccessToken
 	}
 
 	claims, ok := token.Claims.(*CustomClaims)
 	if !ok {
-		return nil, apperrors.ErrInvalidToken
+		return nil, apperrors.ErrInvalidAccessToken
 	}
 
 	if claims.UserID == "" {
-		return nil, apperrors.ErrInvalidToken
+		return nil, apperrors.ErrInvalidAccessToken
 	}
 
 	return claims, nil
@@ -169,22 +169,22 @@ func (t *tokenService) ValidateRefreshToken(ctx context.Context, token string) (
 	default:
 	}
 
-	hashedToken, err := t.hashToken(token)
+	hashedToken, err := hashToken(token)
 	if err != nil {
 		return nil, fmt.Errorf("failed to hash token: %w", err)
 	}
 
 	rfToken, err := t.repoRefreshToken.FindByToken(ctx, hashedToken)
 	if err != nil {
-		return nil, apperrors.ErrInvalidToken
+		return nil, apperrors.ErrInvalidRefreshToken
 	}
 
 	if rfToken.IsExpired() {
-		return nil, apperrors.ErrTokenExpired
+		return nil, apperrors.ErrExpiredRefreshToken
 	}
 
 	if rfToken.IsRevoked {
-		return nil, apperrors.ErrInvalidToken
+		return nil, apperrors.ErrRevokedRefreshToken
 	}
 
 	return rfToken, nil
@@ -197,7 +197,7 @@ func (t *tokenService) RevokeRefreshToken(ctx context.Context, token string) err
 	default:
 	}
 
-	hashedToken, err := t.hashToken(token)
+	hashedToken, err := hashToken(token)
 	if err != nil {
 		return fmt.Errorf("failed to hash token: %w", err)
 	}
@@ -219,7 +219,7 @@ func (t *tokenService) RefreshAccessToken(ctx context.Context, refreshToken stri
 	return accessToken, nil
 }
 
-func (t *tokenService) hashToken(token string) (string, error) {
+func hashToken(token string) (string, error) {
 	hasher := sha256.New()
 	hasher.Write([]byte(token))
 	return hex.EncodeToString(hasher.Sum(nil)), nil

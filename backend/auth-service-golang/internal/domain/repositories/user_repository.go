@@ -33,7 +33,7 @@ func (u *userRepository) Create(ctx context.Context, user *entities.User) error 
 		if isDuplicateKeyError(err) {
 			return apperrors.ErrDuplicateKey
 		}
-		return err
+		return apperrors.ErrDBOperation(err)
 	}
 	return nil
 }
@@ -44,7 +44,7 @@ func (u *userRepository) FindByID(ctx context.Context, id uuid.UUID) (*entities.
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return nil, apperrors.ErrNotFound
 		}
-		return nil, err
+		return nil, apperrors.ErrDBOperation(err)
 	}
 	return &user, nil
 }
@@ -55,7 +55,7 @@ func (u *userRepository) FindByEmail(ctx context.Context, email string) (*entiti
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return nil, apperrors.ErrNotFound
 		}
-		return nil, err
+		return nil, apperrors.ErrDBOperation(err)
 	}
 	return &user, nil
 }
@@ -66,7 +66,7 @@ func (u *userRepository) FindByUsername(ctx context.Context, username string) (*
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return nil, apperrors.ErrNotFound
 		}
-		return nil, err
+		return nil, apperrors.ErrDBOperation(err)
 	}
 	return &user, nil
 }
@@ -74,14 +74,14 @@ func (u *userRepository) FindByUsername(ctx context.Context, username string) (*
 func (u *userRepository) Update(ctx context.Context, user *entities.User) error {
 	if err := u.db.WithContext(ctx).Model(user).Select("username", "email", "status", "password_hash").
 		Updates(user).Error; err != nil {
-		return err
+		return apperrors.ErrDBOperation(err)
 	}
 	return nil
 }
 
 func (u *userRepository) SoftDelete(ctx context.Context, id uuid.UUID) error {
 	if err := u.db.WithContext(ctx).Delete(&entities.User{}, "id = ?", id).Error; err != nil {
-		return err
+		return apperrors.ErrDBOperation(err)
 	}
 	return nil
 }
