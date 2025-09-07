@@ -6,13 +6,12 @@ import (
 	"auth-service/internal/interfaces/api/dtos"
 	"auth-service/pkg/logger"
 	"context"
-	"encoding/json"
 	"errors"
 	"net/http"
 	"strings"
 	"time"
 
-	"github.com/go-playground/validator/v10"
+	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 )
 
@@ -22,35 +21,34 @@ const (
 )
 
 type AuthHandler interface {
-	Login(w http.ResponseWriter, r *http.Request)
-	Register(w http.ResponseWriter, r *http.Request)
-	Logout(w http.ResponseWriter, r *http.Request)
-	RefreshToken(w http.ResponseWriter, r *http.Request)
-	ValidateToken(w http.ResponseWriter, r *http.Request)
+	Login(c *gin.Context)
+	Register(c *gin.Context)
+	Logout(c *gin.Context)
+	RefreshToken(c *gin.Context)
+	ValidateToken(c *gin.Context)
 }
 
 type authHandler struct {
 	authService  services.AuthService
 	tokenService services.TokenService
-	validator    *validator.Validate
 	logger       logger.Logger
 }
 
-func NewAuthHandler(authService services.AuthService, tokenService services.TokenService, validator *validator.Validate, logger logger.Logger) AuthHandler {
+func NewAuthHandler(authService services.AuthService, tokenService services.TokenService, logger logger.Logger) AuthHandler {
 	return &authHandler{
 		authService:  authService,
 		tokenService: tokenService,
-		validator:    validator,
 		logger:       logger,
 	}
 }
 
-func (h *authHandler) Login(w http.ResponseWriter, r *http.Request) {
-	ctx, cancel := context.WithTimeout(r.Context(), requestTimeout)
+func (h *authHandler) Login(c *gin.Context) {
+	ctx, cancel := context.WithTimeout(c.Request.Context(), requestTimeout)
 	defer cancel()
 
 	var req dtos.LoginRequest
-	if err := h.decodeAndValidateJSON(w, r, &req); err != nil {
+	if err := c.ShouldBindJSON(&req); err != nil {
+		h.handleError(c, apperrors.ErrInvalidJSONRequest, "invalid JSON LoginRequest")
 		return
 	}
 
@@ -58,19 +56,19 @@ func (h *authHandler) Login(w http.ResponseWriter, r *http.Request) {
 
 	accessToken, refreshToken, err := h.authService.Login(ctx, req.UsernameOrEmail, req.Password)
 	if err != nil {
-		h.handleError(w, err, "login failed")
+		h.handleError(c, err, "login failed")
 		return
 	}
 
 	userID, err := h.extractUserIDFromToken(ctx, accessToken)
 	if err != nil {
-		h.handleError(w, err, "failed to extract user info")
+		h.handleError(c, err, "failed to extract user info")
 		return
 	}
 
 	user, err := h.authService.GetUserByID(ctx, userID)
 	if err != nil {
-		h.handleError(w, err, "failed to get user info")
+		h.handleError(c, err, "failed to get user info")
 		return
 	}
 
@@ -81,15 +79,16 @@ func (h *authHandler) Login(w http.ResponseWriter, r *http.Request) {
 	}
 
 	h.logger.Info("login successful", "user_id", userID)
-	h.writeSuccessResponse(w, http.StatusOK, "login successful", response)
+	h.writeSuccessResponse(c, http.StatusOK, "login successful", response)
 }
 
-func (h *authHandler) Register(w http.ResponseWriter, r *http.Request) {
-	ctx, cancel := context.WithTimeout(r.Context(), requestTimeout)
+func (h *authHandler) Register(c *gin.Context) {
+	ctx, cancel := context.WithTimeout(c.Request.Context(), requestTimeout)
 	defer cancel()
 
 	var req dtos.RegisterRequest
-	if err := h.decodeAndValidateJSON(w, r, &req); err != nil {
+	if err := c.ShouldBindJSON(&req); err != nil {
+		h.handleError(c, apperrors.ErrInvalidJSONRequest, "invalid JSON RegisterRequest")
 		return
 	}
 
@@ -97,19 +96,19 @@ func (h *authHandler) Register(w http.ResponseWriter, r *http.Request) {
 
 	user, err := h.authService.Register(ctx, req.Username, req.Email, req.Password)
 	if err != nil {
-		h.handleError(w, err, "registration failed")
+		h.handleError(c, err, "registration failed")
 		return
 	}
 
 	accessToken, err := h.tokenService.GenerateAccessToken(ctx, user.ID)
 	if err != nil {
-		h.handleError(w, err, "failed to generate access token")
+		h.handleError(c, err, "failed to generate access token")
 		return
 	}
 
 	refreshToken, err := h.tokenService.GenerateRefreshToken(ctx, user.ID)
 	if err != nil {
-		h.handleError(w, err, "failed to generate refresh token")
+		h.handleError(c, err, "failed to generate refresh token")
 		return
 	}
 
@@ -120,14 +119,14 @@ func (h *authHandler) Register(w http.ResponseWriter, r *http.Request) {
 	}
 
 	h.logger.Info("registration successful", "user_id", user.ID)
-	h.writeSuccessResponse(w, http.StatusCreated, "registration successful", response)
+	h.writeSuccessResponse(c, http.StatusCreated, "registration successful", response)
 }
 
-func (h *authHandler) Logout(w http.ResponseWriter, r *http.Request) {
-	ctx, cancel := context.WithTimeout(r.Context(), requestTimeout)
+func (h *authHandler) Logout(c *gin.Context) {
+	ctx, cancel := context.WithTimeout(c.Request.Context(), requestTimeout)
 	defer cancel()
 
-	refreshToken := h.extractRefreshTokenFromBody(w, r)
+	refreshToken := h.extractRefreshTokenFromBody(c)
 	if refreshToken == "" {
 		return
 	}
@@ -135,19 +134,19 @@ func (h *authHandler) Logout(w http.ResponseWriter, r *http.Request) {
 	h.logger.Info("attempting logout")
 
 	if err := h.authService.Logout(ctx, refreshToken); err != nil {
-		h.handleError(w, err, "logout failed")
+		h.handleError(c, err, "logout failed")
 		return
 	}
 
 	h.logger.Info("logout successful")
-	h.writeSuccessResponse(w, http.StatusOK, "logout successful", nil)
+	h.writeSuccessResponse(c, http.StatusOK, "logout successful", nil)
 }
 
-func (h *authHandler) RefreshToken(w http.ResponseWriter, r *http.Request) {
-	ctx, cancel := context.WithTimeout(r.Context(), requestTimeout)
+func (h *authHandler) RefreshToken(c *gin.Context) {
+	ctx, cancel := context.WithTimeout(c.Request.Context(), requestTimeout)
 	defer cancel()
 
-	refreshToken := h.extractRefreshTokenFromBody(w, r)
+	refreshToken := h.extractRefreshTokenFromBody(c)
 	if refreshToken == "" {
 		return
 	}
@@ -156,7 +155,7 @@ func (h *authHandler) RefreshToken(w http.ResponseWriter, r *http.Request) {
 
 	newAccessToken, err := h.tokenService.RefreshAccessToken(ctx, refreshToken)
 	if err != nil {
-		h.handleError(w, err, "token refresh failed")
+		h.handleError(c, err, "token refresh failed")
 		return
 	}
 
@@ -165,16 +164,16 @@ func (h *authHandler) RefreshToken(w http.ResponseWriter, r *http.Request) {
 	}
 
 	h.logger.Info("token refresh successful")
-	h.writeSuccessResponse(w, http.StatusOK, "token refreshed successfully", response)
+	h.writeSuccessResponse(c, http.StatusOK, "token refreshed successfully", response)
 }
 
-func (h *authHandler) ValidateToken(w http.ResponseWriter, r *http.Request) {
-	ctx, cancel := context.WithTimeout(r.Context(), requestTimeout)
+func (h *authHandler) ValidateToken(c *gin.Context) {
+	ctx, cancel := context.WithTimeout(c.Request.Context(), requestTimeout)
 	defer cancel()
 
-	token := h.extractBearerToken(r)
+	token := h.extractBearerToken(c)
 	if token == "" {
-		h.writeErrorResponse(w, http.StatusUnauthorized, "missing or invalid authorization header")
+		h.writeErrorResponse(c, http.StatusUnauthorized, "missing or invalid authorization header")
 		return
 	}
 
@@ -182,19 +181,19 @@ func (h *authHandler) ValidateToken(w http.ResponseWriter, r *http.Request) {
 
 	claims, err := h.tokenService.ValidateAccessToken(ctx, token)
 	if err != nil {
-		h.handleError(w, err, "token validation failed")
+		h.handleError(c, err, "token validation failed")
 		return
 	}
 
 	userID, err := uuid.Parse(claims.UserID)
 	if err != nil {
-		h.writeErrorResponse(w, http.StatusUnauthorized, "invalid user ID in token")
+		h.writeErrorResponse(c, http.StatusUnauthorized, "invalid user ID in token")
 		return
 	}
 
 	user, err := h.authService.GetUserByID(ctx, userID)
 	if err != nil {
-		h.handleError(w, err, "failed to get user info")
+		h.handleError(c, err, "failed to get user info")
 		return
 	}
 
@@ -204,44 +203,24 @@ func (h *authHandler) ValidateToken(w http.ResponseWriter, r *http.Request) {
 	}
 
 	h.logger.Info("token validation successful", "user_id", userID)
-	h.writeSuccessResponse(w, http.StatusOK, "token is valid", response)
+	h.writeSuccessResponse(c, http.StatusOK, "token is valid", response)
 }
 
-func (h *authHandler) decodeAndValidateJSON(w http.ResponseWriter, r *http.Request, dst any) error {
-	if r.Header.Get("Content-Type") != "application/json" {
-		h.writeErrorResponse(w, http.StatusBadRequest, "Content-Type must be application/json")
-		return errors.New("invalid content type")
-	}
-
-	if err := json.NewDecoder(r.Body).Decode(dst); err != nil {
-		h.logger.Error("failed to decode JSON", "error", err)
-		h.writeErrorResponse(w, http.StatusBadRequest, "invalid JSON format")
-		return err
-	}
-
-	if err := h.validator.Struct(dst); err != nil {
-		h.logger.Error("validation failed", "error", err)
-		h.writeErrorResponse(w, http.StatusBadRequest, "validation failed: "+err.Error())
-		return err
-	}
-
-	return nil
-}
-
-func (h *authHandler) extractBearerToken(r *http.Request) string {
-	authHeader := r.Header.Get("Authorization")
+func (h *authHandler) extractBearerToken(c *gin.Context) string {
+	authHeader := c.GetHeader("Authorization")
 	if authHeader == "" || !strings.HasPrefix(authHeader, bearerPrefix) {
 		return ""
 	}
 	return strings.TrimPrefix(authHeader, bearerPrefix)
 }
 
-func (h *authHandler) extractRefreshTokenFromBody(w http.ResponseWriter, r *http.Request) string {
+func (h *authHandler) extractRefreshTokenFromBody(c *gin.Context) string {
 	var tokenReq struct {
-		RefreshToken string `json:"refresh_token" validate:"required"`
+		RefreshToken string `json:"refresh_token" binding:"required"`
 	}
 
-	if err := h.decodeAndValidateJSON(w, r, &tokenReq); err != nil {
+	err := c.ShouldBindJSON(&tokenReq)
+	if err != nil {
 		return ""
 	}
 
@@ -262,44 +241,29 @@ func (h *authHandler) extractUserIDFromToken(ctx context.Context, accessToken st
 	return userID, nil
 }
 
-func (h *authHandler) handleError(w http.ResponseWriter, err error, message string) {
+func (h *authHandler) handleError(c *gin.Context, err error, message string) {
 	h.logger.Error(message, "error", err)
 
 	var appErr *apperrors.AppError
 	if errors.As(err, &appErr) {
-		h.writeErrorResponse(w, appErr.Code, appErr.Message)
+		h.writeErrorResponse(c, appErr.Code, appErr.Message)
 		return
 	}
 
-	h.writeErrorResponse(w, http.StatusInternalServerError, "internal server error")
+	h.writeErrorResponse(c, http.StatusInternalServerError, "internal server error")
 }
 
-func (h *authHandler) writeSuccessResponse(w http.ResponseWriter, statusCode int, message string, data any) {
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(statusCode)
-
-	response := dtos.APIResponse{
+func (h *authHandler) writeSuccessResponse(c *gin.Context, statusCode int, message string, data any) {
+	c.JSON(statusCode, dtos.APIResponse{
 		Success: true,
 		Message: message,
 		Data:    data,
-	}
-
-	if err := json.NewEncoder(w).Encode(response); err != nil {
-		h.logger.Error("failed to encode success response", "error", err)
-	}
+	})
 }
 
-func (h *authHandler) writeErrorResponse(w http.ResponseWriter, statusCode int, message string) {
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(statusCode)
-
-	response := dtos.APIResponse{
+func (h *authHandler) writeErrorResponse(c *gin.Context, statusCode int, message string) {
+	c.JSON(statusCode, dtos.APIResponse{
 		Success: false,
-		Message: "error",
-		Error:   message,
-	}
-
-	if err := json.NewEncoder(w).Encode(response); err != nil {
-		h.logger.Error("failed to encode error response", "error", err)
-	}
+		Message: message,
+	})
 }

@@ -113,12 +113,7 @@ func (as *authService) Register(ctx context.Context, username, email, password s
 		return nil, apperrors.ErrHashPassword(err)
 	}
 
-	user := &entities.User{
-		Username:     username,
-		Email:        strings.ToLower(email),
-		PasswordHash: passwordHash,
-		Status:       entities.UserStatusPending,
-	}
+	user := entities.NewUser(username, email, passwordHash)
 
 	if err = as.userRepo.Create(ctx, user); err != nil {
 		return nil, err
