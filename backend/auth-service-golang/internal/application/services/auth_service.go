@@ -7,6 +7,8 @@ import (
 	"auth-service/internal/security"
 	"context"
 	"strings"
+
+	"github.com/google/uuid"
 )
 
 const (
@@ -18,6 +20,8 @@ type AuthService interface {
 	Login(ctx context.Context, usernameOrEmail, password string) (string, string, error)
 	Register(ctx context.Context, username, email, password string) (*entities.User, error)
 	Logout(ctx context.Context, token string) error
+	GetUserByID(ctx context.Context, id uuid.UUID) (*entities.User, error)
+	GetUserByUsername(ctx context.Context, username string) (*entities.User, error)
 }
 
 type authService struct {
@@ -81,6 +85,17 @@ func (as *authService) findUser(ctx context.Context, loginType, value string) (*
 	}
 }
 
+func (as *authService) GetUserByID(ctx context.Context, id uuid.UUID) (*entities.User, error) {
+	return as.userRepo.FindByID(ctx, id)
+}
+
+func (as *authService) GetUserByUsername(ctx context.Context, username string) (*entities.User, error) {
+	if !entities.IsValidUserName(username) {
+		return nil, apperrors.ErrInvalidCredentials
+	}
+	return as.userRepo.FindByUsername(ctx, username)
+}
+
 func (as *authService) Register(ctx context.Context, username, email, password string) (*entities.User, error) {
 	email = strings.TrimSpace(email)
 	if !entities.IsValidEmail(email) {
@@ -89,6 +104,9 @@ func (as *authService) Register(ctx context.Context, username, email, password s
 	username = strings.TrimSpace(username)
 	if !entities.IsValidUserName(username) {
 		return nil, apperrors.ErrInvalidCredentials
+	}
+	if !entities.IsValidPassword(password) {
+		return nil, apperrors.ErrInvalidPassword
 	}
 	passwordHash, err := security.HashPassword(password)
 	if err != nil {
