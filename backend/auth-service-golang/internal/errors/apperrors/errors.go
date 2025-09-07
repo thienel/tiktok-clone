@@ -66,6 +66,8 @@ var (
 	ErrInvalidRefreshToken = NewUnauthorized("invalid refresh token")
 	ErrExpiredRefreshToken = NewUnauthorized("refresh token expired")
 	ErrRevokedRefreshToken = NewUnauthorized("refresh token revoked")
+
+	ErrInvalidJSONRequest = NewBadRequest("invalid json request")
 )
 
 func ErrDBOperation(err error) *AppError {
