@@ -7,8 +7,8 @@ import (
 )
 
 type LoginRequest struct {
-	UsernameOrEmail string `json:"username_or_email" validate:"required"`
-	Password        string `json:"password" validate:"required"`
+	UsernameOrEmail string `json:"username_or_email" binding:"required"`
+	Password        string `json:"password" binding:"required"`
 }
 
 type LoginResponse struct {
@@ -18,9 +18,9 @@ type LoginResponse struct {
 }
 
 type RegisterRequest struct {
-	Username string `json:"username" validate:"required,min=2,max=24"`
-	Email    string `json:"email" validate:"required,email,max=100"`
-	Password string `json:"password" validate:"required,min=8,max=128"`
+	Username string `json:"username" binding:"required,min=2,max=24"`
+	Email    string `json:"email" binding:"required,email,max=100"`
+	Password string `json:"password" binding:"required,min=8,max=128"`
 }
 
 type RegisterResponse struct {
@@ -30,10 +30,10 @@ type RegisterResponse struct {
 }
 
 type UserDTO struct {
-	ID       uuid.UUID           `json:"id" validate:"required"`
-	Username string              `json:"username" validate:"required,min=2,max=24"`
-	Email    string              `json:"email" validate:"required,email,max=100"`
-	Status   entities.UserStatus `json:"status" validate:"required,oneof=active inactive suspended pending"`
+	ID       uuid.UUID           `json:"id" binding:"required"`
+	Username string              `json:"username" binding:"required,min=2,max=24"`
+	Email    string              `json:"email" binding:"required,email,max=100"`
+	Status   entities.UserStatus `json:"status" binding:"required,oneof=active inactive suspended pending"`
 }
 
 func GenerateUserDTO(user entities.User) *UserDTO {
