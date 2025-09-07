@@ -1,45 +1,56 @@
 package database
 
 import (
-	"database/sql"
 	"fmt"
 	"time"
 
 	_ "github.com/lib/pq"
+	"gorm.io/driver/postgres"
+	"gorm.io/gorm"
+	"gorm.io/gorm/logger"
 )
 
 type Database struct {
-	DB *sql.DB
+	DB *gorm.DB
 }
 
 func New(databaseURL string) (*Database, error) {
-	db, err := sql.Open("postgres", databaseURL)
-	if err != nil {
-		return nil, fmt.Errorf("error connecting to database: %w", err)
+	gormConfig := &gorm.Config{
+		Logger: logger.Default.LogMode(logger.Info),
 	}
 
-	db.SetMaxOpenConns(25)
-	db.SetMaxIdleConns(25)
-	db.SetConnMaxLifetime(5 * time.Minute)
+	db, err := gorm.Open(postgres.Open(databaseURL), gormConfig)
+	if err != nil {
+		return nil, fmt.Errorf("failed to connect to database: %w", err)
+	}
+	sqlDB, err := db.DB()
+	if err != nil {
+		return nil, fmt.Errorf("failed to get sql.DB from gorm: %w", err)
+	}
 
-	if err := db.Ping(); err != nil {
-		err := db.Close()
-		if err != nil {
-			return nil, fmt.Errorf("error closing database after pinging failed: %w", err)
-		}
-		return nil, fmt.Errorf("error pinging database: %w", err)
+	sqlDB.SetMaxOpenConns(25)
+	sqlDB.SetMaxIdleConns(25)
+	sqlDB.SetConnMaxLifetime(5 * time.Minute)
+
+	if err := sqlDB.Ping(); err != nil {
+		return nil, fmt.Errorf("failed to ping database: %w", err)
 	}
 
 	return &Database{DB: db}, nil
 }
 
 func (d *Database) Ping() error {
-	return d.DB.Ping()
+	sqlDB, err := d.DB.DB()
+	if err != nil {
+		return fmt.Errorf("failed to get sql.DB from gorm: %w", err)
+	}
+	return sqlDB.Ping()
 }
 
 func (d *Database) Close() error {
-	if d.DB != nil {
-		return d.DB.Close()
+	sqlDB, err := d.DB.DB()
+	if err != nil {
+		return fmt.Errorf("failed to get sql.DB from gorm: %w", err)
 	}
-	return nil
+	return sqlDB.Close()
 }
