@@ -56,9 +56,9 @@ var (
 	ErrNotFound     = NewNotFound("entity not found")
 
 	ErrInvalidCredentials = NewUnauthorized("invalid credentials")
+	ErrInvalidPassword    = NewBadRequest("password must be at least 8 chars, include upper, lower, number, and special char")
 
-	ErrUserInactive       = NewForbidden("user is inactive")
-	ErrEmailAlreadyExists = NewConflict("email already exists")
+	ErrUserInactive = NewForbidden("user is inactive")
 
 	ErrInvalidAccessToken = NewUnauthorized("invalid access token")
 	ErrExpiredAccessToken = NewUnauthorized("access token expired")
