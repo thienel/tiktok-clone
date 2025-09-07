@@ -41,6 +41,20 @@ db/migrations/up: confirm
 	@echo 'running up migrations...'
 	migrate -path ./internal/infrastructure/database/migrations -database ${DATABASE_URL} up
 
+## db/migrations/up: apply all down database migrations
+.PHONY: db/migrations/down
+db/migrations/down: confirm
+	@echo 'running down migrations...'
+	migrate -path ./internal/infrastructure/database/migrations -database ${DATABASE_URL} down
+
+## db/migrations/force version=$1: set the migration version without running migrations
+.PHONY: db/migrations/force
+db/migrations/force: confirm
+	@echo 'forcing migration version to ${version}...'
+	migrate -path ./internal/infrastructure/database/migrations -database ${DATABASE_URL} force ${version}
+
+
+
 # ==================================================================================== #
 # QUALITY CONTROL
 # ==================================================================================== #
