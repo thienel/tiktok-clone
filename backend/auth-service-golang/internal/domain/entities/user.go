@@ -57,6 +57,12 @@ func IsValidUserName(username string) bool {
 	return re.MatchString(username)
 }
 
+func IsValidPassword(password string) bool {
+	pattern := `^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,}$`
+	var re = regexp.MustCompile(pattern)
+	return re.MatchString(password)
+}
+
 func (user *User) IsActive() bool {
 	return user.Status == UserStatusActive && user.DeletedAt.Time.IsZero()
 }
