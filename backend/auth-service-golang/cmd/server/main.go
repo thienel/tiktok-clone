@@ -1,9 +1,10 @@
 package main
 
 import (
-	"auth-service/internal/application"
+	"auth-service/internal/application/services"
 	"auth-service/internal/config"
 	"auth-service/internal/infrastructure/database"
+	"auth-service/internal/infrastructure/persistence"
 	"auth-service/internal/interfaces/api"
 	"auth-service/internal/security"
 	"auth-service/pkg/logger"
@@ -18,7 +19,11 @@ import (
 	"github.com/joho/godotenv"
 )
 
-var app *application.App
+type App struct {
+	Cfg *config.Config
+	DB  *database.Database
+	Log logger.Logger
+}
 
 func main() {
 	_ = godotenv.Load(".env")
@@ -43,13 +48,18 @@ func main() {
 		}
 	}(db)
 
-	app = &application.App{
+	app := &App{
 		Cfg: cfg,
 		DB:  db,
 		Log: log,
 	}
 
-	r := api.NewRouter(app)
+	tokenRepo := persistence.NewTokenRepository(db.DB)
+	userRepo := persistence.NewUserRepository(db.DB)
+	tokenService := services.NewTokenService(app.Log, tokenRepo, cfg.AccessTokenTTL, cfg.RefreshTokenTTL, security.PrivateKey(), security.PublicKey())
+	authService := services.NewAuthService(userRepo, tokenService)
+	authHandler := api.NewAuthHandler(authService, tokenService, log)
+	r := api.NewRouter(app.DB, authHandler)
 	log.Info("Server starting on port " + cfg.Port)
 	srv := &http.Server{
 		Addr:    ":" + cfg.Port,
