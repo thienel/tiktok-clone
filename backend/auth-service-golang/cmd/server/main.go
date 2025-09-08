@@ -2,7 +2,7 @@ package main
 
 import (
 	"auth-service/internal/application/services"
-	"auth-service/internal/config"
+	"auth-service/internal/infrastructure/config"
 	"auth-service/internal/infrastructure/database"
 	"auth-service/internal/infrastructure/persistence"
 	"auth-service/internal/interfaces/api"
