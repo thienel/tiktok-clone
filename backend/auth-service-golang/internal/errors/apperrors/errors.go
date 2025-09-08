@@ -51,24 +51,35 @@ func NewInternal(message string, err error) *AppError {
 }
 
 var (
-	ErrScanValue    = NewInternal("scan value error", nil)
-	ErrDuplicateKey = NewConflict("duplicate key")
-	ErrNotFound     = NewNotFound("entity not found")
-
-	ErrInvalidCredentials = NewUnauthorized("invalid credentials")
-	ErrInvalidPassword    = NewBadRequest("password must be at least 8 chars, include upper, lower, number, and special char")
+	ErrScanValue = NewInternal("scan value error", nil)
 
 	ErrUserInactive = NewForbidden("user is inactive")
 
 	ErrInvalidAccessToken = NewUnauthorized("invalid access token")
 	ErrExpiredAccessToken = NewUnauthorized("access token expired")
 
-	ErrInvalidRefreshToken = NewUnauthorized("invalid refresh token")
-	ErrExpiredRefreshToken = NewUnauthorized("refresh token expired")
-	ErrRevokedRefreshToken = NewUnauthorized("refresh token revoked")
+	ErrInvalidRefreshToken         = NewUnauthorized("invalid refresh token")
+	ErrExpiredRefreshToken         = NewUnauthorized("refresh token expired")
+	ErrRevokedRefreshToken         = NewUnauthorized("refresh token revoked")
+	ErrInvalidAuthenticationHeader = NewUnauthorized("missing or invalid authorization header")
 
 	ErrInvalidJSONRequest = NewBadRequest("invalid json request")
 )
+
+func ErrInvalidCredentials(field string) *AppError {
+	message := fmt.Sprintf("invalid %s", field)
+	return NewUnauthorized(message)
+}
+
+func ErrNotFound(entity string) *AppError {
+	message := fmt.Sprintf("%s not found", entity)
+	return NewNotFound(message)
+}
+
+func ErrDuplicateKey(dup string) *AppError {
+	message := fmt.Sprintf("duplicate key value violates unique constraint %s", dup)
+	return NewConflict(message)
+}
 
 func ErrDBOperation(err error) *AppError {
 	return NewInternal("database operation error", err)
