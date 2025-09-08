@@ -8,9 +8,11 @@ import (
 	"errors"
 
 	"github.com/google/uuid"
-	"github.com/lib/pq"
+	"github.com/jackc/pgx/v5/pgconn"
 	"gorm.io/gorm"
 )
+
+const entityUserName = "user"
 
 type userRepository struct {
 	db *gorm.DB
@@ -22,8 +24,8 @@ func NewUserRepository(db *gorm.DB) repositories.UserRepository {
 
 func (u *userRepository) Create(ctx context.Context, user *entities.User) error {
 	if err := u.db.WithContext(ctx).Create(user).Error; err != nil {
-		if isDuplicateKeyError(err) {
-			return apperrors.ErrDuplicateKey
+		if dup := getDuplicateKeyConstraint(err); dup != "" {
+			return apperrors.ErrDuplicateKey(dup)
 		}
 		return apperrors.ErrDBOperation(err)
 	}
@@ -34,7 +36,7 @@ func (u *userRepository) FindByID(ctx context.Context, id uuid.UUID) (*entities.
 	var user entities.User
 	if err := u.db.WithContext(ctx).Where("id = ?", id).First(&user).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return nil, apperrors.ErrNotFound
+			return nil, apperrors.ErrNotFound(entityUserName)
 		}
 		return nil, apperrors.ErrDBOperation(err)
 	}
@@ -45,7 +47,7 @@ func (u *userRepository) FindByEmail(ctx context.Context, email string) (*entiti
 	var user entities.User
 	if err := u.db.WithContext(ctx).Where("email = ?", email).First(&user).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return nil, apperrors.ErrNotFound
+			return nil, apperrors.ErrNotFound(entityUserName)
 		}
 		return nil, apperrors.ErrDBOperation(err)
 	}
@@ -56,7 +58,7 @@ func (u *userRepository) FindByUsername(ctx context.Context, username string) (*
 	var user entities.User
 	if err := u.db.WithContext(ctx).Where("username = ?", username).First(&user).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return nil, apperrors.ErrNotFound
+			return nil, apperrors.ErrNotFound(entityUserName)
 		}
 		return nil, apperrors.ErrDBOperation(err)
 	}
@@ -78,10 +80,10 @@ func (u *userRepository) SoftDelete(ctx context.Context, id uuid.UUID) error {
 	return nil
 }
 
-func isDuplicateKeyError(err error) bool {
-	var pqErr *pq.Error
-	if errors.As(err, &pqErr) {
-		return pqErr.Code == "23505"
+func getDuplicateKeyConstraint(err error) string {
+	var pgErr *pgconn.PgError
+	if errors.As(err, &pgErr) && pgErr.Code == "23505" {
+		return pgErr.ConstraintName
 	}
-	return false
+	return ""
 }
