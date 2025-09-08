@@ -11,6 +11,8 @@ import (
 	"gorm.io/gorm"
 )
 
+const entityTokenName = "refresh token"
+
 type refreshTokenRepository struct {
 	db *gorm.DB
 }
@@ -21,8 +23,8 @@ func NewTokenRepository(db *gorm.DB) repositories.RefreshTokenRepository {
 
 func (t *refreshTokenRepository) Create(ctx context.Context, token *entities.RefreshToken) error {
 	if err := t.db.WithContext(ctx).Create(token).Error; err != nil {
-		if isDuplicateKeyError(err) {
-			return apperrors.ErrDuplicateKey
+		if dup := getDuplicateKeyConstraint(err); dup != "" {
+			return apperrors.ErrDuplicateKey(dup)
 		}
 		return apperrors.ErrDBOperation(err)
 	}
@@ -40,7 +42,7 @@ func (t *refreshTokenRepository) FindByID(ctx context.Context, id uuid.UUID) (*e
 	var token entities.RefreshToken
 	if err := t.db.WithContext(ctx).Where("id = ?", id).First(&token).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return nil, apperrors.ErrNotFound
+			return nil, apperrors.ErrNotFound(entityTokenName)
 		}
 		return nil, apperrors.ErrDBOperation(err)
 	}
@@ -53,7 +55,7 @@ func (t *refreshTokenRepository) FindByUserID(ctx context.Context, userID uuid.U
 		return nil, apperrors.ErrDBOperation(err)
 	}
 	if len(tokens) == 0 {
-		return nil, apperrors.ErrNotFound
+		return nil, apperrors.ErrNotFound(entityTokenName)
 	}
 	return tokens, nil
 }
@@ -62,7 +64,7 @@ func (t *refreshTokenRepository) FindByToken(ctx context.Context, tokenStr strin
 	var token entities.RefreshToken
 	if err := t.db.WithContext(ctx).Where("token = ?", tokenStr).First(&token).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return nil, apperrors.ErrNotFound
+			return nil, apperrors.ErrNotFound(entityUserName)
 		}
 		return nil, apperrors.ErrDBOperation(err)
 	}

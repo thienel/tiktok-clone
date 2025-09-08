@@ -42,14 +42,14 @@ func (as *authService) Login(ctx context.Context, usernameOrEmail, password stri
 	}
 
 	if user == nil {
-		return "", "", apperrors.ErrInvalidCredentials
+		return "", "", apperrors.ErrInvalidCredentials("username or email")
 	}
 	if !user.IsActive() {
 		return "", "", apperrors.ErrUserInactive
 	}
 
 	if !security.VerifyPassword(password, user.PasswordHash) {
-		return "", "", apperrors.ErrInvalidCredentials
+		return "", "", apperrors.ErrInvalidCredentials("password")
 	}
 
 	accessToken, err := as.tokenService.GenerateAccessToken(ctx, user.ID)
@@ -74,14 +74,14 @@ func (as *authService) identifyLoginType(usernameOrEmail string) string {
 	return ""
 }
 
-func (as *authService) findUser(ctx context.Context, loginType, value string) (*entities.User, error) {
+func (as *authService) findUser(ctx context.Context, loginType, usernameOrEmail string) (*entities.User, error) {
 	switch loginType {
 	case loginTypeEmail:
-		return as.userRepo.FindByEmail(ctx, value)
+		return as.userRepo.FindByEmail(ctx, usernameOrEmail)
 	case loginTypeUsername:
-		return as.userRepo.FindByUsername(ctx, value)
+		return as.userRepo.FindByUsername(ctx, usernameOrEmail)
 	default:
-		return nil, apperrors.ErrInvalidCredentials
+		return nil, apperrors.ErrInvalidCredentials("username or email")
 	}
 }
 
@@ -91,7 +91,7 @@ func (as *authService) GetUserByID(ctx context.Context, id uuid.UUID) (*entities
 
 func (as *authService) GetUserByUsername(ctx context.Context, username string) (*entities.User, error) {
 	if !entities.IsValidUserName(username) {
-		return nil, apperrors.ErrInvalidCredentials
+		return nil, apperrors.ErrInvalidCredentials("username")
 	}
 	return as.userRepo.FindByUsername(ctx, username)
 }
@@ -99,14 +99,14 @@ func (as *authService) GetUserByUsername(ctx context.Context, username string) (
 func (as *authService) Register(ctx context.Context, username, email, password string) (*entities.User, error) {
 	email = strings.TrimSpace(email)
 	if !entities.IsValidEmail(email) {
-		return nil, apperrors.ErrInvalidCredentials
+		return nil, apperrors.ErrInvalidCredentials("email")
 	}
 	username = strings.TrimSpace(username)
 	if !entities.IsValidUserName(username) {
-		return nil, apperrors.ErrInvalidCredentials
+		return nil, apperrors.ErrInvalidCredentials("username")
 	}
 	if !entities.IsValidPassword(password) {
-		return nil, apperrors.ErrInvalidPassword
+		return nil, apperrors.ErrInvalidCredentials("password")
 	}
 	passwordHash, err := security.HashPassword(password)
 	if err != nil {
