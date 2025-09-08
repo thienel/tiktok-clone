@@ -100,22 +100,10 @@ func (h *authHandler) Register(c *gin.Context) {
 		return
 	}
 
-	accessToken, err := h.tokenService.GenerateAccessToken(ctx, user.ID)
-	if err != nil {
-		h.handleError(c, err, "failed to generate access token")
-		return
-	}
-
-	refreshToken, err := h.tokenService.GenerateRefreshToken(ctx, user.ID)
-	if err != nil {
-		h.handleError(c, err, "failed to generate refresh token")
-		return
-	}
-
-	response := dtos.RegisterResponse{
-		AccessToken:  accessToken,
-		RefreshToken: refreshToken,
-		User:         *dtos.GenerateUserDTO(*user),
+	response := dtos.APIResponse{
+		Success: true,
+		Message: "registration successful",
+		Data:    *dtos.GenerateUserDTO(*user),
 	}
 
 	h.logger.Info("registration successful", "user_id", user.ID)
@@ -173,7 +161,7 @@ func (h *authHandler) ValidateToken(c *gin.Context) {
 
 	token := h.extractBearerToken(c)
 	if token == "" {
-		h.writeErrorResponse(c, http.StatusUnauthorized, "missing or invalid authorization header")
+		h.handleError(c, apperrors.ErrInvalidAuthenticationHeader, "missing or invalid authorization header")
 		return
 	}
 
@@ -187,7 +175,7 @@ func (h *authHandler) ValidateToken(c *gin.Context) {
 
 	userID, err := uuid.Parse(claims.UserID)
 	if err != nil {
-		h.writeErrorResponse(c, http.StatusUnauthorized, "invalid user ID in token")
+		h.handleError(c, apperrors.ErrInvalidCredentials("user ID"), "invalid user ID in token")
 		return
 	}
 
