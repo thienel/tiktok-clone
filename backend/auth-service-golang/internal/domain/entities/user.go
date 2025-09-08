@@ -22,7 +22,7 @@ const (
 )
 
 type User struct {
-	ID           uuid.UUID      `gorm:"primaryKey"`
+	ID           uuid.UUID      `gorm:"primaryKey;type:uuid;default:gen_random_uuid()"`
 	Username     string         `gorm:"uniqueIndex;size:24"`
 	Email        string         `gorm:"uniqueIndex;size:100"`
 	PasswordHash string         `gorm:"size:255"`
@@ -34,15 +34,11 @@ type User struct {
 }
 
 func NewUser(username, email, passwordHash string) *User {
-	now := time.Now()
 	return &User{
-		ID:           uuid.New(),
 		Username:     strings.TrimSpace(username),
 		Email:        strings.ToLower(strings.TrimSpace(email)),
 		PasswordHash: passwordHash,
 		Status:       UserStatusPending,
-		CreatedAt:    now,
-		UpdatedAt:    now,
 	}
 }
 
@@ -58,9 +54,16 @@ func IsValidUserName(username string) bool {
 }
 
 func IsValidPassword(password string) bool {
-	pattern := `^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,}$`
-	var re = regexp.MustCompile(pattern)
-	return re.MatchString(password)
+	if len(password) < 8 {
+		return false
+	}
+
+	hasLower := regexp.MustCompile(`[a-z]`).MatchString(password)
+	hasUpper := regexp.MustCompile(`[A-Z]`).MatchString(password)
+	hasDigit := regexp.MustCompile(`\d`).MatchString(password)
+	hasSpecial := regexp.MustCompile(`[^A-Za-z0-9]`).MatchString(password)
+
+	return hasLower && hasUpper && hasDigit && hasSpecial
 }
 
 func (user *User) IsActive() bool {

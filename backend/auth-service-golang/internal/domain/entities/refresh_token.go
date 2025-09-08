@@ -7,7 +7,7 @@ import (
 )
 
 type RefreshToken struct {
-	ID        uuid.UUID `gorm:"primaryKey"`
+	ID        uuid.UUID `gorm:"primaryKey;type:uuid;default:gen_random_uuid()"`
 	UserID    uuid.UUID `gorm:"type:uuid;not null;index"`
 	Token     string    `gorm:"not null;index"`
 	ExpiresAt time.Time `gorm:"not null"`
