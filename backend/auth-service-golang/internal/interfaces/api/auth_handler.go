@@ -6,7 +6,6 @@ import (
 	"auth-service/internal/interfaces/api/dtos"
 	"auth-service/pkg/logger"
 	"context"
-	"errors"
 	"net/http"
 	"strings"
 	"time"
@@ -48,7 +47,7 @@ func (h *authHandler) Login(c *gin.Context) {
 
 	var req dtos.LoginRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
-		h.handleError(c, apperrors.ErrInvalidJSONRequest, "invalid JSON LoginRequest")
+		handleError(h.logger, c, apperrors.ErrInvalidJSONRequest, "invalid JSON LoginRequest")
 		return
 	}
 
@@ -56,19 +55,19 @@ func (h *authHandler) Login(c *gin.Context) {
 
 	accessToken, refreshToken, err := h.authService.Login(ctx, req.UsernameOrEmail, req.Password)
 	if err != nil {
-		h.handleError(c, err, "login failed")
+		handleError(h.logger, c, err, "login failed")
 		return
 	}
 
 	userID, err := h.extractUserIDFromToken(ctx, accessToken)
 	if err != nil {
-		h.handleError(c, err, "failed to extract user info")
+		handleError(h.logger, c, err, "failed to extract user info")
 		return
 	}
 
 	user, err := h.authService.GetUserByID(ctx, userID)
 	if err != nil {
-		h.handleError(c, err, "failed to get user info")
+		handleError(h.logger, c, err, "failed to get user info")
 		return
 	}
 
@@ -79,7 +78,7 @@ func (h *authHandler) Login(c *gin.Context) {
 	}
 
 	h.logger.Info("login successful", "user_id", userID)
-	h.writeSuccessResponse(c, http.StatusOK, "login successful", response)
+	writeSuccessResponse(c, http.StatusOK, "login successful", response)
 }
 
 func (h *authHandler) Register(c *gin.Context) {
@@ -88,7 +87,7 @@ func (h *authHandler) Register(c *gin.Context) {
 
 	var req dtos.RegisterRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
-		h.handleError(c, apperrors.ErrInvalidJSONRequest, "invalid JSON RegisterRequest")
+		handleError(h.logger, c, apperrors.ErrInvalidJSONRequest, "invalid JSON RegisterRequest")
 		return
 	}
 
@@ -96,7 +95,7 @@ func (h *authHandler) Register(c *gin.Context) {
 
 	user, err := h.authService.Register(ctx, req.Username, req.Email, req.Password)
 	if err != nil {
-		h.handleError(c, err, "registration failed")
+		handleError(h.logger, c, err, "registration failed")
 		return
 	}
 
@@ -107,7 +106,7 @@ func (h *authHandler) Register(c *gin.Context) {
 	}
 
 	h.logger.Info("registration successful", "user_id", user.ID)
-	h.writeSuccessResponse(c, http.StatusCreated, "registration successful", response)
+	writeSuccessResponse(c, http.StatusCreated, "registration successful", response)
 }
 
 func (h *authHandler) Logout(c *gin.Context) {
@@ -122,12 +121,12 @@ func (h *authHandler) Logout(c *gin.Context) {
 	h.logger.Info("attempting logout")
 
 	if err := h.authService.Logout(ctx, refreshToken); err != nil {
-		h.handleError(c, err, "logout failed")
+		handleError(h.logger, c, err, "logout failed")
 		return
 	}
 
 	h.logger.Info("logout successful")
-	h.writeSuccessResponse(c, http.StatusOK, "logout successful", nil)
+	writeSuccessResponse(c, http.StatusOK, "logout successful", nil)
 }
 
 func (h *authHandler) RefreshToken(c *gin.Context) {
@@ -143,7 +142,7 @@ func (h *authHandler) RefreshToken(c *gin.Context) {
 
 	newAccessToken, err := h.tokenService.RefreshAccessToken(ctx, refreshToken)
 	if err != nil {
-		h.handleError(c, err, "token refresh failed")
+		handleError(h.logger, c, err, "token refresh failed")
 		return
 	}
 
@@ -152,7 +151,7 @@ func (h *authHandler) RefreshToken(c *gin.Context) {
 	}
 
 	h.logger.Info("token refresh successful")
-	h.writeSuccessResponse(c, http.StatusOK, "token refreshed successfully", response)
+	writeSuccessResponse(c, http.StatusOK, "token refreshed successfully", response)
 }
 
 func (h *authHandler) ValidateToken(c *gin.Context) {
@@ -161,7 +160,7 @@ func (h *authHandler) ValidateToken(c *gin.Context) {
 
 	token := h.extractBearerToken(c)
 	if token == "" {
-		h.handleError(c, apperrors.ErrInvalidAuthenticationHeader, "missing or invalid authorization header")
+		handleError(h.logger, c, apperrors.ErrInvalidAuthenticationHeader, "missing or invalid authorization header")
 		return
 	}
 
@@ -169,19 +168,19 @@ func (h *authHandler) ValidateToken(c *gin.Context) {
 
 	claims, err := h.tokenService.ValidateAccessToken(ctx, token)
 	if err != nil {
-		h.handleError(c, err, "token validation failed")
+		handleError(h.logger, c, err, "token validation failed")
 		return
 	}
 
 	userID, err := uuid.Parse(claims.UserID)
 	if err != nil {
-		h.handleError(c, apperrors.ErrInvalidCredentials("user ID"), "invalid user ID in token")
+		handleError(h.logger, c, apperrors.ErrInvalidCredentials("user ID"), "invalid user ID in token")
 		return
 	}
 
 	user, err := h.authService.GetUserByID(ctx, userID)
 	if err != nil {
-		h.handleError(c, err, "failed to get user info")
+		handleError(h.logger, c, err, "failed to get user info")
 		return
 	}
 
@@ -191,7 +190,7 @@ func (h *authHandler) ValidateToken(c *gin.Context) {
 	}
 
 	h.logger.Info("token validation successful", "user_id", userID)
-	h.writeSuccessResponse(c, http.StatusOK, "token is valid", response)
+	writeSuccessResponse(c, http.StatusOK, "token is valid", response)
 }
 
 func (h *authHandler) extractBearerToken(c *gin.Context) string {
@@ -227,31 +226,4 @@ func (h *authHandler) extractUserIDFromToken(ctx context.Context, accessToken st
 	}
 
 	return userID, nil
-}
-
-func (h *authHandler) handleError(c *gin.Context, err error, message string) {
-	h.logger.Error(message, "error", err)
-
-	var appErr *apperrors.AppError
-	if errors.As(err, &appErr) {
-		h.writeErrorResponse(c, appErr.Code, appErr.Message)
-		return
-	}
-
-	h.writeErrorResponse(c, http.StatusInternalServerError, "internal server error")
-}
-
-func (h *authHandler) writeSuccessResponse(c *gin.Context, statusCode int, message string, data any) {
-	c.JSON(statusCode, dtos.APIResponse{
-		Success: true,
-		Message: message,
-		Data:    data,
-	})
-}
-
-func (h *authHandler) writeErrorResponse(c *gin.Context, statusCode int, message string) {
-	c.JSON(statusCode, dtos.APIResponse{
-		Success: false,
-		Message: message,
-	})
 }
