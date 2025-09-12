@@ -14,4 +14,5 @@ type UserRepository interface {
 	FindByUsername(ctx context.Context, username string) (*entities.User, error)
 	Update(ctx context.Context, user *entities.User) error
 	SoftDelete(ctx context.Context, id uuid.UUID) error
+	FindByOAuth(ctx context.Context, provider, oauthID string) (*entities.User, error)
 }

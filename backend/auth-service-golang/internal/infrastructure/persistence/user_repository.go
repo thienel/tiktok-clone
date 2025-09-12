@@ -66,7 +66,8 @@ func (u *userRepository) FindByUsername(ctx context.Context, username string) (*
 }
 
 func (u *userRepository) Update(ctx context.Context, user *entities.User) error {
-	if err := u.db.WithContext(ctx).Model(user).Select("username", "email", "status", "password_hash").
+	if err := u.db.WithContext(ctx).Model(user).
+		Select("username", "email", "status", "password_hash", "oauth_provider", "oauth_id").
 		Updates(user).Error; err != nil {
 		return apperrors.ErrDBOperation(err)
 	}
@@ -78,6 +79,16 @@ func (u *userRepository) SoftDelete(ctx context.Context, id uuid.UUID) error {
 		return apperrors.ErrDBOperation(err)
 	}
 	return nil
+}
+
+func (u *userRepository) FindByOAuth(ctx context.Context, provider, oauthID string) (*entities.User, error) {
+	var user entities.User
+	if err := u.db.WithContext(ctx).Where("oauth_provider = ? AND oauth_id = ?", provider, oauthID).First(&user).Error; err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, apperrors.ErrNotFound(entityUserName)
+		}
+	}
+	return &user, nil
 }
 
 func getDuplicateKeyConstraint(err error) string {
