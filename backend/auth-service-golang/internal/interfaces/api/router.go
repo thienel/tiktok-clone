@@ -7,7 +7,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func NewRouter(db *database.Database, handler AuthHandler) *gin.Engine {
+func NewRouter(db *database.Database, authHandler AuthHandler, oauthHandler OAuthHandler) *gin.Engine {
 	router := gin.New()
 	router.Use(gin.Recovery(), gin.Logger())
 
@@ -32,11 +32,13 @@ func NewRouter(db *database.Database, handler AuthHandler) *gin.Engine {
 	api := router.Group("/api/v1")
 	auth := api.Group("/auth")
 	{
-		auth.POST("/login", handler.Login)
-		auth.POST("/register", handler.Register)
-		auth.POST("/logout", handler.Logout)
-		auth.POST("/token/refresh", handler.RefreshToken)
-		auth.GET("/token/validate", handler.ValidateToken)
+		auth.POST("/login", authHandler.Login)
+		auth.POST("/register", authHandler.Register)
+		auth.POST("/logout", authHandler.Logout)
+		auth.POST("/token/refresh", authHandler.RefreshToken)
+		auth.GET("/token/validate", authHandler.ValidateToken)
+		auth.GET("/oauth/:provider", oauthHandler.InitiateOAuth)
+		auth.GET("/oauth/:provider/callback", oauthHandler.HandleCallback)
 	}
 	return router
 }

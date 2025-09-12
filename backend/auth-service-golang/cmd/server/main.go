@@ -4,6 +4,8 @@ import (
 	"auth-service/internal/application/services"
 	"auth-service/internal/infrastructure/config"
 	"auth-service/internal/infrastructure/database"
+	"auth-service/internal/infrastructure/oauth"
+	"auth-service/internal/infrastructure/oauth/providers"
 	"auth-service/internal/infrastructure/persistence"
 	"auth-service/internal/interfaces/api"
 	"auth-service/internal/security"
@@ -54,12 +56,16 @@ func main() {
 		Log: log,
 	}
 
+	googleProvider := providers.NewGoogleProvider(cfg.OAuth.GoogleClientID, cfg.OAuth.GoogleClientSecret, cfg.OAuth.GoogleRedirectURL)
 	tokenRepo := persistence.NewTokenRepository(db.DB)
 	userRepo := persistence.NewUserRepository(db.DB)
 	tokenService := services.NewTokenService(app.Log, tokenRepo, cfg.AccessTokenTTL, cfg.RefreshTokenTTL, security.PrivateKey(), security.PublicKey())
 	authService := services.NewAuthService(userRepo, tokenService)
+	oauthService := oauth.NewOAuthService(userRepo)
+	oauthService.RegisterProvider(googleProvider)
 	authHandler := api.NewAuthHandler(authService, tokenService, log)
-	r := api.NewRouter(app.DB, authHandler)
+	oauthHandler := api.NewOAuthHandler(app.Log, oauthService, authService)
+	r := api.NewRouter(app.DB, authHandler, oauthHandler)
 	log.Info("Server starting on port " + cfg.Port)
 	srv := &http.Server{
 		Addr:    ":" + cfg.Port,
