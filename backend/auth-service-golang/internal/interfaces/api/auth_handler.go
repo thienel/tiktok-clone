@@ -174,7 +174,7 @@ func (h *authHandler) ValidateToken(c *gin.Context) {
 
 	userID, err := uuid.Parse(claims.UserID)
 	if err != nil {
-		handleError(h.logger, c, apperrors.ErrInvalidCredentials("user ID"), "invalid user ID in token")
+		handleError(h.logger, c, apperrors.ErrInvalidCredentials("invalid user ID"), "invalid user ID in token")
 		return
 	}
 
