@@ -4,8 +4,10 @@ import (
 	"auth-service/internal/domain/entities"
 	"auth-service/internal/domain/repositories"
 	"auth-service/internal/errors/apperrors"
+	"auth-service/internal/infrastructure/oauth/providers"
 	"auth-service/internal/security"
 	"context"
+	"fmt"
 	"strings"
 
 	"github.com/google/uuid"
@@ -22,6 +24,7 @@ type AuthService interface {
 	Logout(ctx context.Context, token string) error
 	GetUserByID(ctx context.Context, id uuid.UUID) (*entities.User, error)
 	GetUserByUsername(ctx context.Context, username string) (*entities.User, error)
+	HandleOAuthUser(ctx context.Context, userInfo *providers.UserInfo) (*entities.User, string, string, error)
 }
 
 type authService struct {
@@ -127,4 +130,59 @@ func (s *authService) Logout(ctx context.Context, token string) error {
 		return err
 	}
 	return nil
+}
+
+func (s *authService) HandleOAuthUser(ctx context.Context, userInfo *providers.UserInfo) (*entities.User, string, string, error) {
+	user, err := s.userRepo.FindByOAuth(ctx, userInfo.Provider, userInfo.ProviderID)
+	if err != nil {
+		if err.Error() == "user not found" {
+			user, err = s.userRepo.FindByEmail(ctx, userInfo.Email)
+			if err != nil && err.Error() != "user not found" {
+				return nil, "", "", err
+			}
+		}
+	}
+
+	if user == nil {
+		user = entities.NewOAuthUser(s.generateUsernameFromEmail(ctx, userInfo.Email), userInfo.Email, userInfo.Provider, userInfo.ProviderID)
+		if err = s.userRepo.Create(ctx, user); err != nil {
+			return nil, "", "", err
+		}
+	}
+
+	if !user.IsOAuthUser() {
+		user.LinkToOAuth(userInfo.Provider, userInfo.ProviderID)
+		if err := s.userRepo.Update(ctx, user); err != nil {
+			return nil, "", "", err
+		}
+	}
+
+	accessToken, err := s.tokenService.GenerateAccessToken(ctx, user.ID)
+	if err != nil {
+		return nil, "", "", err
+	}
+	refreshToken, err := s.tokenService.GenerateRefreshToken(ctx, user.ID)
+	if err != nil {
+		return nil, "", "", err
+	}
+
+	return user, accessToken, refreshToken, nil
+}
+
+func (s *authService) generateUsernameFromEmail(ctx context.Context, email string) string {
+	parts := strings.Split(email, "@")
+	baseUsername := parts[0]
+
+	for i := 0; i < 10; i++ {
+		username := baseUsername
+		if i > 0 {
+			username = fmt.Sprintf("%s%d", baseUsername, i)
+		}
+
+		if _, err := s.userRepo.FindByUsername(ctx, username); err != nil {
+			return username
+		}
+	}
+
+	return fmt.Sprintf("%s_%s", baseUsername, uuid.New().String()[:8])
 }
