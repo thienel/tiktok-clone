@@ -22,23 +22,35 @@ const (
 )
 
 type User struct {
-	ID           uuid.UUID      `gorm:"primaryKey;type:uuid;default:gen_random_uuid()"`
-	Username     string         `gorm:"uniqueIndex;size:24"`
-	Email        string         `gorm:"uniqueIndex;size:100"`
-	PasswordHash string         `gorm:"size:255"`
-	Status       UserStatus     `gorm:"default:pending"`
-	CreatedAt    time.Time      `gorm:"autoCreateTime"`
-	UpdatedAt    time.Time      `gorm:"autoUpdateTime"`
-	DeletedAt    gorm.DeletedAt `gorm:"index"`
-	Tokens       []RefreshToken `gorm:"foreignKey:UserID;constraint:OnDelete:CASCADE"`
+	ID            uuid.UUID      `gorm:"primaryKey;type:uuid;default:gen_random_uuid()"`
+	Username      string         `gorm:"uniqueIndex;size:24"`
+	Email         string         `gorm:"uniqueIndex;size:100"`
+	PasswordHash  *string        `gorm:"size:255"`
+	Status        UserStatus     `gorm:"default:pending"`
+	CreatedAt     time.Time      `gorm:"autoCreateTime"`
+	UpdatedAt     time.Time      `gorm:"autoUpdateTime"`
+	DeletedAt     gorm.DeletedAt `gorm:"index"`
+	Tokens        []RefreshToken `gorm:"foreignKey:UserID;constraint:OnDelete:CASCADE"`
+	OAuthProvider *string        `gorm:"size:32;column:oauth_provider"`
+	OAuthID       *string        `gorm:"size:64;column:oauth_id"`
 }
 
 func NewUser(username, email, passwordHash string) *User {
 	return &User{
 		Username:     strings.TrimSpace(username),
 		Email:        strings.ToLower(strings.TrimSpace(email)),
-		PasswordHash: passwordHash,
+		PasswordHash: &passwordHash,
 		Status:       UserStatusPending,
+	}
+}
+
+func NewOAuthUser(username, email, provider, oauthID string) *User {
+	return &User{
+		Username:      username,
+		Email:         strings.ToLower(strings.TrimSpace(email)),
+		Status:        UserStatusActive,
+		OAuthProvider: &provider,
+		OAuthID:       &oauthID,
 	}
 }
 
@@ -70,10 +82,6 @@ func (user *User) IsActive() bool {
 	return user.Status == UserStatusActive && user.DeletedAt.Time.IsZero()
 }
 
-func (user *User) CanLogin() bool {
-	return user.Status == UserStatusActive || user.Status == UserStatusPending
-}
-
 func (user *User) Activate() {
 	user.Status = UserStatusActive
 }
@@ -84,6 +92,15 @@ func (user *User) Suspend() {
 
 func (user *User) Deactivate() {
 	user.Status = UserStatusInactive
+}
+
+func (user *User) IsOAuthUser() bool {
+	return user.OAuthProvider != nil && user.OAuthID != nil
+}
+
+func (user *User) LinkToOAuth(oauthProvider, oauthID string) {
+	user.OAuthProvider = &oauthProvider
+	user.OAuthID = &oauthID
 }
 
 func (us UserStatus) Value() (driver.Value, error) {
