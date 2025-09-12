@@ -33,30 +33,29 @@ func NewAuthService(userRepo repositories.UserRepository, tokenService TokenServ
 	return &authService{userRepo, tokenService}
 }
 
-func (as *authService) Login(ctx context.Context, usernameOrEmail, password string) (string, string, error) {
+func (s *authService) Login(ctx context.Context, usernameOrEmail, password string) (string, string, error) {
 	usernameOrEmail = strings.TrimSpace(usernameOrEmail)
-	loginType := as.identifyLoginType(usernameOrEmail)
-	user, err := as.findUser(ctx, loginType, usernameOrEmail)
+	loginType := s.identifyLoginType(usernameOrEmail)
+	user, err := s.findUser(ctx, loginType, usernameOrEmail)
 	if err != nil {
 		return "", "", err
 	}
 
 	if user == nil {
-		return "", "", apperrors.ErrInvalidCredentials("username or email")
+		return "", "", apperrors.ErrInvalidCredentials("invalid username or email")
 	}
 	if !user.IsActive() {
 		return "", "", apperrors.ErrUserInactive
 	}
-
-	if !security.VerifyPassword(password, user.PasswordHash) {
-		return "", "", apperrors.ErrInvalidCredentials("password")
+	if !security.VerifyPassword(password, *user.PasswordHash) {
+		return "", "", apperrors.ErrInvalidCredentials("invalid password")
 	}
 
-	accessToken, err := as.tokenService.GenerateAccessToken(ctx, user.ID)
+	accessToken, err := s.tokenService.GenerateAccessToken(ctx, user.ID)
 	if err != nil {
 		return "", "", err
 	}
-	refreshToken, err := as.tokenService.GenerateRefreshToken(ctx, user.ID)
+	refreshToken, err := s.tokenService.GenerateRefreshToken(ctx, user.ID)
 	if err != nil {
 		return "", "", err
 	}
@@ -64,7 +63,7 @@ func (as *authService) Login(ctx context.Context, usernameOrEmail, password stri
 	return accessToken, refreshToken, nil
 }
 
-func (as *authService) identifyLoginType(usernameOrEmail string) string {
+func (s *authService) identifyLoginType(usernameOrEmail string) string {
 	if entities.IsValidEmail(usernameOrEmail) {
 		return loginTypeEmail
 	}
@@ -74,39 +73,39 @@ func (as *authService) identifyLoginType(usernameOrEmail string) string {
 	return ""
 }
 
-func (as *authService) findUser(ctx context.Context, loginType, usernameOrEmail string) (*entities.User, error) {
+func (s *authService) findUser(ctx context.Context, loginType, usernameOrEmail string) (*entities.User, error) {
 	switch loginType {
 	case loginTypeEmail:
-		return as.userRepo.FindByEmail(ctx, usernameOrEmail)
+		return s.userRepo.FindByEmail(ctx, usernameOrEmail)
 	case loginTypeUsername:
-		return as.userRepo.FindByUsername(ctx, usernameOrEmail)
+		return s.userRepo.FindByUsername(ctx, usernameOrEmail)
 	default:
-		return nil, apperrors.ErrInvalidCredentials("username or email")
+		return nil, apperrors.ErrInvalidCredentials("invalid username or email")
 	}
 }
 
-func (as *authService) GetUserByID(ctx context.Context, id uuid.UUID) (*entities.User, error) {
-	return as.userRepo.FindByID(ctx, id)
+func (s *authService) GetUserByID(ctx context.Context, id uuid.UUID) (*entities.User, error) {
+	return s.userRepo.FindByID(ctx, id)
 }
 
-func (as *authService) GetUserByUsername(ctx context.Context, username string) (*entities.User, error) {
+func (s *authService) GetUserByUsername(ctx context.Context, username string) (*entities.User, error) {
 	if !entities.IsValidUserName(username) {
-		return nil, apperrors.ErrInvalidCredentials("username")
+		return nil, apperrors.ErrInvalidCredentials("invalid username")
 	}
-	return as.userRepo.FindByUsername(ctx, username)
+	return s.userRepo.FindByUsername(ctx, username)
 }
 
-func (as *authService) Register(ctx context.Context, username, email, password string) (*entities.User, error) {
+func (s *authService) Register(ctx context.Context, username, email, password string) (*entities.User, error) {
 	email = strings.TrimSpace(email)
 	if !entities.IsValidEmail(email) {
-		return nil, apperrors.ErrInvalidCredentials("email")
+		return nil, apperrors.ErrInvalidCredentials("invalid email")
 	}
 	username = strings.TrimSpace(username)
 	if !entities.IsValidUserName(username) {
-		return nil, apperrors.ErrInvalidCredentials("username")
+		return nil, apperrors.ErrInvalidCredentials("invalid username")
 	}
 	if !entities.IsValidPassword(password) {
-		return nil, apperrors.ErrInvalidCredentials("password")
+		return nil, apperrors.ErrInvalidCredentials("invalid password")
 	}
 	passwordHash, err := security.HashPassword(password)
 	if err != nil {
@@ -115,15 +114,15 @@ func (as *authService) Register(ctx context.Context, username, email, password s
 
 	user := entities.NewUser(username, email, passwordHash)
 
-	if err = as.userRepo.Create(ctx, user); err != nil {
+	if err = s.userRepo.Create(ctx, user); err != nil {
 		return nil, err
 	}
 
 	return user, nil
 }
 
-func (as *authService) Logout(ctx context.Context, token string) error {
-	err := as.tokenService.RevokeRefreshToken(ctx, token)
+func (s *authService) Logout(ctx context.Context, token string) error {
+	err := s.tokenService.RevokeRefreshToken(ctx, token)
 	if err != nil {
 		return err
 	}
