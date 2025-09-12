@@ -46,6 +46,10 @@ func NewConflict(message string) *AppError {
 	return NewAppError(http.StatusConflict, message, nil)
 }
 
+func NewBadGateway(message string) *AppError {
+	return NewAppError(http.StatusBadGateway, message, nil)
+}
+
 func NewInternal(message string, err error) *AppError {
 	return NewAppError(http.StatusInternalServerError, message, err)
 }
@@ -66,8 +70,7 @@ var (
 	ErrInvalidJSONRequest = NewBadRequest("invalid json request")
 )
 
-func ErrInvalidCredentials(field string) *AppError {
-	message := fmt.Sprintf("invalid %s", field)
+func ErrInvalidCredentials(message string) *AppError {
 	return NewUnauthorized(message)
 }
 
