@@ -2,43 +2,45 @@
 
 A full-stack TikTok clone application with microservices architecture.
 
+## Architecture
+
+- **Frontend**: React web application
+- **Backend**: Microservices architecture with Go and C#
+- **Database**: PostgreSQL
+- **Authentication**: JWT-based auth service
+
 ## Project Structure
 
-```
-├── backend/                 # Backend services
-│   ├── auth-service/        # C# .NET authentication service
-│   └── video-service/       # Go video management service
-└── frontend/                # React frontend application
-```
+- `auth-service`: User authentication and authorization (C# .NET)
+- `auth-service-golang`: Go-based auth service replacement (in development)
+- `video-service`: Video upload, processing, and management (in development)
+- `frontend`: React web client with video feed and user interface
 
-## Backend Services
+## Technology Stack
 
-### Auth Service (C# .NET)
-- **Technology**: ASP.NET Core, Entity Framework Core
-- **Database**: PostgreSQL
-- **Features**: User authentication, JWT tokens, email verification
-- **Location**: `backend/auth-service/`
+### Backend
+- C# .NET 9 (Auth Service)
+- Go 1.19+ (Video Service, Auth Service v2)
+- PostgreSQL database, SQL Server
+- JWT authentication
+- gRPC communication
 
-### Video Service (Go)
-- **Technology**: Go, gRPC, PostgreSQL
+### Frontend
+- React 18
+- JavaScript/CSS
+- Responsive design
+
+
+
+## Development
+
+Each service contains its own README with detailed setup instructions, API documentation, and development guidelines.
 - **Features**: Video upload, likes, views, comments
 - **Location**: `backend/video-service/`
 
-## Frontend Application
-
-### React App
-- **Technology**: React, JavaScript, CSS
-- **Features**: Video feed, user profiles, authentication UI
-- **Location**: `frontend/`
 
 ## Getting Started
 
-### Prerequisites
-- .NET 6.0 or later
-- Go 1.19 or later
-- Node.js 16 or later
-- PostgreSQL
-- Docker (optional)
 
 ### Backend Setup
 
@@ -47,14 +49,8 @@ A full-stack TikTok clone application with microservices architecture.
 cd backend/auth-service
 dotnet restore
 dotnet run --project TikTokClone.API
-```
+````
 
-#### Video Service
-```bash
-cd backend/video-service
-go mod tidy
-go run cmd/main.go
-```
 
 ### Frontend Setup
 ```bash
@@ -62,10 +58,3 @@ cd frontend
 npm install
 npm start
 ```
-
-## Development
-
-Each service can be developed and deployed independently:
-- Auth Service runs on port 5000
-- Video Service runs on port 8080  
-- Frontend runs on port 3000
